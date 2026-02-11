@@ -142,8 +142,6 @@ def worker_function_simulate_multi(start_idx, package, stimulus, stim_data, stim
     try:
         timed_stimulus = TimedArray(stimulus, defaultclock.dt)  
         sim_data = lif_simulation(package, timed_stimulus, stimulus_length=stimulus_length, mv=False)
-        with open(f"data_try.pkl", "wb") as handle:
-            pickle.dump(sim_data, handle)
         if save_raw:
             saved_flag = wrap_and_save_data(sim_data, stim_data, save_dir, package, start_idx)
         if calc_feats:
