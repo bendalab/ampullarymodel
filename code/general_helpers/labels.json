@@ -1,0 +1,98 @@
+{
+    "parameter_labels" : [
+                    "$\\tau_{membrane}$", 
+                    "$t_{refractory}$", 
+                    "$I_{offset}$", 
+                    "$\\xi_{current}$",  
+                    "$g_{stimulus}$", 
+                    "$\\tau_{dendritic}$", 
+                    "$\\tau_{adaptation}$", 
+                    "$\\delta_{adaptation}$",
+                    "$\\xi_{adaptation}}$"],
+    
+
+
+    "parameter_save_labels" : 
+                    ["tau_membrane", 
+                     "ref_time", 
+                     "offset_current", 
+                     "current_noise",  
+                     "stim_gain", 
+                     "tau_dentitic", 
+                     "tau_adaptation", 
+                     "delta_adaptation",
+                     "adapt_noise"], 
+
+    
+    "parameter_labels_casual" : [
+                                "tau membrane [ms]", 
+                                "ref time [ms]", 
+                                "offset current", 
+                                "noise strength",  
+                                "stim gain", 
+                                "tau dentitic [ms]", 
+                                "tau adaptation [ms]", 
+                                "adaptation strength",
+                                "adapt noise strength"], 
+
+    "feature_labels" :["rate", 
+         "CV$_{ISI}$", 
+         "SC$_{ISI}$", 
+         "rate mod.",
+         "C$_{0Hz}$",
+         "C$_{max}$",
+         "$\\overline{C}_{120-150Hz}$",
+         "F$_{max}$",
+         "F$_{cutoff}$", 
+         "G$_{0Hz}$", 
+         "G$_{1/2F_{max}}$", 
+         "G$_{max}$", 
+         "G$_{rate}$", 
+         "$\\overline{G}_{120-150Hz}$", 
+         "F$_{1/2F_{max}}$",
+         "F$_{max}$",
+         "F$_{cutoff}$"],
+ 
+    
+    "feature_save_labels": [
+                    "base_fr", 
+                    "isi_cv", 
+                    "serial_corr", 
+                    "fr_modulation",
+                    "coh_zero",
+                    "coh_max", 
+                    "coh_highf",
+                    "fcoh_max", 
+                    "fcutoff", 
+                    "gain_0", 
+                    "gain_halfup", 
+                    "gain_max", 
+                    "gain_rate",
+                    "gain_highf",
+                    "fhalfup",
+                    "fgain_max",
+                    "fcuoff"],
+
+
+        
+    "feature_labels_casual" : [
+                                "Baseline rate [Hz]", 
+                                "Interspikeinterval CV [ms]", 
+                                "ISI Seriel Correlation", 
+                                "Rate Modulation [Hz]",  
+                                "Coherence at 0 Hz",
+                                "Maximal Coherence",
+                                "Coherence at High Frequencies",
+                                "Freq. at Maximal Coherence [Hz]",
+                                "Cutoff Freq. of Coherence [Hz]",
+                                "Gain at 0 Hz [Hz/%]",
+                                "Gain at 1/2F to Max. [Hz/%]",
+                                "Maximal Gain [Hz/%]",
+                                "Gain at Cell's rate [Hz/%]",
+                                "Gain at High Frequencies [Hz/%]",
+                                "1/2 Freq. to Max. Gain [Hz]",
+                                "Freq. at Maximal Gain [Hz]",
+                                "Cutoff Freq. of Gain [Hz]"]
+}
+
+

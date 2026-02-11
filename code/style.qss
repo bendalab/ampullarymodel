@@ -1,0 +1,389 @@
+/* Stylesheet for GUI /*
+/* because making this manually for all widgets would be insane /*
+/* and apperently, this is how i have to comment here /*
+
+/* ==================================================================================
+   Note to colors:
+   medium grey #282829 for background, scroll bar background
+   dark gray   #1d1d1d for input widget backgrounds and "print box"
+   light grey  #444    for input widget borders, disabled buttons
+   light blue  #007ACC for buttons, scrollbar handle and checkbox details
+   medium blue #005F9E for hovering over button, press button, hovering over scrollbox handle?
+   very light white-grey #f4f4f4 all writing, for hovering over scroller
+   light white-grey      #d0d0d0 scroller inactive
+   dark white-grey       #888    borders of scrollers
+
+   was:
+   #e0e0e0 for when hovering over spinbox thingy, might use instead of #f4f4f4 if thats to bright
+   custom sliders have colors in the code, change or overwrite if time
+   ================================================================================== */
+
+
+
+/* Set background color for the entire page (QWidget) */
+QWidget {
+    background-color: #282829;  /* light gray background */
+}
+
+
+/* ==================================================================================
+   Buttons
+   ================================================================================== */
+
+/* Style all buttons */
+QPushButton {
+    background-color: #007ACC;  /* blue button background */
+    color: white;               /* white text */
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 5px;         /* rounded corners */
+    border-color: beige;
+    padding: 6px 12px;          /* space inside the button */
+    font-weight: bold;
+    border: none;
+}
+
+/* Change button color when hovered */
+QPushButton:hover {
+    background-color: #005F9E;  /* darker blue on hover */
+}
+/* Change button color when pressed */
+QPushButton:pressed {
+    background-color: #005F9E;
+    border-style: inset;
+}
+
+QPushButton:disabled {
+    background-color: #444;
+}
+
+
+
+
+
+/* Same for tool buttons */
+QToolButton {
+    background-color: #007ACC;  /* blue button background */
+    color: white;               /* white text */
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 5px;         /* rounded corners */
+    border-color: beige;
+    padding: 6px 12px;          /* space inside the button */
+    font-weight: bold;
+    border: none;
+}
+
+
+/* Change button color when hovered */
+QToolButton:hover {
+    background-color: #005F9E;  /* darker blue on hover */
+    border-radius: 6px;
+}
+
+QToolButton:pressed {
+    background-color: #005F9E;
+    border-style: inset;
+}
+
+QToolButton:disabled {
+    background-color: #444;
+}
+
+
+
+
+
+
+
+/* ==================================================================================
+   SpinBoxes
+   ================================================================================== */
+
+
+/* Style all spin boxes */
+/* Base appearance */
+QDoubleSpinBox {
+    color: #f4f4f4;
+    background-color: #1d1d1d;
+    border: 2px solid #444;
+    border-radius: 5px;
+    padding: 2px 4px;
+}
+
+/* Text field of the spin box, which is a childwidget of the spinbox */
+QDoubleSpinBox QLineEdit {
+    background: transparent;
+    color: #f4f4f4;
+}
+
+QSpinBox {
+    color: #f4f4f4;
+    background-color: #1d1d1d;
+    border: 2px solid #444;
+    border-radius: 5px;
+    padding: 2px 4px;
+}
+
+QSpinBox QLineEdit {
+    background: transparent;
+    color: #f4f4f4;
+}
+
+
+/* Arrow button containers */
+QAbstractSpinBox::up-button,
+QAbstractSpinBox::down-button {
+    background-color: #d0d0d0;
+    border-left: 1px solid #888;
+    width: 18px;
+    border-radius: 3px;
+}
+
+/* when I Hover over it: */
+QAbstractSpinBox::up-button:hover,
+QAbstractSpinBox::down-button:hover {
+    background-color: #f4f4f4;
+}
+
+/* Arrow images (MUST set size) */
+QAbstractSpinBox::up-arrow {
+    image: url(:/icons/pictograms/arrow_up.png);
+    width: 8px;
+    height: 8px;
+}
+
+QAbstractSpinBox::down-arrow {
+    image: url(:/icons/pictograms/arrow_down.png);
+    width: 8px;
+    height: 8px;
+}
+
+
+
+
+/* ==================================================================================
+   Text edits
+   ================================================================================== */
+
+QLineEdit {
+    color: #f4f4f4;
+    background-color: #1d1d1d;
+    border: 2px solid #444;
+    border-radius: 5px;
+    padding: 2px 4px;
+}
+
+QPlainTextEdit {
+    color: #f4f4f4;
+    background-color: #1d1d1d;
+    border: 2px solid #444;
+    border-radius: 5px;
+    padding: 2px 4px;
+    font-family: "Ubuntu Mono", "DejaVu Sans Mono", monospace;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+
+
+
+
+
+
+/* ===========================
+   Base checkbox label
+   =========================== */
+
+QCheckBox {
+    color: #f4f4f4;
+    spacing: 8px;
+    font-size: 16px;
+}
+
+/* ===========================
+   Indicator box (unchecked)
+   =========================== */
+
+QCheckBox::indicator {
+    width: 15px;
+    height: 15px;
+
+    background-color: #1d1d1d;
+    border: 2px solid #007ACC;
+    border-radius: 5px;
+}
+
+/* ===========================
+   Hover (unchecked)
+   =========================== */
+
+QCheckBox::indicator:hover {
+    border-color: #005F9E;
+}
+
+/* ===========================
+   Checked state
+   =========================== */
+
+QCheckBox::indicator:checked {
+    background-color: #1d1d1d;
+    border-color: #007ACC;
+    image: url(:/icons/pictograms/check_mark.png);
+}
+
+/* ===========================
+   Checked + hover
+   =========================== */
+
+QCheckBox::indicator:checked:hover {
+    border-color: #005F9E;
+}
+
+/* ===========================
+   Disabled
+   =========================== */
+
+QCheckBox:disabled {
+    color: #777777;
+}
+
+QCheckBox::indicator:disabled {
+    background-color: #2b2b2b;
+    border-color: #555555;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ QScrollBar:vertical {
+     border: 2px solid #1d1d1d;
+     background: #282829;
+     width: 20px;
+     margin: 22px 0 22px 0;
+     border-radius: 4px;
+
+ }
+ QScrollBar::handle:vertical {
+     background: #007ACC;
+     min-height: 20px;
+     border-radius: 4px;
+     border: 0px solid red;
+     margin: 0 2px;
+ }
+
+  QScrollBar::handle:vertical:hover {
+     background: #005F9E;
+     border: 1px solid #005F9E;
+ }
+
+
+QScrollBar::add-line:vertical {
+     border: 1px solid #888;
+     background: #d0d0d0;
+     height: 20px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+ }
+
+QScrollBar::add-line:vertical:hover {
+    background: #f4f4f4;    /* lighter color on hover */
+    border-color: #444444;  /* darker border on hover */
+}
+
+QScrollBar::sub-line:vertical {
+     border: 1px solid #888;
+     background: #d0d0d0;
+     height: 20px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+ }
+
+/* Hover effect for sub-line */
+QScrollBar::sub-line:vertical:hover {
+    background: #f4f4f4;
+    border-color: #444444;
+}
+
+ QScrollBar::up-arrow:vertical {
+     image: url(:/icons/pictograms/arrow_up.png);
+     width: 8px;
+     height: 8px;
+ }
+
+
+QScrollBar::down-arrow:vertical {
+     image: url(:/icons/pictograms/arrow_down.png);
+     width: 8px;
+     height: 8px;
+ }
+
+ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+     background: none;
+ }
+
+
+
+
+
+
+/* ==================================================================================
+   Labels
+   ================================================================================== */
+
+/* Style all labels */
+QLabel {
+    font-family: 'Ubuntu', sans-serif;
+    color: #F4F4F4;           
+    font-size: 16px;
+    font-weight: normal;
+}
+
+QLabel[role="title"] {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #F4F4F4;
+}
+
+
+QTextBrowser {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    color: #F4F4F4;
+}
+
+QTextBrowser a {
+    color: #007ACC !important;      /* linkcolor!*/
+    text-decoration: underline !important;  
+}
+
+QTextBrowser a:hover {
+    color: #005F9E !important;     
+}
+
+QFrame[role="startframe"] {
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;        
+    border-color: #F4F4F4;
+}
