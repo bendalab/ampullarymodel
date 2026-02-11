@@ -12,7 +12,7 @@ if __name__ == "__main__":
     with open("style.qss", "r") as f:
         style = f.read()
     app.setStyleSheet(style)
-    window = load_ui("gui_01.ui")
+    window = load_ui("gui.ui")
     controller = MainController(window)
     window.show()
     sys.exit(app.exec())
