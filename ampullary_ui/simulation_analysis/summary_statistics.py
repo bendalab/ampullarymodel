@@ -11,10 +11,10 @@ Functions for extracting summary statistics from simulated data
 import numpy as np
 import scipy.signal as sps
 from brian2.units.allunits import second
-from computations.lif_simulation import defaultclock
-from computations.stimulus_helper import stimulus_scaling_artificial
-from simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
-from simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, tf_features
+from ampullary_ui.computations.lif_simulation import defaultclock
+from ampullary_ui.computations.stimulus_helper import stimulus_scaling_artificial
+from ampullary_ui.simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
+from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, tf_features
 
 
 

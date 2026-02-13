@@ -1,14 +1,11 @@
-
 import numpy as np
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from computations.controller_functions import simulate_from_input_params
-from computations.saving_helper import save_data, save_features, save_figure
-from plotting.plot_cell import plot_cell
+from ampullary_ui.computations.controller_functions import simulate_from_input_params
+from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
+from ampullary_ui.plotting.plot_cell import plot_cell
 from IPython import embed
-
-
 
 
 class SimulationThread(QThread):
@@ -22,10 +19,6 @@ class SimulationThread(QThread):
         # This runs in a separate thread!
         results = simulate_from_input_params(self.params)
         self.finished.emit(results)
-
-
-
-
 
 
 class ToolAController:

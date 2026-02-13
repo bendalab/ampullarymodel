@@ -3,9 +3,9 @@ import numpy as np
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from computations.controller_functions import simulate_from_input_params, create_cell_from_input_features
-from computations.saving_helper import save_params, save_data, save_features
-from plotting.plot_cell import plot_cell
+from ampullary_ui.computations.controller_functions import simulate_from_input_params, create_cell_from_input_features
+from ampullary_ui.computations.saving_helper import save_params, save_data, save_features
+from ampullary_ui.plotting.plot_cell import plot_cell
 from IPython import embed
 
 

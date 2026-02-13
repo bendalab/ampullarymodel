@@ -4,9 +4,9 @@ import pandas as pd
 from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl, Qt
 from PySide6.QtGui import QDesktopServices
-from computations.table_conversion_gui import prepare_feature_inputs, load_posterior, worker_function_generate_multi
-from computations.saving_helper import save_parameter_table 
-from .cancelconformdialog import CancelConfirmDialog
+from ampullary_ui.computations.table_conversion_gui import prepare_feature_inputs, load_posterior, worker_function_generate_multi
+from ampullary_ui.computations.saving_helper import save_parameter_table 
+from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
 
 from IPython import embed
 

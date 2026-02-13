@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
-from plotting.plot_helpers_general import plot_params, colorcode
+from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
 
 from IPython import embed

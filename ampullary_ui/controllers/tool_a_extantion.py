@@ -5,14 +5,11 @@ from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl
 from PySide6.QtGui import QDesktopServices
 from computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
-from computations.saving_helper import save_features_table #, save_data_table
-from computations.stimulus_helper import get_stimulus_and_data
-from .cancelconformdialog import CancelConfirmDialog
+from ampullary_ui.computations.saving_helper import save_features_table #, save_data_table
+from ampullary_ui.computations.stimulus_helper import get_stimulus_and_data
+from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
 
 from IPython import embed
-
-
-
 
 
 class SimulationThreadMulti(QThread):

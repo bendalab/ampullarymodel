@@ -14,9 +14,9 @@ import os
 import json
 import numpy as np
 from brian2 import TimedArray
-from computations.lif_simulation import lif_simulation, defaultclock
-from simulation_analysis.summary_statistics import calculate_sum_stats
-from simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
+from ampullary_ui.computations.lif_simulation import lif_simulation, defaultclock
+from ampullary_ui.simulation_analysis.summary_statistics import calculate_sum_stats
+from ampullary_ui.simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
 from IPython import embed
 
 

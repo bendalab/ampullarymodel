@@ -10,7 +10,14 @@ import json
 import numpy as np
 import pandas as pd 
 import scipy.signal as sps 
-from simulation_analysis.analysis_helpers import serial_correlations, convolution_rate_single, convolution_rate_with_std, transferfunction, smoothing, cutoff, values_high_frequencies, tf_features
+from ampullary_ui.simulation_analysis.analysis_helpers import (serial_correlations,
+                                                               convolution_rate_single, 
+                                                               convolution_rate_with_std,
+                                                               transferfunction,
+                                                               smoothing,
+                                                               cutoff,
+                                                               values_high_frequencies,
+                                                               tf_features)
 
 
 with open('general_helpers//common_variables.json', 'r') as file:

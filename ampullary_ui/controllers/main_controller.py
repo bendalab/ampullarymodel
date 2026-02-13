@@ -5,17 +5,14 @@ from pathlib import Path
 from PySide6.QtWidgets import QWidget, QSizePolicy, QProgressBar, QLabel
 from PySide6.QtCore import  QEvent, QTimer, QUrl
 from PySide6.QtGui import QPixmap, QDesktopServices
-from .tool_a_controller import ToolAController
-from .tool_b_controller import ToolBController
-from .tool_c_controller import ToolCController
-from .tool_d_controller import ToolDController
-from .tool_a_extantion import ToolAExtention
-from .tool_b_extantion import ToolBExtention
-from plotting.plot_cell import plot_cell
 
-
-
-
+from ampullary_ui.controllers.tool_a_controller import ToolAController
+from ampullary_ui.controllers.tool_b_controller import ToolBController
+from ampullary_ui.controllers.tool_c_controller import ToolCController
+from ampullary_ui.controllers.tool_d_controller import ToolDController
+from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
+from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
+from ampullary_ui.plotting.plot_cell import plot_cell
 
 
 class MainController:

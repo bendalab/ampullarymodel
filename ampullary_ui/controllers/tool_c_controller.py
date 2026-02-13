@@ -4,8 +4,8 @@ import numpy as np
 import random
 from PySide6.QtWidgets import QSpinBox, QWidget
 from PySide6.QtCore import Signal, QThread, QTimer
-from .customcombienationwidget import RangeCombine
-from computations.saving_helper import save_sampled_subset
+from ampullary_ui.controllers.customcombienationwidget import RangeCombine
+from ampullary_ui.computations.saving_helper import save_sampled_subset
 from IPython import embed
 
 

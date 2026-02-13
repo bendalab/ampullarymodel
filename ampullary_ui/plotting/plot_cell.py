@@ -10,9 +10,9 @@ from brian2 import second
 from matplotlib.gridspec import GridSpec
 from matplotlib.legend_handler import HandlerTuple
 from matplotlib.ticker import MultipleLocator
-from simulation_analysis.analysis_helpers import is_outlier, tf_features, cutoff, values_high_frequencies
-from computations.lif_simulation import defaultclock
-from plotting.plot_helpers_general import plot_params, colorcode
+from ampullary_ui.simulation_analysis.analysis_helpers import is_outlier, tf_features, cutoff, values_high_frequencies
+from ampullary_ui.computations.lif_simulation import defaultclock
+from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
 
 
