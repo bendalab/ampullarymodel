@@ -1,21 +1,30 @@
 import sys
-import ampullary_ui.resources_rc 
 
 from PySide6.QtWidgets import QApplication
+
+import ampullary_ui.resources_rc
 from ampullary_ui.controllers.main_controller import MainController
 from ampullary_ui.controllers.ui_loding_helper import load_ui
+from ampullary_ui.utils import load_style
 
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-    with open("style.qss", "r") as f:
-        style = f.read()
+    # style_file = QFile(":/configs/style")
+    # style_file.open(QFile.ReadOnly | QFile.Text)
+    # stream = QTextStream(style_file)
+    # style = stream.readAll()
+    # style_file.close()
+    style = load_style()
     app.setStyleSheet(style)
-    window = load_ui("gui.ui")
+    window = load_ui(":/ui/gui")
     controller = MainController(window)
     window.show()
     sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
 
 """   
 Questions for Jan to tool:
