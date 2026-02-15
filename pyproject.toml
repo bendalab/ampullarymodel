@@ -9,12 +9,14 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">= 3.10"
 dependencies = [
+  "pyside6"
   "numpy",
   "scipy",
   "pandas",
   "matplotlib",
   ]
-keywords = ["science", "neuroscience", "simulation", "LIF", "sensory afferents", "electroreception"]
+keywords = ["science", "neuroscience", "simulation",
+            "LIF", "sensory afferents", "electroreception"]
 
 [tool.setuptools]
 packages = ["ampullary_ui"]
@@ -24,4 +26,4 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project.gui-scripts]
-ampullary-gui = "ampullary_ui:ampullary_app"
+ampullary-gui = "ampullary_ui:ampullary_app:main"
