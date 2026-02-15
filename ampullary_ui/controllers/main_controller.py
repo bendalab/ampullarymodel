@@ -1,8 +1,6 @@
-import os
-import json
 import pandas as pd
 from pathlib import Path
-from PySide6.QtWidgets import QWidget, QSizePolicy, QProgressBar, QLabel
+from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel
 from PySide6.QtCore import  QEvent, QTimer, QUrl
 from PySide6.QtGui import QPixmap, QDesktopServices
 
@@ -13,7 +11,7 @@ from ampullary_ui.controllers.tool_d_controller import ToolDController
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
-
+from ampullary_ui.utils import load_labels
 
 class MainController:
     def __init__(self, window):
@@ -24,7 +22,7 @@ class MainController:
         self.setup_animation()
         self.data, self.prior_samples = self.load_data()
         self.example_fig = self.load_example_fig()
-        labels = self.load_labels()
+        labels = load_labels()
         #self.toolA = ToolAController(self.window, self.example_fig, labels['feature_labels_casual']) 
         #self.toolB = ToolBController(self.window, self.example_fig, labels['parameter_labels_casual'], labels['feature_labels_casual'], main_controller=self)
         self.toolA = ToolAController(self, labels['feature_labels_casual']) 
@@ -36,8 +34,48 @@ class MainController:
         self.setup_images()
         self.connect_navigation()
         self.window.description_1.anchorClicked.connect(self.open_example)
+        # Setup cleanup on window close
+        self.window.closeEvent = self.cleanup_and_close
         
 
+    def cleanup_and_close(self, event):
+        """Stop all running threads before closing the application."""
+        # Stop ToolA thread
+        if hasattr(self.toolA, 'sim_thread') and self.toolA.sim_thread is not None:
+            if self.toolA.sim_thread.isRunning():
+                self.toolA.sim_thread.quit()
+                self.toolA.sim_thread.wait()
+        
+        # Stop ToolB thread
+        if hasattr(self.toolB, 'sim_thread') and self.toolB.sim_thread is not None:
+            if self.toolB.sim_thread.isRunning():
+                self.toolB.sim_thread.quit()
+                self.toolB.sim_thread.wait()
+        
+        # Stop ToolA Extension thread
+        if hasattr(self.toolA_ex, 'sim_thread') and self.toolA_ex.sim_thread is not None:
+            if self.toolA_ex.sim_thread.isRunning():
+                self.toolA_ex.sim_thread.quit()
+                self.toolA_ex.sim_thread.wait()
+        
+        # Stop ToolB Extension thread
+        if hasattr(self.toolB_ex, 'sim_thread') and self.toolB_ex.sim_thread is not None:
+            if self.toolB_ex.sim_thread.isRunning():
+                self.toolB_ex.sim_thread.quit()
+                self.toolB_ex.sim_thread.wait()
+        
+        # Stop ToolC workers (histogram workers)
+        if hasattr(self.toolC, 'full_worker') and self.toolC.full_worker is not None:
+            if self.toolC.full_worker.isRunning():
+                self.toolC.full_worker.quit()
+                self.toolC.full_worker.wait()
+        if hasattr(self.toolC, 'reduced_worker') and self.toolC.reduced_worker is not None:
+            if self.toolC.reduced_worker.isRunning():
+                self.toolC.reduced_worker.quit()
+                self.toolC.reduced_worker.wait()
+        
+        # Accept the close event
+        event.accept()
 
     # setup processing animation
     def setup_animation(self):
@@ -94,31 +132,23 @@ class MainController:
 
     # load data and other stuff
     def load_data(self):
-        filepath = os.path.join("..", "source", "summary_statistics.h5")
+        pwd = Path.cwd()
+        filepath = pwd / "source" / "summary_statistics.h5"
         sum_stats = pd.read_hdf(filepath, key="table")
-        filepath = os.path.join("..", "source", "prior_samples.h5")
+        filepath = pwd / "source" / "prior_samples.h5"
         prior_samples = pd.read_hdf(filepath, key="table")
         return sum_stats.to_numpy(), prior_samples.to_numpy()
 
 
     def load_example_fig(self):
         # load cell model simulation plot data
-        filepath = os.path.join("..", "examples", "example_figures", "base_example.pkl") 
+        filepath = Path.cwd() / "examples" / "example_figures" / "base_example.pkl"
         example_base = pd.read_pickle(filepath)
-        filepath = os.path.join("..", "examples", "example_figures", "stim_example.pkl") 
+        filepath = Path.cwd() / "examples" / "example_figures" / "stim_example.pkl"
         example_stim = pd.read_pickle(filepath)
         fig = plot_cell(example_base, example_stim)
         fig.text(0.5, 0.5, "EXAMPLE", fontsize=80, fontweight='bold', color='#44F9BD', alpha=0.6, ha='center', va='center', rotation=40, zorder=10)
         return fig
-
-
-    def load_labels(self):
-        filepath = os.path.join("general_helpers", "labels.json")
-        with open(filepath, "r") as file:
-            labels = json.load(file)
-        file.close()
-        return labels
-
 
     # images startpage
     def setup_images(self):
@@ -126,39 +156,25 @@ class MainController:
             lbl.setMinimumSize(100, 100)
             lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        filepath1 = os.path.join("..", "examples", "example_figures", "equation.png")
-        filepath2 = os.path.join("..", "examples", "example_figures", "getmodel_scetch.png")
-        filepath3 = os.path.join("..", "examples", "example_figures", "table_scetch.png")
-        filepath4 = os.path.join("..", "examples", "example_figures", "equation2.png") 
+        self.window.picture_1.setPixmap(QPixmap(":/examples/eqn"))
+        self.window.picture_2.setPixmap(QPixmap(":/examples/get_model"))
+        self.window.picture_3.setPixmap(QPixmap(":/examples/table"))
+        self.window.sc_equation.setPixmap(QPixmap(":/examples/eqn2"))
 
-        pix1 = QPixmap(filepath1)
-        pix2 = QPixmap(filepath2)
-        pix3 = QPixmap(filepath3)
-        pix4 = QPixmap(filepath4)
-
-        self.window.picture_1.setPixmap(pix1)
-        self.window.picture_2.setPixmap(pix2)
-        self.window.picture_3.setPixmap(pix3)
-        self.window.sc_equation.setPixmap(pix4)
-    
-    
-    # keep figures visible      
+    # keep figures visible
     def eventFilter(self, obj, event):
         if obj == self.toolA_page and event.type() == QEvent.Type.Show:
             # Call redraw in your ToolA controller
             self.toolA.redraw_figure()
         return super().eventFilter(obj, event)
 
-
     def show_toolA_page(self):
         self.stacked.setCurrentWidget(self.window.simulate_cell)
         self.toolA.redraw_figure()
 
-
     def show_toolB_page(self):
         self.stacked.setCurrentWidget(self.window.create_model)
         self.toolB.redraw_figure()
-
 
     # navigation
     def connect_navigation(self):
@@ -183,4 +199,3 @@ class MainController:
         # ToolB population navigation
         self.window.tc_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
         self.window.tc_to_single.clicked.connect(self.show_toolB_page)
-

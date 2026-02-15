@@ -35,6 +35,7 @@ class ToolAController:
         self.results = None
         self.canvas = None
         self.labels = feature_labels
+        self.sim_thread = None
         self.find_widgets()
         self.setup_spinboxes()
         self.setup_defaults()
@@ -124,6 +125,8 @@ class ToolAController:
         self.text_output.insertPlainText("Simulating...\n")
         self.sim_thread = SimulationThread(params)
         self.sim_thread.finished.connect(self.on_simulation_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
     def on_reset(self):

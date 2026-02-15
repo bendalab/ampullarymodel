@@ -5,8 +5,6 @@ Functions helping to analyse the cell models
 - Extract baseline features and baseline plotting arrays
 - Extract white noise response features and white noise response plotting arrays
 """
-
-import json
 import numpy as np
 import pandas as pd 
 import scipy.signal as sps 
@@ -18,11 +16,8 @@ from ampullary_ui.simulation_analysis.analysis_helpers import (serial_correlatio
                                                                cutoff,
                                                                values_high_frequencies,
                                                                tf_features)
-
-
-with open('general_helpers//common_variables.json', 'r') as file:
-    common_variables = json.load(file)
-file.close()
+from ampullary_ui.utils import load_common_variables
+common_variables = load_common_variables()
 
 def sim_baseline_data(data):
     """

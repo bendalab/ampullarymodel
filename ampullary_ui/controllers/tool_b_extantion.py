@@ -90,6 +90,7 @@ class ToolBExtention:
         self.window = self.main_controller.window
         self.results = None
         self.save_flag = True
+        self.sim_thread = None  # Initialize thread variable
         self.find_widgets()
         self.setup_defaults()
         self.connect_signals()
@@ -193,6 +194,8 @@ class ToolBExtention:
         self.sim_thread = GenerationThreadMulti(params)
         self.sim_thread.progress.connect(self.update_progress_text)
         self.sim_thread.finished.connect(self.on_genmulti_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
 

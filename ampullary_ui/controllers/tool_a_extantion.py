@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl
 from PySide6.QtGui import QDesktopServices
-from computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
+from ampullary_ui.computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
 from ampullary_ui.computations.saving_helper import save_features_table #, save_data_table
 from ampullary_ui.computations.stimulus_helper import get_stimulus_and_data
 from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
@@ -94,6 +94,7 @@ class ToolAExtention:
         self.window = self.main_controller.window
         self.results = None
         self.save_flag = True
+        self.sim_thread = None
         self.find_widgets()
         self.setup_defaults()
         self.connect_signals()
@@ -206,6 +207,8 @@ class ToolAExtention:
         self.sim_thread = SimulationThreadMulti(params, save_raw, calc_feats, self.input_path, self.output_path)
         self.sim_thread.progress.connect(self.update_progress_text)
         self.sim_thread.finished.connect(self.on_simmulti_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
 

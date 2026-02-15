@@ -98,6 +98,8 @@ class ToolCController:
         self.titles = labels
         self.prior_samples = prior_samples
         self.mins, self.maxs, self.bin_specs, self.decimals, self.steps = self.define_stuff()
+        self.full_worker = None  # Initialize worker variables
+        self.reduced_worker = None
         self.insert_range_widgets(3)
         self.connect_signals()
         QTimer.singleShot(0, self.compute_initial_histograms)
@@ -166,6 +168,8 @@ class ToolCController:
             self.btn_compute.setText("loading…")
             self.full_worker = FullHistogramWorker(self.data, self.mins, self.maxs, self.bin_specs)
             self.full_worker.finished.connect(self.on_full_histograms_ready)
+            self.full_worker.finished.connect(self.full_worker.quit)  # Clean up thread when done
+            self.full_worker.finished.connect(self.full_worker.deleteLater)
             self.full_worker.start()
 
 
@@ -185,6 +189,8 @@ class ToolCController:
         mask = self.compute_shared_mask()
         self.reduced_worker = ReducedHistogramWorker(self.data, mask, self.hist_cache)
         self.reduced_worker.finished.connect(self.on_histograms_ready)
+        self.reduced_worker.finished.connect(self.reduced_worker.quit)  # Clean up thread when done
+        self.reduced_worker.finished.connect(self.reduced_worker.deleteLater)
         self.reduced_worker.start()
 
 
