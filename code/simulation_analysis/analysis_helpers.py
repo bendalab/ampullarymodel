@@ -16,14 +16,12 @@ Functions for Analysing
 """
 import json
 import numpy as np
-import scipy.signal as sps 
+import scipy.signal as sps
 from scipy.stats import norm
 
 with open('general_helpers//common_variables.json', 'r') as file:
     common_variables = json.load(file)
 file.close()
-
-
 
 
 def is_outlier(points, thresh=3.5):
@@ -49,7 +47,7 @@ def is_outlier(points, thresh=3.5):
         Statistical Techniques, Edward F. Mykytka, Ph.D., Editor. 
     """
     if len(points.shape) == 1:
-        points = points[:,None]
+        points = points[:, None]
     median = np.median(points, axis=0)
     diff = np.sum((points - median)**2, axis=-1)
     diff = np.sqrt(diff)
@@ -79,22 +77,22 @@ def serial_correlations(spikes, max_lag=10):
         Serial correlations for all `lags`.
     """
     intervals = np.diff(spikes)
-    #intervals = intervals[~is_outlier(intervals)]
+    # intervals = intervals[~is_outlier(intervals)]
     lags = np.arange(0, max_lag + 1, 1)
     corrs = np.zeros(max_lag + 1)
-    corrs[0] = np.corrcoef(intervals, intervals)[0,1]
+    corrs[0] = np.corrcoef(intervals, intervals)[0, 1]
     for i, lag in enumerate(lags[1:]):
-        corrs[i+1] = np.corrcoef(intervals[:-lag], intervals[lag:])[0,1]
+        corrs[i+1] = np.corrcoef(intervals[:-lag], intervals[lag:])[0, 1]
     return lags, corrs
 
 
 def convolution_rate(spike_times, time, sigma=common_variables['sigma_conv_rate']):
     """
     Firing rate computed by the convolution method.
-    
+
     Makes a binary spike train with the length of the measured time out of the 
     spike times and uses a Gaussian Kernel for convolution.
-    
+
     Parameters
     ----------
     spike_times : np.arrays(k,)
@@ -110,30 +108,30 @@ def convolution_rate(spike_times, time, sigma=common_variables['sigma_conv_rate'
         Firing rate corresponding to spikes in Hz.
 
     """
-    conv_rates = np.zeros((len(spike_times),len(time)))
+    conv_rates = np.zeros((len(spike_times), len(time)))
     dt = np.round(time[1]-time[0], 7)
     for i in range(len(spike_times)):
         tmax = 4.0*sigma
-        if 2.0*tmax > time[-1] - time[0]: 
+        if 2.0*tmax > time[-1] - time[0]:
             tmax = 0.5*(time[-1] - time[0])
-        ktime = np.arange(-tmax, tmax+dt, dt) 
+        ktime = np.arange(-tmax, tmax+dt, dt)
         kernel = norm.pdf(ktime, loc=0, scale=sigma)
         idx = np.asarray((spike_times[i]-time[0])/dt, dtype=int)
         binary_spikes = np.zeros(len(time))
         binary_spikes[idx[(idx >= 0) & (idx < len(time))]] = 1.0
         conv_rate_single = np.convolve(binary_spikes, kernel, mode="same")
-        conv_rates[i,:]= conv_rate_single
-    conv_rate = np.mean(conv_rates, axis =0) 
+        conv_rates[i, :] = conv_rate_single
+    conv_rate = np.mean(conv_rates, axis=0)
     return conv_rate
 
 
 def convolution_rate_with_std(spike_times, time, sigma=common_variables['sigma_conv_rate']):
     """
     Firing rate computed by the convolution method + STD.
-    
+
     Makes a binary spike train with the length of the measured time out of the 
     spike times and uses a Gaussian Kernel for convolution. Also computes standart deviation
-    
+
     Parameters
     ----------
     spike_times : np.arrays(k,)
@@ -150,31 +148,31 @@ def convolution_rate_with_std(spike_times, time, sigma=common_variables['sigma_c
     std : np.array(n,)
         standart deviation
     """
-    conv_rates = np.zeros((len(spike_times),len(time)))
+    conv_rates = np.zeros((len(spike_times), len(time)))
     dt = np.round(time[1]-time[0], 7)
     for i in range(len(spike_times)):
         tmax = 4.0*sigma
-        if 2.0*tmax > time[-1] - time[0]: 
+        if 2.0*tmax > time[-1] - time[0]:
             tmax = 0.5*(time[-1] - time[0])
-        ktime = np.arange(-tmax, tmax+dt, dt) 
+        ktime = np.arange(-tmax, tmax+dt, dt)
         kernel = norm.pdf(ktime, loc=0, scale=sigma)
         idx = np.asarray((spike_times[i]-time[0])/dt, dtype=int)
         binary_spikes = np.zeros(len(time))
         binary_spikes[idx[(idx >= 0) & (idx < len(time))]] = 1.0
         conv_rate_single = np.convolve(binary_spikes, kernel, mode="same")
-        conv_rates[i,:]= conv_rate_single
-    conv_rate = np.mean(conv_rates, axis =0) 
-    std = np.std(conv_rates, axis =0)
+        conv_rates[i, :] = conv_rate_single
+    conv_rate = np.mean(conv_rates, axis=0)
+    std = np.std(conv_rates, axis=0)
     return conv_rate, std
 
 
 def convolution_rate_single(spike_times, time, sigma=common_variables['sigma_conv_rate']):
     """
     Firing rate computed by the convolution method for a single trial.
-    
+
     Makes a binary spike train with the length of the measured time out of the 
     spike times and uses a Gaussian Kernel for convolution.
-    
+
     Parameters
     ----------
     spike_times : np.arrays(k,)
@@ -189,12 +187,12 @@ def convolution_rate_single(spike_times, time, sigma=common_variables['sigma_con
     conv_rate :  np.array(n,)
         Firing rate corresponding to spikes in Hz, single trial
 
-    """    
+    """
     dt = np.round(time[1]-time[0], 7)
     tmax = 4.0*sigma
-    if 2.0*tmax > time[-1] - time[0]: 
+    if 2.0*tmax > time[-1] - time[0]:
         tmax = 0.5*(time[-1] - time[0])
-    ktime = np.arange(-tmax, tmax+dt, dt) 
+    ktime = np.arange(-tmax, tmax+dt, dt)
     kernel = norm.pdf(ktime, loc=0, scale=sigma)
     idx = np.asarray((spike_times-time[0])/dt, dtype=int)
     binary_spikes = np.zeros(len(time))
@@ -215,20 +213,20 @@ def smoothing(data, span):
         some data array
     span : int
         half the kernel size
-    
+
     Returns
     -------
     data_convoluted : ndarray
         smoothed data array
     """
-    kernel = np.ones(span*2 +1) / (span*2 + 1)
+    kernel = np.ones(span*2 + 1) / (span*2 + 1)
     data_copy = data*1
-    data_copy[0]=data_copy[1]
+    data_copy[0] = data_copy[1]
     start = np.array([data_copy[0]]*len(kernel))
     end = np.array([data_copy[-1]]*len(kernel))
-    data_elongated = np.concatenate((start, data_copy, end), axis=0) #
+    data_elongated = np.concatenate((start, data_copy, end), axis=0)
     data_convolved = np.convolve(data_elongated, kernel, mode='same')
-    data_smoothed = np.split(data_convolved, [len(kernel), -len(kernel)])[1] 
+    data_smoothed = np.split(data_convolved, [len(kernel), -len(kernel)])[1]
     return data_smoothed
 
 
@@ -242,7 +240,7 @@ def find_nearest(array, value):
         array of interest
     value : float
         value of interst
-    
+
     Return
     ------
     nearest value in an array to the given value
@@ -306,10 +304,11 @@ def values_high_frequencies(f, values, f_lower, f_higher):
         mean coherence towards the end of the stimulus frequency spectrum
 
     """
-    near_f_lower = find_nearest(f, f_lower)
-    near_f_higher = find_nearest(f, f_higher)
-    highf_values = np.mean(values[int(np.where(f==near_f_lower)[0]):int(np.where(f==near_f_higher)[0])])
-    return highf_values
+    # near_f_lower = find_nearest(f, f_lower)
+    # near_f_higher = find_nearest(f, f_higher)
+    highf_coh = np.mean(values[(f >= f_lower) & (f < f_higher)])
+    # highf_values = np.mean(values[int(np.where(f == near_f_lower)[0]):int(np.where(f == near_f_higher)[0])])
+    return highf_coh
 
 
 def transferfunction(stimulus, f_rate, samplingrate):
@@ -338,14 +337,16 @@ def transferfunction(stimulus, f_rate, samplingrate):
         gain in Hz/mV?
     tf_smoothed _ ndarray
         smoothed gain in Hz/mV?
-    
+
     """
-    freq, p_yx = sps.csd(f_rate, stimulus, fs=samplingrate, nperseg=2**14, window='hann', scaling='density')
-    _, p_xx = sps.welch(stimulus, fs=samplingrate, window='hann', nperseg=2**14, scaling='density')
+    freq, p_yx = sps.csd(f_rate, stimulus, fs=samplingrate,
+                         nperseg=2**14, window='hann', scaling='density')
+    _, p_xx = sps.welch(stimulus, fs=samplingrate,
+                        window='hann', nperseg=2**14, scaling='density')
     tf = abs(p_yx)/p_xx
     # cut out relevant margin
     freq = freq[np.where((freq >= 0.0) & (freq <= 150.0))[0]]
-    tf = tf[np.where((freq >= 0.0) & (freq <= 150.0))[0]]#
+    tf = tf[np.where((freq >= 0.0) & (freq <= 150.0))[0]]
     # smoothing
     tf_smoothed = smoothing(tf, span=4)
     return freq, tf, tf_smoothed
@@ -389,17 +390,17 @@ def tf_features(freq, tf_smoothed, rate):
         gain at mean firing rate, expect peak with low contrast stimuli
     cutoff_frequency_up : float
         upper cutoff frequency in Hz
-    
+
     """
     max_gain = np.max(tf_smoothed)
     idx_max = np.where(tf_smoothed == np.max(tf_smoothed))[0][0]
-    if idx_max != 0: 
+    if idx_max != 0:
         tf_decline = tf_smoothed[idx_max:]
         fraction_70 = np.max(tf_smoothed)*0.7071
         nf_70_up = find_nearest(tf_decline, fraction_70)
         idx_cutoff_up = np.where(tf_decline == nf_70_up)[0][0] + idx_max
         cutoff_frequency_up = freq[idx_cutoff_up]
-    else: 
+    else:
         fraction_70 = np.max(tf_smoothed)*0.7071
         nf_70_up = find_nearest(tf_smoothed, fraction_70)
         idx_cutoff_up = np.where(tf_smoothed == nf_70_up)[0][0]
@@ -408,10 +409,9 @@ def tf_features(freq, tf_smoothed, rate):
     highf_gain = values_high_frequencies(freq, tf_smoothed, 120.0, 150.0)
     # gain at mean FR
     near_mean_FR = find_nearest(freq, np.mean(rate))
-    mfr_gain = tf_smoothed[int(np.where(freq==near_mean_FR)[0])]
+    mfr_gain = tf_smoothed[freq == near_mean_FR][0]
     gain_0 = tf_smoothed[0]
-    f_at_gainmax = freq[np.where(tf_smoothed == max_gain)[0][0]]
+    f_at_gainmax = freq[tf_smoothed == max_gain][0]
     f_halfup = find_nearest(freq, f_at_gainmax*0.5)
-    gain_halfup = tf_smoothed[np.where(freq == f_halfup)[0][0]]
+    gain_halfup = tf_smoothed[freq == f_halfup][0]
     return gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up
-
