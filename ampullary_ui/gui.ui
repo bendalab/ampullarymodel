@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1218</width>
-    <height>886</height>
+    <height>996</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="1">
      <widget class="QStackedWidget" name="stackedWidget_main">
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
       <widget class="QWidget" name="startpage">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
@@ -50,7 +53,6 @@
               <font>
                <family>Ubuntu</family>
                <pointsize>18</pointsize>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -99,10 +101,13 @@
              </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Simulate neuron data for the ampullary receptor cells of weakly electric fish. Select model parameters and obtain simulated spike times for baseline activity and stimulation with a white noise stimulus (See &lt;/span&gt;&lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;). A quick analysis of your simulated data will also be provided.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Simulate responses neuron models using the LIF model for ampullary afferents of weakly electric fish. Select model parameters and obtain simulated spike times of spontaneous baseline activity and in repsonse to stimulation with a band-limited noise (See &lt;/span&gt;&lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;). A quick analysis of your simulated data will also be provided.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="openLinks">
               <bool>false</bool>
@@ -199,10 +204,13 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Generate models for real and artificial neurons with the help of simulation based inference. Describe the cell you want to model by a set of features you want the model to generate. This tool will then provide you with the Maximum-a-Priori model for your feature set from the provided posterior. You can immediately check how well the model fits by using it to simulate data and compare the simulated features with your input. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Generate models for real and artificial neurons with the help of &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;s&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;imulation &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;ased &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;i&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;nference. Describe the cell you want to model by a set of desired response features. This tool will then provide you with the Maximum-a-Posteriori model for your feature set. You can immediately check how well the model fits by comparing the response features of the simlulation to your requirements. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="openLinks">
               <bool>false</bool>
@@ -299,10 +307,13 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="html">
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;We offer a catalogue of over 10 Mio models with a corresponding feature table. By choosing which feature properties interest you, you can draw subsets of models from this catalogue that generated those chosen feature properties. For this, you can define ranges for for all available features and draw models from within those restricted ranges or search for models my explicit feature values. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;We offer a catalogue of over 10 Mio models with a corresponding parameter- and feature sets. By choosing which feature properties you are interested in, you can draw subsets of models from this catalogue that have similar response features. For this, you can define ranges for for all available features and draw models from within those restricted ranges or search for models by explicit feature values. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="openLinks">
               <bool>false</bool>
@@ -374,7 +385,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="text">
-              <string>Simulate an ampullary receptor neuron!</string>
+              <string>Simulate an ampullary electrorecptor afferent!</string>
              </property>
              <property name="textFormat">
               <enum>Qt::PlainText</enum>
@@ -495,7 +506,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="sc_label_4">
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;strength of cuttent noise    (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;strength of current noise    (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                       <property name="textFormat">
                        <enum>Qt::RichText</enum>
@@ -512,7 +523,7 @@ p, li { white-space: pre-wrap; }
                     <item>
                      <widget class="QLabel" name="sc_label_6">
                       <property name="text">
-                       <string>dentritic time constant [ms]&amp;nbsp;&amp;nbsp; (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;d&lt;/span&gt;)</string>
+                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dendritic time constant [ms]   (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;d&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -891,7 +902,7 @@ p, li { white-space: pre-wrap; }
                 <property name="plainText">
                  <string>Just put in a set of parameters and press simulate!
 
-The simualtion includes 30 ms baseline activity and 100s white noise, which you can find in the stimuli folder.</string>
+The simualtion includes 30 s of baseline activity and 100s of stimulus driven responses. The band noise noise input can be found in the &quot;stimuli&quot; folder.</string>
                 </property>
                </widget>
               </item>
@@ -1037,7 +1048,7 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                     <item>
                      <widget class="QLabel" name="cm_label_name">
                       <property name="text">
-                       <string>Model Name</string>
+                       <string>Model name</string>
                       </property>
                      </widget>
                     </item>
@@ -1058,14 +1069,14 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                     <item>
                      <widget class="QLabel" name="cm_label_3">
                       <property name="text">
-                       <string>ISI Seriel Correlation</string>
+                       <string>ISI seriel correlation</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_4">
                       <property name="text">
-                       <string>Rate Modulation [Hz]</string>
+                       <string>Rate modulation [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -1079,28 +1090,28 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                     <item>
                      <widget class="QLabel" name="cm_label_6">
                       <property name="text">
-                       <string>Maximal Coherence</string>
+                       <string>Maximuml coherence</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_7">
                       <property name="text">
-                       <string>Coherence at High Frequencies</string>
+                       <string>Coherence at high Frequencies</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_8">
                       <property name="text">
-                       <string>Freq. at Maximal Coherence [Hz]</string>
+                       <string>Freq. at maximum coherence [Hz]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_9">
                       <property name="text">
-                       <string>Cutoff Freq. of Coherence [Hz]</string>
+                       <string>Coherence cutoff frequency [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -1114,49 +1125,49 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                     <item>
                      <widget class="QLabel" name="cm_label_11">
                       <property name="text">
-                       <string>Gain at 1/2F to Max. [Hz/%]</string>
+                       <string>Gain at 1/2 to max. [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_12">
                       <property name="text">
-                       <string>Maximal Gain [Hz/%]</string>
+                       <string>Maximuml gain [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_13">
                       <property name="text">
-                       <string>Gain at Cell's rate [Hz/%]</string>
+                       <string>Gain at cell's baseline rate [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_14">
                       <property name="text">
-                       <string>Gain at High Frequencies [Hz/%]</string>
+                       <string>Gain at high frequencies [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_15">
                       <property name="text">
-                       <string>1/2 Freq. to Max. Gain [Hz]</string>
+                       <string>1/2 freq. to max. gain [Hz]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_16">
                       <property name="text">
-                       <string>Freq. at Maximal Gain [Hz]</string>
+                       <string>Freq. at maximum gain [Hz]</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QLabel" name="cm_label_17">
                       <property name="text">
-                       <string>Cutoff Freq. of Gain [Hz]</string>
+                       <string>Gain cutoff frequency [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -1840,7 +1851,7 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
            <item>
             <widget class="QLabel" name="gm_title">
              <property name="text">
-              <string>Get Models by Ranges!</string>
+              <string>Define models by feature ranges!</string>
              </property>
              <property name="role" stdset="0">
               <string>title</string>
@@ -1888,8 +1899,8 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>962</width>
-                   <height>681</height>
+                   <width>928</width>
+                   <height>749</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
@@ -2072,12 +2083,15 @@ The simualtion includes 30 ms baseline activity and 100s white noise, which you 
                 </property>
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Adjust your desired ranges and click compute! Then save a number of model samples from the chosen subset. &lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;or go to the next page and get models by explicit value:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;Adjust your desired ranges and click compute! Then save a number of model samples from the chosen subset. &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;or go to the next page and get models by explicit value:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="openLinks">
                  <bool>false</bool>
@@ -2201,7 +2215,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="text">
-              <string>Choose Models by explicit Value</string>
+              <string>Choose models by explicit features</string>
              </property>
              <property name="role" stdset="0">
               <string>title</string>
@@ -2263,7 +2277,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Subset Name</string>
+                       <string>Subset name</string>
                       </property>
                      </widget>
                     </item>
@@ -2320,7 +2334,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>ISI Seriel Correlation</string>
+                       <string>ISI serial correlation</string>
                       </property>
                      </widget>
                     </item>
@@ -2339,7 +2353,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Rate Modulation [Hz]</string>
+                       <string>Rate modulation [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2377,7 +2391,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Maximal Coherence</string>
+                       <string>Maximum coherence</string>
                       </property>
                      </widget>
                     </item>
@@ -2396,7 +2410,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Coherence at High Frequencies</string>
+                       <string>Coherence at high frequencies</string>
                       </property>
                      </widget>
                     </item>
@@ -2415,7 +2429,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Freq. at Maximal Coherence [Hz]</string>
+                       <string>Freq. of maximum coherence [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2434,7 +2448,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Cutoff Freq. of Coherence [Hz]</string>
+                       <string>Coherence cutoff freq [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2472,7 +2486,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Gain at 1/2F to Max. [Hz/%]</string>
+                       <string>Gain at 1/2F to maximum [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
@@ -2497,7 +2511,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Maximal Gain [Hz/%]</string>
+                       <string>Maximum gain [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
@@ -2516,7 +2530,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Gain at Cell's rate [Hz/%]</string>
+                       <string>Gain at cell's  baeline rate [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
@@ -2535,7 +2549,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Gain at High Frequencies [Hz/%]</string>
+                       <string>Gain at high frequencies [Hz/%]</string>
                       </property>
                      </widget>
                     </item>
@@ -2554,7 +2568,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>1/2 Freq. to Max. Gain [Hz]</string>
+                       <string>1/2 freq. to max. gain [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2573,7 +2587,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Freq. at Maximal Gain [Hz]</string>
+                       <string>Freq. at maximum gain [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2592,7 +2606,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Cutoff Freq. of Gain [Hz]</string>
+                       <string>Gain cutoff frequency [Hz]</string>
                       </property>
                      </widget>
                     </item>
@@ -2611,7 +2625,7 @@ p, li { white-space: pre-wrap; }
                        </size>
                       </property>
                       <property name="text">
-                       <string>Number of Samples</string>
+                       <string>Number of samples</string>
                       </property>
                      </widget>
                     </item>
@@ -3022,11 +3036,14 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Choose models from the catalogue by stating explicit values. Models will be proposed that are as near as possible to all selected values. A estimate of how close will be provided by the corresponding figure. &lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If no choises are provided, random samples will be chosen!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;Choose models from the catalogue by providing explicit feature values. Models will be proposed that are as close as possible to all selected values. The corresponding figure shows how close the models match the given features. &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;If no choises are provided, random samples will be chosen!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="openLinks">
                  <bool>false</bool>
@@ -3177,7 +3194,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QLabel" name="ts_title">
              <property name="text">
-              <string>Simulate neuron data for a variaty of cells!</string>
+              <string>Simulate neuronal responses for a variaty of model cells!</string>
              </property>
              <property name="role" stdset="0">
               <string>title</string>
@@ -3200,22 +3217,25 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Simulate neuron data for the ampullary receptor cells of weakly electric fish for a population of neurons.  Use a table of model parameters and obtain simulated spike times for baseline activity and stimulation with a white noise stimulus. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(See &lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;).&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The input table must be a csv file, the model parameter in the same order as in the single simulation version. For example see&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;../../examples/example_parameters.csv&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007acc;&quot;&gt;example_parameters.csv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Simulate data for a population of ampullary electroreceptor afferents of the weakly electric fish.  Use a table of model parameters and obtain simulated spike times for baseline activity and stimulation with a band-limited noise stimulus. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;(See &lt;/span&gt;&lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;).&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;The input table must be a csv file, the model parameter in the same order as in the single simulation version. For example see&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;../../examples/example_parameters.csv&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; text-decoration: underline; color:#007acc;&quot;&gt;example_parameters.csv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="ts_input_label">
                 <property name="text">
-                 <string>Path to a CSV file containing simulation parameters.
+                 <string>Path to a CSV file containing model parameters.
 Paths are relative to the project directory.</string>
                 </property>
                </widget>
@@ -3258,7 +3278,7 @@ Paths are relative to the project directory.</string>
               <item>
                <widget class="QLabel" name="ts_output_label">
                 <property name="text">
-                 <string>Output path to folder, optional.
+                 <string>Output path, optional.
 If not provided, results are saved in same folder as parameter CSV</string>
                 </property>
                </widget>
@@ -3489,15 +3509,18 @@ If not provided, results are saved in same folder as parameter CSV</string>
                 </property>
                 <property name="html">
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Simulate neuron data for the ampullary receptor cells of weakly electric fish for a population of neurons.  Use a table of model parameters and obtain simulated spike times for baseline activity and stimulation with a white noise stimulus.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(See &lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The input table must be a csv file, the model parameter in the same order as in the single simulation version. For example see&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;../../examples/example_features.csv&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007acc;&quot;&gt;example_features.csv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;Simulate neuron data for the ampullary receptor cells of weakly electric fish for a population of neurons.  Use a table of model parameters and obtain simulated spike times for baseline activity and stimulation with a white noise stimulus.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;(See &lt;/span&gt;&lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;The input table must be a csv file, the model parameter in the same order as in the single simulation version. For example see&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;../../examples/example_features.csv&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; text-decoration: underline; color:#007acc;&quot;&gt;example_features.csv&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -3671,7 +3694,7 @@ If not provided, results are saved in same folder as feature CSV</string>
      <x>0</x>
      <y>0</y>
      <width>1218</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
