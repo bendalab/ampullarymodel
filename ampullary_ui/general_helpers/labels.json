@@ -26,7 +26,7 @@
     
     "parameter_labels_casual" : [
                                 "tau membrane [ms]", 
-                                "ref time [ms]", 
+                                "refactory time [ms]",
                                 "offset current", 
                                 "noise strength",  
                                 "stim gain", 
@@ -78,21 +78,21 @@
     "feature_labels_casual" : [
                                 "Baseline rate [Hz]", 
                                 "Interspikeinterval CV [ms]", 
-                                "ISI Seriel Correlation", 
-                                "Rate Modulation [Hz]",  
+                                "ISI serial correlation",
+                                "Rate modulation [Hz]",
                                 "Coherence at 0 Hz",
-                                "Maximal Coherence",
-                                "Coherence at High Frequencies",
-                                "Freq. at Maximal Coherence [Hz]",
-                                "Cutoff Freq. of Coherence [Hz]",
+                                "Maximum coherence",
+                                "Coherence at high frequencies",
+                                "Freq. of maximum coherence [Hz]",
+                                "Cutoff freq. of coherence [Hz]",
                                 "Gain at 0 Hz [Hz/%]",
-                                "Gain at 1/2F to Max. [Hz/%]",
-                                "Maximal Gain [Hz/%]",
-                                "Gain at Cell's rate [Hz/%]",
-                                "Gain at High Frequencies [Hz/%]",
-                                "1/2 Freq. to Max. Gain [Hz]",
-                                "Freq. at Maximal Gain [Hz]",
-                                "Cutoff Freq. of Gain [Hz]"]
+                                "Gain at 1/2F to max. [Hz/%]",
+                                "Maximum gain [Hz/%]",
+                                "Gain at cell's baseline rate [Hz/%]",
+                                "Gain at high frequencies [Hz/%]",
+                                "1/2 freq. to max. gain [Hz]",
+                                "Freq. of maximum gain [Hz]",
+                                "Cutoff freq. of gain [Hz]"]
 }
 
 
