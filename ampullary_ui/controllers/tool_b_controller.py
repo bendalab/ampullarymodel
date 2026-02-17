@@ -3,9 +3,9 @@ import numpy as np
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from computations.controller_functions import simulate_from_input_params, create_cell_from_input_features
-from computations.saving_helper import save_params, save_data, save_features
-from plotting.plot_cell import plot_cell
+from ampullary_ui.computations.controller_functions import simulate_from_input_params, create_cell_from_input_features
+from ampullary_ui.computations.saving_helper import save_params, save_data, save_features
+from ampullary_ui.plotting.plot_cell import plot_cell
 from IPython import embed
 
 
@@ -59,6 +59,7 @@ class ToolBController:
         self.canvas = None
         self.parameter_labels = parameter_labels
         self.feature_labels = feature_labels
+        self.sim_thread = None  # Initialize thread variable
         self.find_widgets()
         self.setup_spinboxes()
         self.setup_defaults()
@@ -164,6 +165,8 @@ class ToolBController:
         self.text_output.insertPlainText("Computing MAP model from posterior...\n")
         self.sim_thread = GenerationThread(self.features)
         self.sim_thread.finished.connect(self.on_generation_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
 
@@ -179,6 +182,8 @@ class ToolBController:
         self.text_output.insertPlainText("\nSimulating...")
         self.sim_thread = SimulationThread(self.params)
         self.sim_thread.finished.connect(self.on_simulation_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
     

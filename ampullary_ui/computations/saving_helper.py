@@ -10,22 +10,16 @@ All the saving functions for the different rresults, formats etc.
 - convert multiple parameter sets into Dataframe and save
 - convert multiple feature sets into Dataframe and save
 """
-
-import json
 import os
 import pandas as pd
 import numpy as np
-from IPython import embed
+
+from ampullary_ui.utils import load_labels
 
 
-filepath = os.path.join("general_helpers", "labels.json")
-with open(filepath, "r") as file:
-    labels = json.load(file)
-file.close()
+labels = load_labels()
 parameter_labels = labels['parameter_save_labels']
 feature_labels = labels['feature_save_labels']
-file.close()
-
 
 
 def save_data(data, filename):

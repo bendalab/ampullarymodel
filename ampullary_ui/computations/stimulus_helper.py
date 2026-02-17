@@ -14,7 +14,7 @@ import pickle
 import json
 import numpy as np
 from brian2 import TimedArray
-from computations.lif_simulation import defaultclock
+from ampullary_ui.computations.lif_simulation import defaultclock
 
 
 def stimulus_scaling_artificial (stimulus_og, wanted_sd=0.2):

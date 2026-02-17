@@ -4,9 +4,9 @@ import numpy as np
 from PySide6.QtWidgets import QLineEdit, QSpinBox, QFrame, QSizePolicy
 from PySide6.QtCore import Qt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from computations.controller_functions import get_subset_values
-from plotting.plot_distro import plot_samples
-from computations.saving_helper import save_sampled_subset
+from ampullary_ui.computations.controller_functions import get_subset_values
+from ampullary_ui.plotting.plot_distro import plot_samples
+from ampullary_ui.computations.saving_helper import save_sampled_subset
 from IPython import embed
 
 

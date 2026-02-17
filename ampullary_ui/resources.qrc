@@ -1,0 +1,26 @@
+<!DOCTYPE RCC>
+<RCC>
+  <qresource prefix="/icons">
+    <file>pictograms/arrow_up.png</file>
+    <file>pictograms/arrow_down.png</file>
+    <file>pictograms/arrow_back.png</file>
+    <file>pictograms/arrow_forward.png</file>
+    <file>pictograms/check_mark.png</file>
+    <file>pictograms/home.png</file>
+  </qresource>
+  <qresource prefix="/configs">
+    <file alias="new_order">general_helpers/new_order.json</file>
+    <file alias="common_variables">general_helpers/common_variables.json</file>
+    <file alias="labels">general_helpers/labels.json</file>
+    <file alias="style">style.qss</file>
+  </qresource>
+  <qresource prefix="/ui">
+    <file alias="gui">gui.ui</file>
+  </qresource>
+  <qresource prefix="/examples">
+    <file alias="eqn">../examples/example_figures/equation.png</file>
+    <file alias="eqn2">../examples/example_figures/equation2.png</file>
+    <file alias="get_model">../examples/example_figures/getmodel_scetch.png</file>
+    <file alias="table">../examples/example_figures/table_scetch.png</file>
+  </qresource>
+</RCC>

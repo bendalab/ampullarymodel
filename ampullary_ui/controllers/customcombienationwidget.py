@@ -5,7 +5,7 @@ from PySide6.QtCore import Signal, QRect
 from PySide6.QtGui import QPainter, QColor, QPen, Qt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from plotting.plot_helpers_general import plot_params
+from ampullary_ui.plotting.plot_helpers_general import plot_params
 plt.rcParams.update(plot_params)
 
 

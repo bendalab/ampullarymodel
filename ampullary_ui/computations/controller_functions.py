@@ -12,10 +12,11 @@ import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from typing import Dict, Any
-from computations.lif_simulation import lif_simulation
-from computations.stimulus_helper import load_simulation_stimulus
-from simulation_analysis.convert_data import seperate_data_incl_membvol, relativ_stimulation_times
-from simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
+
+from ampullary_ui.computations.lif_simulation import lif_simulation
+from ampullary_ui.computations.stimulus_helper import load_simulation_stimulus
+from ampullary_ui.simulation_analysis.convert_data import seperate_data_incl_membvol, relativ_stimulation_times
+from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
 
 from IPython import embed
 

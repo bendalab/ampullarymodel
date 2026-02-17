@@ -2,31 +2,25 @@ import multiprocessing
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from PySide6.QtCore import QThread, Signal, QUrl
+from PySide6.QtCore import QThread, Signal, QUrl, Qt
 from PySide6.QtGui import QDesktopServices
-from computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
-from computations.saving_helper import save_features_table #, save_data_table
-from computations.stimulus_helper import get_stimulus_and_data
-from .cancelconformdialog import CancelConfirmDialog
+from ampullary_ui.computations.table_conversion_gui import prepare_feature_inputs, load_posterior, worker_function_generate_multi
+from ampullary_ui.computations.saving_helper import save_parameter_table 
+from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
 
 from IPython import embed
 
 
 
-
-
-class SimulationThreadMulti(QThread):
+class GenerationThreadMulti(QThread):
     finished = Signal(object)   # emits results when done
     progress = Signal(str)      # emits progress messages
 
-    def __init__(self, params, save_raw, calc_feats, input_dir, output_dir):
+    def __init__(self, params):
         super().__init__()
         self.params = params
-        self.save_raw = save_raw
-        self.calc_feats = calc_feats
-        self.output_dir = output_dir
-        self.input_dir = input_dir
         self._is_running = True
+        self.maxtime = 1 * 60  # seconds
         self.current_proc = None
         self.result_queue = None
         self.progress_queue = None
@@ -39,64 +33,64 @@ class SimulationThreadMulti(QThread):
             self.current_proc.join()
 
 
-    def run(self):   
-        # load stimulus and stim length here
-        collect_results = []
-        stimulus, stim_data, stimulus_length = get_stimulus_and_data()
-        # Create subfolder for raw data inside output_dir
-        filename = self.input_dir.stem
-        raw_data_dir = Path(self.output_dir) / f"{filename}_simulation_raw_data"
-        raw_data_dir.mkdir(exist_ok=True, parents=True)
-        total_rows = sum(package.shape[0] for _, package in self.params)
+    def run(self):
+        posterior = load_posterior()
+        rel_stats = prepare_feature_inputs(self.params)
+        results = np.full((len(rel_stats), 9), np.nan)
 
-        
-        for start_idx, package in self.params:
+        for i, row in enumerate(rel_stats):
             if not self._is_running:
-                self.progress.emit("Simulation cancelled by user.")
+                self.progress.emit("Computing cancelled by user.")
                 break
 
-            end_idx = start_idx + len(package)
-            self.progress.emit(
-                f"Simulating cells {start_idx+1} to {end_idx} of {total_rows}")
-
+            self.progress.emit(f'Computing MAP model for cell {i+1} of {len(rel_stats)}')
             self.result_queue = multiprocessing.Queue()
             self.progress_queue = multiprocessing.Queue()
-            self.current_proc = multiprocessing.Process(target=worker_function_simulate_multi, 
-                                                        args=(start_idx, package, stimulus, stim_data, stimulus_length, 
-                                                              self.result_queue, self.progress_queue, 
-                                                              self.save_raw, self.calc_feats, raw_data_dir))
+            self.current_proc = multiprocessing.Process(target=worker_function_generate_multi, args=(row, posterior, self.result_queue, self.progress_queue))
             self.current_proc.start()
-            self.current_proc.join()
+            elapsed = 0
+            poll_interval = 0.1  # seconds
+            while self.current_proc.is_alive() and self._is_running and elapsed < self.maxtime:
+                try:
+                    while True:
+                        msg = self.progress_queue.get_nowait()
+                        self.progress.emit(msg)
+                except Exception:
+                    pass
+
+                self.current_proc.join(timeout=poll_interval)
+                elapsed += poll_interval
+
+            # If we exited because time expired or cancellation requested
+            if self.current_proc.is_alive():
+                self.progress.emit(f"Cell {i+1} timed out or cancelled. Terminating...")
+                self.current_proc.terminate()
+                self.current_proc.join()
 
             # Try to get result if any
             try:
                 result = self.result_queue.get_nowait()
                 if result is None:
-                    collect_results.append(np.full((len(package), 17), np.nan))
-                    saved_flag = False
+                    results[i] = np.full((9,), np.nan)
                 else:
-                    collect_results.append(result['features'])
-                    saved_flag = result['saved_flag']
+                    results[i] = result
             except Exception:
-                collect_results.append(np.full((len(package), 17), np.nan))
-                saved_flag = False
-        if saved_flag:
-            self.progress.emit(f"Simulation data saved under {self.output_dir}")
-        results = np.vstack(collect_results)
+                results[i] = np.full((9,), np.nan)
+
         self.finished.emit(results)
 
 
-  
- 
 
+class ToolBExtention:
+    #def __init__(self, window, example_fig, feature_labels):
 
-class ToolAExtention:
     def __init__(self, main_controller):
         # attributes
         self.main_controller = main_controller
         self.window = self.main_controller.window
         self.results = None
         self.save_flag = True
+        self.sim_thread = None  # Initialize thread variable
         self.find_widgets()
         self.setup_defaults()
         self.connect_signals()
@@ -104,27 +98,24 @@ class ToolAExtention:
 
     # initialization and setup
     def find_widgets(self):
-        self.btn_run = self.window.ts_btn_run
-        self.btn_cancel = self.window.ts_btn_cancel
-        self.input_path_widget = self.window.ts_input_path
-        self.output_path_widget = self.window.ts_output_path
-        self.checkBox_data = self.window.ts_checkBox_data
-        self.checkBox_features = self.window.ts_checkBox_features
-        self.btn_back = self.window.ts_back_to_main
-        self.btn_single = self.window.ts_to_single
-        self.text_output = self.window.ts_text_output
-        self.info_text = self.window.ts_info
+        self.btn_run = self.window.tc_btn_run
+        self.btn_cancel = self.window.tc_btn_cancel
+        self.input_path_widget = self.window.tc_input_path
+        self.output_path_widget = self.window.tc_output_path
+        self.text_output = self.window.tc_text_output
+        self.btn_back = self.window.tc_back_to_main
+        self.btn_single = self.window.tc_to_single
+        self.info_text = self.window.tc_info
 
 
     def setup_defaults(self):
         # set other defaults
         self.btn_cancel.setEnabled(False)
-        self.checkBox_data.setChecked(True)
-        self.checkBox_features.setChecked(True)
-        self.input_path_widget.setText("examples/example_parameters.csv")
+        self.input_path_widget.setText("examples/example_features.csv")
         self.output_path_widget.setText("None")
         self.info_text.setOpenExternalLinks(False)
         self.info_text.setOpenLinks(False)
+
 
     
     def open_example(self, url: QUrl):
@@ -136,12 +127,9 @@ class ToolAExtention:
 
     def connect_signals(self):
         # connect button clicks to methode
-        self.btn_run.clicked.connect(self.on_simulate)
+        self.btn_run.clicked.connect(self.on_generate_multi)
         self.btn_cancel.clicked.connect(self.on_cancelled)
         self.info_text.anchorClicked.connect(self.open_example)
-        # connect checkboxes state changes
-        self.checkBox_data.stateChanged.connect(self.on_checkbox_changed)
-        self.checkBox_features.stateChanged.connect(self.on_checkbox_changed)
 
 
     # user input
@@ -160,7 +148,7 @@ class ToolAExtention:
             # No output path given, use input's parent directory as output folder
             output_path = input_path.parent
         return input_path, output_path
-      
+   
     
     def path_validating(self, input_path, output_path):
         if not input_path.exists():
@@ -172,11 +160,10 @@ class ToolAExtention:
         self.text_output.appendPlainText(f"Input file found: {input_path}")
         self.text_output.appendPlainText(f"Output path set to: {output_path}")
         return True
-
         
 
     # user actions (button pressed)
-    def on_simulate(self):
+    def on_generate_multi(self):
         if hasattr(self, 'sim_thread') and self.sim_thread.isRunning():
             self.text_output.appendPlainText("Please wait for current subprocess to be cancelled.")
             return
@@ -189,7 +176,7 @@ class ToolAExtention:
         self.btn_cancel.setEnabled(True)
 
         self.input_path, self.output_path = self.path_handling()
-        
+
         if not self.path_validating(self.input_path, self.output_path):
             # Abort simulation: reset back so user can try again
             self.btn_run.setEnabled(True)
@@ -199,18 +186,17 @@ class ToolAExtention:
             self.btn_single.setEnabled(True)
             self.btn_cancel.setEnabled(False) 
             return  # just do nothing else
+        
 
         # If validation passed, continue:
-        parameters = pd.read_csv(self.input_path)
-        params = package_parameters(parameters)
-        save_raw = self.checkBox_data.isChecked()
-        calc_feats = self.checkBox_features.isChecked()
-        self.text_output.insertPlainText("\nSimulating in chunks of 100...\n")
-        self.sim_thread = SimulationThreadMulti(params, save_raw, calc_feats, self.input_path, self.output_path)
+        params = pd.read_csv(self.input_path)
+        self.text_output.insertPlainText("\nGenerating models...")
+        self.sim_thread = GenerationThreadMulti(params)
         self.sim_thread.progress.connect(self.update_progress_text)
-        self.sim_thread.finished.connect(self.on_simmulti_finished)
+        self.sim_thread.finished.connect(self.on_genmulti_finished)
+        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
+        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
-
 
 
     def on_cancelled(self):
@@ -234,15 +220,6 @@ class ToolAExtention:
 
             else:  # Keep Running or closed dialog
                 return
-            
-
-    def on_checkbox_changed(self):
-        if not (self.checkBox_data.isChecked() or self.checkBox_features.isChecked()):
-            self.btn_run.setEnabled(False)
-            self.text_output.appendPlainText("Select at least one option to run simulation")
-        else:
-            self.btn_run.setEnabled(True)
-
 
 
     # async / callback handlers
@@ -250,17 +227,15 @@ class ToolAExtention:
         self.text_output.appendPlainText(msg)
 
 
-
-    # async / callback handlers
-    def on_simmulti_finished(self, results):
+    def on_genmulti_finished(self, results):
         self.main_controller.stop_progress_animation()
-        self.text_output.insertPlainText("\nSimulations finished")
+        self.text_output.insertPlainText("\nfinished\n")
         self.results = results
         if self.save_flag: 
             filename = self.input_path.stem  # get base filename without extension
-            if self.checkBox_features.isChecked():
-                save_features_table(self.results, self.output_path , filename)
-                self.text_output.insertPlainText('\nFeatures were saved\n')
+            save_parameter_table(results, self.output_path, filename)
+            self.text_output.insertPlainText("saved\n")
+        # save results function here
         self.btn_run.setEnabled(True)
         self.btn_run.setText("run")
         self.btn_back.setEnabled(True)
@@ -268,5 +243,5 @@ class ToolAExtention:
         self.btn_cancel.setEnabled(False)
 
 
-
+    
 

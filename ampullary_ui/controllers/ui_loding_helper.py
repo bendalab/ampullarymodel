@@ -1,7 +1,7 @@
 from PySide6.QtCore import QFile
 from PySide6.QtUiTools import QUiLoader
-from controllers.freetypingdoublespinbox import FreeTypingDoubleSpinBox
-from controllers.keepratiopixmaplabel import KeepRatioPixmapLabel
+from ampullary_ui.controllers.freetypingdoublespinbox import FreeTypingDoubleSpinBox
+from ampullary_ui.controllers.keepratiopixmaplabel import KeepRatioPixmapLabel
 
 class UiLoader(QUiLoader):
     def createWidget(self, class_name, parent=None, name=""):

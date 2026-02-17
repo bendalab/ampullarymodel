@@ -10,7 +10,7 @@ with the recorded data:
 
 import numpy as np
 from brian2.units.allunits import second
-from computations.lif_simulation import defaultclock
+from ampullary_ui.computations.lif_simulation import defaultclock
 
 from IPython import embed
 

@@ -19,9 +19,10 @@ import numpy as np
 import scipy.signal as sps
 from scipy.stats import norm
 
-with open('general_helpers//common_variables.json', 'r') as file:
-    common_variables = json.load(file)
-file.close()
+from ampullary_ui.utils import load_common_variables
+
+
+common_variables = load_common_variables()
 
 
 def is_outlier(points, thresh=3.5):
