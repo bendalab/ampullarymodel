@@ -25,3 +25,6 @@ def load_style():
     style = stream.readAll()
     style_file.close()
     return style
+
+def load_stimuli(stim):
+    pass

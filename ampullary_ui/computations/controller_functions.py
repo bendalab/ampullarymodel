@@ -6,8 +6,8 @@ Logic functions for implementing user interactions
 """
 
 import json
-import os
 import pickle
+import pathlib
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
@@ -17,7 +17,7 @@ from ampullary_ui.computations.lif_simulation import lif_simulation
 from ampullary_ui.computations.stimulus_helper import load_simulation_stimulus
 from ampullary_ui.simulation_analysis.convert_data import seperate_data_incl_membvol, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
-
+from ampullary_ui.utils import load_common_variables
 from IPython import embed
 
 
@@ -50,9 +50,7 @@ def simulate_from_input_params(params):
     SimulationResult : dataclass   
         simulation data dictionary, analysis output features array, DataFrame for baseplot data, DataFrame for stimulation plot data   
     """
-    filepath = os.path.join("general_helpers", "common_variables.json")
-    with open(filepath, "r") as file:
-        common_variables = json.load(file)
+    common_variables = load_common_variables()
     stimulus_length = common_variables['stimulus_length']
     params_sample = np.array([params])
     gwn_stim_data, timed_stimulus = load_simulation_stimulus()

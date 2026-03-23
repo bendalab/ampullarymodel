@@ -9,13 +9,15 @@ license = "GPL-3.0-or-later"
 readme = "README.md"
 requires-python = ">= 3.10, < 3.13"
 dependencies = [
-  "pyside6",
   "numpy",
   "scipy",
   "pandas",
+  "brian2",
   "matplotlib",
+  "tables",
   "torch",
   "sbi",
+  "pyside6"
   ]
 keywords = ["science", "neuroscience", "simulation",
             "LIF", "sensory afferents", "electroreception"]
