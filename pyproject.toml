@@ -1,19 +1,21 @@
 [project]
 name = "ampullary_ui"
 version = "2020.0.0"
-description = "Run simulations and create "
+description = "Run simulations and create models of ampullary electrosensory afferents"
 authors = [{name="Sarah Mayer", email = "sa.mayer@uni-tuebingen.de"},
            {name="Jan Grewe", email= "jan.grewe@uni-tuebingen.de"}
           ]
 license = "GPL-3.0-or-later"
 readme = "README.md"
-requires-python = ">= 3.10"
+requires-python = ">= 3.10, < 3.13"
 dependencies = [
-  "pyside6"
+  "pyside6",
   "numpy",
   "scipy",
   "pandas",
   "matplotlib",
+  "torch",
+  "sbi",
   ]
 keywords = ["science", "neuroscience", "simulation",
             "LIF", "sensory afferents", "electroreception"]
@@ -26,4 +28,4 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project.gui-scripts]
-ampullary-gui = "ampullary_ui:ampullary_app:main"
+ampullary-gui = "ampullary_ui.ampullary_app:main"
