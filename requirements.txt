@@ -1,0 +1,10 @@
+numpy
+pandas
+scipy
+brian2
+matplotlib
+tables
+ipython
+torch
+sbi
+pyside6
