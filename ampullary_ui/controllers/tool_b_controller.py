@@ -51,8 +51,8 @@ class ToolBController:
         self.main_controller = main_controller
         #self.window = window
         #self.current_fig = example_fig
-        self.window = self.main_controller.window # see if scip and just use while in find widgets
-        self.example_fig = self.main_controller.example_fig
+        self.window = self.main_controller._window # see if scip and just use while in find widgets
+        self.example_fig = self.main_controller._example_fig
         self.current_fig = self.example_fig
         self.params = None
         self.results = None

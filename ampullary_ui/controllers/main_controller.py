@@ -1,50 +1,82 @@
 import pandas as pd
+import logging
+print("IMPORTS 1")
+
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel
 from PySide6.QtCore import  QEvent, QTimer, QUrl
 from PySide6.QtGui import QPixmap, QDesktopServices
+print("IMPORTS 2")
 
-from ampullary_ui.controllers.tool_a_controller import ToolAController
+print("IMPORT simulator")
+from ampullary_ui.controllers.simulator import Simulator
+print("IMPORT B")
 from ampullary_ui.controllers.tool_b_controller import ToolBController
+print("IMPORT C")
 from ampullary_ui.controllers.tool_c_controller import ToolCController
+print("IMPORT D")
 from ampullary_ui.controllers.tool_d_controller import ToolDController
+print("IMPORT a extra")
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
+print("IMPORT b extra")
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
+print("IMPORT plot cell")
 from ampullary_ui.plotting.plot_cell import plot_cell
+print("IMPORT labels")
 from ampullary_ui.utils import load_labels
+print("IMPORTS DONE")
 
 class MainController:
     def __init__(self, window):
         #super().__init__()
-        self.window = window
-        self.window.setWindowTitle("TestToolAmpullary")
-        self.stacked = self.window.findChild(QWidget, "stackedWidget_main")
-        self.setup_animation()
-        self.data, self.prior_samples = self.load_data()
-        self.example_fig = self.load_example_fig()
+        logging.info(f"MainController: init")
+        self._window = window
+        self._stacked = None
+        self._timer = None
+        self._status_label = None
+        self._find_widgets()
+        self._setup_animation()
+        logging.debug(f"MainController: window setup done")
+        self._data, self._prior_samples = self.load_data()
+        logging.debug(f"MainController: load data")
+
+        self._example_fig = self._load_example_fig()
         labels = load_labels()
         #self.toolA = ToolAController(self.window, self.example_fig, labels['feature_labels_casual']) 
         #self.toolB = ToolBController(self.window, self.example_fig, labels['parameter_labels_casual'], labels['feature_labels_casual'], main_controller=self)
-        self.toolA = ToolAController(self, labels['feature_labels_casual']) 
-        self.toolB = ToolBController(self, labels['parameter_labels_casual'], labels['feature_labels_casual'])
-        self.toolC = ToolCController(self.window, self.data, self.prior_samples, labels['feature_labels_casual'])
-        self.toolD = ToolDController(self.window, self.data, self.prior_samples, labels['feature_labels'])
+        logging.debug(f"MainController: initialize tools")
+        self._simulator = Simulator(self, labels['feature_labels_casual'])
+        logging.debug(f"MainController: toolA initialized")
+        self.toolB = ToolBController(self, labels['parameter_labels_casual'],
+                                     labels['feature_labels_casual'])
+        logging.debug(f"MainController: toolB initialized")
+        self.toolC = ToolCController(self._window, self._data, self._prior_samples,
+                                     labels['feature_labels_casual'])
+        logging.debug(f"MainController: toolC initialized")
+        self.toolD = ToolDController(self._window, self._data, self._prior_samples,
+                                     labels['feature_labels'])
+        logging.debug(f"MainController: toolD initialized")
+
         self.toolA_ex = ToolAExtention(self)
         self.toolB_ex = ToolBExtention(self)
-        self.setup_images()
-        self.connect_navigation()
-        self.window.description_1.anchorClicked.connect(self.open_example)
+        logging.debug(f"MainController: extensions initialized")
+
+        self._setup_images()
+        self._connect_navigation()
+        self._window.description_1.anchorClicked.connect(self.open_example)
         # Setup cleanup on window close
-        self.window.closeEvent = self.cleanup_and_close
-        
+        self._window.closeEvent = self.cleanup_and_close
+
+    def _find_widgets(self):
+        self._stacked = self._window.findChild(QWidget, "stackedWidget_main")
 
     def cleanup_and_close(self, event):
         """Stop all running threads before closing the application."""
         # Stop ToolA thread
-        if hasattr(self.toolA, 'sim_thread') and self.toolA.sim_thread is not None:
-            if self.toolA.sim_thread.isRunning():
-                self.toolA.sim_thread.quit()
-                self.toolA.sim_thread.wait()
+        if hasattr(self._simulator, 'sim_thread') and self._simulator.sim_thread is not None:
+            if self._simulator.sim_thread.isRunning():
+                self._simulator.sim_thread.quit()
+                self._simulator.sim_thread.wait()
         
         # Stop ToolB thread
         if hasattr(self.toolB, 'sim_thread') and self.toolB.sim_thread is not None:
@@ -78,9 +110,9 @@ class MainController:
         event.accept()
 
     # setup processing animation
-    def setup_animation(self):
+    def _setup_animation(self):
         # Create status label and timer for animation
-        self.status_label = QLabel()
+        self._status_label = QLabel()
         self.pattern = [
         " ><(((°>        ",
         "  ><(((°>       ",
@@ -101,26 +133,26 @@ class MainController:
         "  <°)))><       ",
         " <°)))><        "
         ]
-        self.index = 0
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_animation)
-        self.window.statusBar().addPermanentWidget(self.status_label)
-        self.status_label.hide()
+        self._index = 0
+        self._timer = QTimer()
+        self._timer.timeout.connect(self.update_animation)
+        self._window.statusBar().addPermanentWidget(self._status_label)
+        self._status_label.hide()
 
 
     def start_progress_animation(self):
-        self.status_label.show()
-        self.timer.start(300)
+        self._status_label.show()
+        self._timer.start(300)
 
 
     def stop_progress_animation(self):
-        self.timer.stop()
-        self.status_label.hide()
+        self._timer.stop()
+        self._status_label.hide()
 
 
     def update_animation(self):
-        self.status_label.setText(f"processing... {self.pattern[self.index]}")
-        self.index = (self.index + 1) % len(self.pattern)
+        self._status_label.setText(f"processing... {self.pattern[self._index]}")
+        self._index = (self._index + 1) % len(self.pattern)
         
 
     def open_example(self, url: QUrl):
@@ -140,7 +172,7 @@ class MainController:
         return sum_stats.to_numpy(), prior_samples.to_numpy()
 
 
-    def load_example_fig(self):
+    def _load_example_fig(self):
         # load cell model simulation plot data
         filepath = Path.cwd() / "examples" / "example_figures" / "base_example.pkl"
         example_base = pd.read_pickle(filepath)
@@ -151,51 +183,51 @@ class MainController:
         return fig
 
     # images startpage
-    def setup_images(self):
-        for lbl in (self.window.picture_1, self.window.picture_2, self.window.picture_3):
+    def _setup_images(self):
+        for lbl in (self._window.picture_1, self._window.picture_2, self._window.picture_3):
             lbl.setMinimumSize(100, 100)
             lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        self.window.picture_1.setPixmap(QPixmap(":/examples/eqn"))
-        self.window.picture_2.setPixmap(QPixmap(":/examples/get_model"))
-        self.window.picture_3.setPixmap(QPixmap(":/examples/table"))
-        self.window.sc_equation.setPixmap(QPixmap(":/examples/eqn2"))
+        self._window.picture_1.setPixmap(QPixmap(":/examples/eqn"))
+        self._window.picture_2.setPixmap(QPixmap(":/examples/get_model"))
+        self._window.picture_3.setPixmap(QPixmap(":/examples/table"))
+        self._window.sc_equation.setPixmap(QPixmap(":/examples/eqn2"))
 
     # keep figures visible
     def eventFilter(self, obj, event):
         if obj == self.toolA_page and event.type() == QEvent.Type.Show:
             # Call redraw in your ToolA controller
-            self.toolA.redraw_figure()
+            self._simulator.redraw_figure()
         return super().eventFilter(obj, event)
 
     def show_toolA_page(self):
-        self.stacked.setCurrentWidget(self.window.simulate_cell)
-        self.toolA.redraw_figure()
+        self._stacked.setCurrentWidget(self._window.simulate_cell)
+        self._simulator.redraw_figure()
 
     def show_toolB_page(self):
-        self.stacked.setCurrentWidget(self.window.create_model)
+        self._stacked.setCurrentWidget(self._window.create_model)
         self.toolB.redraw_figure()
 
     # navigation
-    def connect_navigation(self):
+    def _connect_navigation(self):
         # ToolA navigation
-        self.window.button_to_sc.clicked.connect(self.show_toolA_page)
-        self.window.sc_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.sc_table_version.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.table_sim)) 
+        self._window.button_to_sc.clicked.connect(self.show_toolA_page)
+        self._window.sc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.sc_table_version.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.table_sim)) 
         # ToolB navigation
-        self.window.button_to_cm.clicked.connect(self.show_toolB_page)
-        self.window.cm_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.cm_table_version.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.table_gen)) 
+        self._window.button_to_cm.clicked.connect(self.show_toolB_page)
+        self._window.cm_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.cm_table_version.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.table_gen)) 
         # ToolC navigation
-        self.window.button_to_gm.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.get_model))
-        self.window.gm_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.gm_switch_to_d.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.get_model_explicit))
+        self._window.button_to_gm.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.get_model))
+        self._window.gm_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.gm_switch_to_d.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.get_model_explicit))
         # ToolD navigation
-        self.window.gme_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.gme_switch_to_c.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.get_model))
+        self._window.gme_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.gme_switch_to_c.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.get_model))
         # ToolA population navigation
-        self.window.ts_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.ts_to_single.clicked.connect(self.show_toolA_page)
+        self._window.ts_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.ts_to_single.clicked.connect(self.show_toolA_page)
         # ToolB population navigation
-        self.window.tc_back_to_main.clicked.connect(lambda: self.stacked.setCurrentWidget(self.window.startpage))
-        self.window.tc_to_single.clicked.connect(self.show_toolB_page)
+        self._window.tc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
+        self._window.tc_to_single.clicked.connect(self.show_toolB_page)

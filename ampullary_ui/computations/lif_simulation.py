@@ -10,7 +10,10 @@ LIF model
     - delta a
     - noise a
 """
+print("IMPORT brian")
+
 from brian2 import *
+print("IMPORT done")
 
 defaultclock.dt = 50*us
 

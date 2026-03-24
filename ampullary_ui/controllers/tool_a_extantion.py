@@ -91,7 +91,7 @@ class ToolAExtention:
     def __init__(self, main_controller):
         # attributes
         self.main_controller = main_controller
-        self.window = self.main_controller.window
+        self.window = self.main_controller._window
         self.results = None
         self.save_flag = True
         self.sim_thread = None

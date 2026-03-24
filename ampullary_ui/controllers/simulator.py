@@ -4,12 +4,20 @@ import logging
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from ampullary_ui.computations.controller_functions import simulate_from_input_params
-from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
-from ampullary_ui.plotting.plot_cell import plot_cell
-from IPython import embed
+print("IMPORT controller functions")
 
-logging.info(f"ToolA controller: imports done")
+from ampullary_ui.computations.controller_functions import simulate_from_input_params
+print("IMPORT saving helper")
+
+from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
+print("IMPORT internals plot cells")
+
+from ampullary_ui.plotting.plot_cell import plot_cell
+
+from IPython import embed
+print("IMPORT done")
+
+
 class SimulationThread(QThread):
     finished = Signal(object)  # emits results when done
 
@@ -23,16 +31,17 @@ class SimulationThread(QThread):
         self.finished.emit(results)
 
 
-class ToolAController:
+class Simulator:
     #def __init__(self, window, example_fig, feature_labels):
 
     def __init__(self, main_controller, feature_labels):
+        logging.info(f"ToolA controller: init")
         # attributes
         self.main_controller = main_controller
         #self.window = window
         #self.current_fig = example_fig
-        self.window = self.main_controller.window
-        self.example_fig = self.main_controller.example_fig
+        self.window = self.main_controller._window
+        self.example_fig = self.main_controller._example_fig
         self.current_fig = self.example_fig
         self.results = None
         self.canvas = None

@@ -13,10 +13,15 @@ import pandas as pd
 from dataclasses import dataclass
 from typing import Dict, Any
 
+print("IMPORT lif")
 from ampullary_ui.computations.lif_simulation import lif_simulation
+print("IMPORT helper")
 from ampullary_ui.computations.stimulus_helper import load_simulation_stimulus
+print("IMPORT convert")
 from ampullary_ui.simulation_analysis.convert_data import separate_data_incl_membvol, relativ_stimulation_times
+print("IMPORT anlysis")
 from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
+print("IMPORT utils")
 from ampullary_ui.utils import load_common_variables
 from IPython import embed
 

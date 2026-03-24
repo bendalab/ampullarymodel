@@ -1,15 +1,24 @@
 import logging
 import argparse
-
+print("IMPORTS 1")
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QSettings
+print("IMPORTS 2")
 
 import ampullary_ui.resources_rc
-from ampullary_ui.controllers.main_controller import MainController
-from ampullary_ui.controllers.ui_loding_helper import load_ui
-from ampullary_ui.utils import load_style
-from ampullary_ui import info
+print("IMPORTS 2b")
 
+from ampullary_ui.controllers.main_controller import MainController
+print("IMPORTS 3")
+
+from ampullary_ui.controllers.ui_loding_helper import load_ui
+print("IMPORTS 4")
+
+from ampullary_ui.utils import load_style
+print("IMPORTS 5")
+
+from ampullary_ui import info
+print("IMPORTS DONE")
 
 logging.basicConfig(level=logging.INFO, force=True)
 log_levels = {"critical": logging.CRITICAL, "error": logging.ERROR,
@@ -49,14 +58,14 @@ def main(args=None):
     y = int(settings.value("app/pos_y", 100))
     window = load_ui(":/ui/gui")
 
-    controller = MainController(window)
+    window.setWindowTitle("Ampullary Simulator")
     window.setGeometry(100, 100, 1024, 768)
-    window.setWindowTitle("AmpullaryUi")
     window.setMinimumWidth(1024)
     window.setMinimumHeight(768)
     window.resize(width, height)
     window.move(x, y)
     window.show()
+    controller = MainController(window)
     app.exec()
 
     logging.info(f"updating settings {window.geometry()}")
