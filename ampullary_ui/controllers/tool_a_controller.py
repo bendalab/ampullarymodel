@@ -1,4 +1,6 @@
 import numpy as np
+import logging
+
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
@@ -7,7 +9,7 @@ from ampullary_ui.computations.saving_helper import save_data, save_features, sa
 from ampullary_ui.plotting.plot_cell import plot_cell
 from IPython import embed
 
-
+logging.info(f"ToolA controller: imports done")
 class SimulationThread(QThread):
     finished = Signal(object)  # emits results when done
 
