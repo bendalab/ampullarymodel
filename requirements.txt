@@ -6,5 +6,6 @@ matplotlib
 tables
 ipython
 torch
+numba
 sbi
 pyside6
