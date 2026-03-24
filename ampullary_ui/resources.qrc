@@ -23,4 +23,7 @@
     <file alias="get_model">../examples/example_figures/getmodel_scetch.png</file>
     <file alias="table">../examples/example_figures/table_scetch.png</file>
   </qresource>
+  <qresource prefix="/stimuli">
+    <file alias="gwn150Hz10s0.3.dat">../stimuli/gwn150Hz10s0.3.dat</file>
+  </qresource>
 </RCC>

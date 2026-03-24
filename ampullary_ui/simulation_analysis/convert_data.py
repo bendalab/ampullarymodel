@@ -63,7 +63,7 @@ def seperate_data(data, baseline_recording):
     return baseline, stimulation
 
 
-def seperate_data_incl_membvol(data, baseline_recording):
+def separate_data_incl_membvol(data, baseline_recording):
     """
     Seperate simulation data ! including membrane voltage
 
@@ -140,6 +140,8 @@ def relativ_stimulation_times(stimulation, baseline_recording):
     data : dict
         dictionary with stimulation time for one repetition of the stimulus (9.9995s) and the relative spike times within the repeated stimulation
     """
+    embed()
+    exit()
     end_snippet = 0.00095
     cut_idx = 19
     n_neurons = len(stimulation['spikes'])

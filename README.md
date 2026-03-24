@@ -60,8 +60,6 @@ Windows (PowerShell):
 venv\Scripts\Activate.ps1
 ```
 
-(If script execution is blocked on Windows, you may infrom me which instructions I need to put here.)
-
 ### 4. Install dependencies
 
 ```bash
@@ -70,14 +68,37 @@ python -m pip install -r requirements.txt
 
 This installs all required packages inside the virtual environment.
 
+#### Installation for usage
+
+```bash
+pip install .
+# or
+make install
+```
+
+#### Installation for development
+
+```bash
+pip install -e .
+# or  
+make install-dev
+```
+
+This should also build the ``qt`` resources file. If this needs to be done manually, 
+
+```bash
+python build_resources.py
+# or
+make build-resources
+```
+
 
 ## Running the application
 
-The app must be run from inside the code directory:
+When installed, run the UI by calling from the command line
 
 ```bash
-cd code
-python ampullary_app.py
+ampullary-gui
 ```
 
 If everything works correctly, the application should open.

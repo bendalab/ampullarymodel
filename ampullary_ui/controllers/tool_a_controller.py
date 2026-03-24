@@ -151,6 +151,8 @@ class ToolAController:
         self.main_controller.stop_progress_animation()
         self.results = results
         # Create the matplotlib figure from your data
+        
+        embed()
         fig = plot_cell(self.results.baseplot, self.results.stimplot)
         self.current_fig = fig
         # Display the figure

@@ -54,9 +54,8 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     vt = 1.0             # firing threshold [mV] 
     t_adaption = 1000*ms  # time for adaption before recording 
     duration = 30*second + stimulus_length*second    # runtime
- 
 
-    # equation for membrane voltage 
+    # equation for membrane voltage
     eqs = '''
      dv/dt = (( - v + offset + D*randn() + gain*s - i_a) /tau) : 1 (unless refractory)
      ds/dt = (- s + stimulus(t))/ tau_d : 1 
@@ -74,7 +73,6 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     D_adapt : 1 (constant)
     '''
 
-    
     # simulaton 
     neurons = NeuronGroup(params.shape[0], eqs, threshold='v>vt', reset='v = vr; i_a += delta', refractory='ref', method='euler')
     # starting values for v 
@@ -86,12 +84,12 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     neurons.offset = params[:,2]          # offset current [nA]
     neurons.D = params[:,3]               # strength of noise, unitless
     neurons.gain = params[:,4]            # stimulus gain factor, unitless 
-    neurons.tau_d = params[:,5]*ms        # tau dentritic
+    neurons.tau_d = params[:,5]*ms        # tau dendritic
     neurons.tau_a = params[:,6]*ms        # tau adapation
     neurons.delta = params[:,7]           # increment adaptation at spike event 
     neurons.D_adapt = params[:,8]         # adaptation noise strength 
-    
-    # discard first second 
+
+    # discard first second
     run(t_adaption)
 
     # run and record
