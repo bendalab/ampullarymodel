@@ -15,7 +15,7 @@ from typing import Dict, Any
 
 from ampullary_ui.computations.lif_simulation import lif_simulation
 from ampullary_ui.computations.stimulus_helper import load_simulation_stimulus
-from ampullary_ui.simulation_analysis.convert_data import seperate_data_incl_membvol, relativ_stimulation_times
+from ampullary_ui.simulation_analysis.convert_data import separate_data_incl_membvol, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
 from ampullary_ui.utils import load_common_variables
 from IPython import embed
@@ -44,7 +44,7 @@ def simulate_from_input_params(params):
     ----------
     params : list(? check)
         model parameter set
-    
+
     Returns
     -------
     SimulationResult : dataclass   
@@ -53,9 +53,10 @@ def simulate_from_input_params(params):
     common_variables = load_common_variables()
     stimulus_length = common_variables['stimulus_length']
     params_sample = np.array([params])
+
     gwn_stim_data, timed_stimulus = load_simulation_stimulus()
     sim_data = lif_simulation(params_sample, timed_stimulus, stimulus_length=stimulus_length, mv=True)
-    baseline, stimulation = seperate_data_incl_membvol(sim_data, gwn_stim_data['baseline_recording'])
+    baseline, stimulation = separate_data_incl_membvol(sim_data, gwn_stim_data['baseline_recording'])
     rel_stimulation = relativ_stimulation_times(stimulation, gwn_stim_data['baseline_recording'])
 
     data = {

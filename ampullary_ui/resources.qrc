@@ -24,7 +24,6 @@
     <file alias="table">../examples/example_figures/table_scetch.png</file>
   </qresource>
   <qresource prefix="/stimuli">
-    <file alias="wnstim">../stimuli/gwn150Hz10s0.3.dat</file>
-    <file alias="wnstimpy">../stimuli/simstimrep_gwn150Hz10s0.3.npy</file>
+    <file alias="gwn150Hz10s0.3.dat">../stimuli/gwn150Hz10s0.3.dat</file>
   </qresource>
 </RCC>

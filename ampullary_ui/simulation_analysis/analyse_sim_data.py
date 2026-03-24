@@ -83,7 +83,7 @@ def sim_gwn_data(data, stim_data):
     """
     stimulus_og = stim_data['stimulus']
     wanted_sd = 0.2
-    stim_sd = 0.3 
+    stim_sd = 0.3
     eod_amplitude = 2.0 # from -1 to 1
     scaling = (eod_amplitude*wanted_sd)/stim_sd
     gwn_stimulus = (stimulus_og * scaling)/eod_amplitude

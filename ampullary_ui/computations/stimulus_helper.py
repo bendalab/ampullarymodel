@@ -13,9 +13,9 @@ import os
 import pickle
 import json
 import numpy as np
-from brian2 import TimedArray
-from ampullary_ui.computations.lif_simulation import defaultclock
-
+from brian2 import TimedArray  # conversion 
+from ampullary_ui.computations.lif_simulation import defaultclock  # risk of circular imports
+from ampullary_ui.utils import load_gwn_stimulus
 
 def stimulus_scaling_artificial (stimulus_og, wanted_sd=0.2):
     """
@@ -104,7 +104,7 @@ def modify_stimulus(stim_data):
 
 def load_simulation_stimulus():
     """
-    Load gwn stimulus data and make stimmulus array for simulation
+    Load gwn stimulus data and make stimulus array for simulation
     Converts the stimulus np.array to a TimedArray for Brian2 (function of time)
     Path for loading from acquiring.paths
 
@@ -119,11 +119,12 @@ def load_simulation_stimulus():
     timed_stimulus : TimedArray
         stimulus size corresponding to each time point, unit-less as a function of time    
     """
-    filepath = os.path.join("..", "stimuli", "simstimrep_gwn150Hz10s0.3.npy")
-    with open(filepath, 'rb') as handle:
-        gwn_stim_data = pickle.load(handle)
+    # filepath = os.path.join("..", "stimuli", "simstimrep_gwn150Hz10s0.3.npy")
+    # with open(filepath, 'rb') as handle:
+    #     gwn_stim_data = pickle.load(handle)
+    gwn_stim_data = load_gwn_stimulus()
     stimulus = modify_stimulus(gwn_stim_data)
-    timed_stimulus = TimedArray(stimulus, defaultclock.dt) 
+    timed_stimulus = TimedArray(stimulus, defaultclock.dt)
     return gwn_stim_data, timed_stimulus
 
 
