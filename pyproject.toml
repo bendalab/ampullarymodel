@@ -25,9 +25,13 @@ keywords = ["science", "neuroscience", "simulation",
 [tool.setuptools]
 packages = ["ampullary_ui"]
 
+[tool.setuptools.package-data]
+ampullary_ui = ["*.py", "*.qrc", "*.ui", "*.qss", "pictograms/*", "general_helpers/*"]
+
 [build-system]
-requires = ["setuptools >= 77.0.3"]
+requires = ["setuptools >= 77.0.3", "wheel", "pyside6"]
 build-backend = "setuptools.build_meta"
 
 [project.gui-scripts]
 ampullary-gui = "ampullary_ui.ampullary_app:main"
+
