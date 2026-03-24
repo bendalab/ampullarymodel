@@ -1,30 +1,68 @@
-import sys
+import logging
+import argparse
 
 from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QSettings
 
 import ampullary_ui.resources_rc
 from ampullary_ui.controllers.main_controller import MainController
 from ampullary_ui.controllers.ui_loding_helper import load_ui
 from ampullary_ui.utils import load_style
+from ampullary_ui import info
 
 
-def main():
-    app = QApplication(sys.argv)
+logging.basicConfig(level=logging.INFO, force=True)
+
+
+def set_logging(loglevel):
+    logging.basicConfig(level=loglevel, force=True)
+
+
+def main(args):
+    set_logging(args.loglevel)
+    logging.info("Starting AmpullaryUi")
+    app = QApplication()
+    app.setApplicationName(info.application_name)
+    app.setApplicationVersion(str(info.application_version))
+    app.setOrganizationDomain(info.organization_name)
     app.setStyle("Fusion")
-    # style_file = QFile(":/configs/style")
-    # style_file.open(QFile.ReadOnly | QFile.Text)
-    # stream = QTextStream(style_file)
-    # style = stream.readAll()
-    # style_file.close()
     style = load_style()
     app.setStyleSheet(style)
+
+    settings = QSettings()
+    width = int(settings.value("app/width", 1024))
+    height = int(settings.value("app/height", 768))
+    x = int(settings.value("app/pos_x", 100))
+    y = int(settings.value("app/pos_y", 100))
     window = load_ui(":/ui/gui")
+    print(window)
     controller = MainController(window)
+    window.setGeometry(100, 100, 1024, 768)
+    window.setWindowTitle("AmpullaryUi")
+    window.setMinimumWidth(1024)
+    window.setMinimumHeight(768)
+    window.resize(width, height)
+    window.move(x, y)
     window.show()
-    sys.exit(app.exec())
+    app.exec()
+
+    logging.info(f"updating settings {window.geometry()}")
+    pos = window.pos()
+    settings.setValue("app/width", window.width())
+    settings.setValue("app/height", window.height())
+    settings.setValue("app/pos_x", pos.x())
+    settings.setValue("app/pos_y", pos.y())
+
 
 if __name__ == "__main__":
-    main()
+    levels = {"critical": logging.CRITICAL, "error": logging.ERROR,
+              "warning":logging.WARNING, "info":logging.INFO, "debug":logging.DEBUG}
+    parser = argparse.ArgumentParser(description="AmpullaryUi. Tool for creating models of ampullary afferents")
+    parser.add_argument("-ll", "--loglevel", type=str, default="INFO", help=f"The log level that should be used. Valid levels are {[str(k) for k in levels.keys()]}")
+    args = parser.parse_args()
+    args.loglevel = levels[args.loglevel.lower() if args.loglevel.lower() in levels else "info"]
+
+    main(args)
 
 """   
 Questions for Jan to tool:
