@@ -1,6 +1,6 @@
 # Makefile for Ampullary UI Development
 
-.PHONY: help install install-dev build-resources clean test run lint format
+.PHONY: help install install-dev build-resources build-ui clean test run lint format
 
 help:  ## Display this help message
 	@echo "Available commands:"
@@ -13,10 +13,14 @@ install-dev:  ## Install the package in development mode
 	pip install -e .
 
 build-resources:  ## Manually compile Qt resources
-	python build_resources.py
+	python build_resources.py --rcc
+
+build-ui:
+	python build_resources.py --ui
 
 clean:  ## Remove generated files and build artifacts
 	rm -f ampullary_ui/*_rc.py
+	rm -f ampullary_ui/*_ui.py
 	rm -rf build/ dist/ *.egg-info/
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
@@ -34,6 +38,6 @@ format:  ## Format code (placeholder)
 	@echo "Code formatting not configured yet"
 
 # Development workflow targets
-setup-dev: clean build-resources install-dev  ## Full development setup
+setup-dev: clean build-resources build-ui install-dev  ## Full development setup
 
-rebuild: clean build-resources  ## Clean rebuild of resources
+rebuild: clean build-resources  build-ui ## Clean rebuild of resources
