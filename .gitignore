@@ -5,6 +5,9 @@ derived_data/
 # Generated Qt resource files (compiled from .qrc)
 *_rc.py
 
+# Generated Qt ui files (compiled from .ui)
+*_ui.py
+
 # ---> Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
