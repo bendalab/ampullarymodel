@@ -1,34 +1,23 @@
-import pandas as pd
 import logging
-print("IMPORTS 1")
+import pandas as pd
 
 from pathlib import Path
-from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel
+from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel, QToolBar, QMenuBar
 from PySide6.QtCore import  QEvent, QTimer, QUrl
-from PySide6.QtGui import QPixmap, QDesktopServices
-print("IMPORTS 2")
+from PySide6.QtGui import QPixmap, QDesktopServices, QAction, QKeySequence
 
-print("IMPORT simulator")
 from ampullary_ui.controllers.simulator import Simulator
-print("IMPORT B")
 from ampullary_ui.controllers.tool_b_controller import ToolBController
-print("IMPORT C")
 from ampullary_ui.controllers.tool_c_controller import ToolCController
-print("IMPORT D")
 from ampullary_ui.controllers.tool_d_controller import ToolDController
-print("IMPORT a extra")
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
-print("IMPORT b extra")
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
-print("IMPORT plot cell")
 from ampullary_ui.plotting.plot_cell import plot_cell
-print("IMPORT labels")
 from ampullary_ui.utils import load_labels
-print("IMPORTS DONE")
 
-class MainController:
+class MainController(QWidget):
     def __init__(self, window):
-        #super().__init__()
+        super().__init__()
         logging.info(f"MainController: init")
         self._window = window
         self._stacked = None
@@ -66,9 +55,72 @@ class MainController:
         self._window.description_1.anchorClicked.connect(self.open_example)
         # Setup cleanup on window close
         self._window.closeEvent = self.cleanup_and_close
+        self._create_actions()
+        self._create_menu()
+        self._create_toolbar()
 
     def _find_widgets(self):
         self._stacked = self._window.findChild(QWidget, "stackedWidget_main")
+        self._menubar = self._window.findChild(QMenuBar, "menubar")
+        self._toolbar = self._window.findChild(QToolBar, "toolBar")
+        from IPython import embed
+        embed()
+
+    def _create_actions(self):
+        self._quit_action = QAction("Quit", parent=self._window)
+        self._quit_action.setStatusTip("Close current file and quit")
+        self._quit_action.setShortcut(QKeySequence("Ctrl+q"))
+        self._quit_action.triggered.connect(self.cleanup_and_close)
+
+        self._simulator_action = QAction("Simulator", parent=self._window)
+        self._simulator_action.setStatusTip("Run simulator tool")
+        self._simulator_action.setShortcut(QKeySequence("F2"))
+        self._simulator_action.triggered.connect(self._run_simulator)
+        # self._about_action = QAction("about")
+        # self._about_action.setStatusTip("Show about dialog")
+        # self._about_action.setEnabled(True)
+        # self._about_action.triggered.connect(self.on_about)
+
+        # self._help_action = QAction(QIcon(":help"), "help")
+        # self._help_action.setStatusTip("Show help dialog")
+        # self._help_action.setShortcut(QKeySequence("F1"))
+        # self._help_action.setEnabled(True)
+        # self._help_action.triggered.connect(self.on_help)
+        pass
+    
+    def _create_menu(self):
+        file_menu = self._menubar.addMenu("&File")
+        # file_menu.addAction(self._quit_action)
+
+        tools_menu = self._menubar.addMenu("&Tools")
+        tools_menu.addAction(self._simulator_action)
+
+        help_menu = self._menubar.addMenu("&Help")
+        # help_menu.addAction(self._about_action)
+        # help_menu.addAction(self._help_action)
+
+        # menus = {"File": file_menu, "Tools": tools_menu}
+        # for k in self._cw.menuActions:
+        #     actions = self._cw.menuActions[k]
+        #     if k in menus:
+        #         menu = menus[k]
+        #     else:
+        #         menu = menu_bar.addMenu(k)
+        #     for a in actions:
+        #         menu.addAction(a)
+        file_menu.addSeparator()
+        file_menu.addAction(self._quit_action)
+        # self.setMenuBar(self._menu_bar)
+    
+    def _create_toolbar(self):
+        # self._toolbar.setAllowedAreas(Qt.ToolBarArea.TopToolBarArea)
+        self._toolbar.setFloatable(False)
+        # self._toolbar.setIconSize(QSize(32, 32))
+       
+        self._toolbar.addSeparator()
+        self._toolbar.addAction(self._simulator_action)
+        # self._toolbar.addAction(self._plot_action)
+        # self._toolbar.addAction(self._table_action)
 
     def cleanup_and_close(self, event):
         """Stop all running threads before closing the application."""
@@ -200,7 +252,7 @@ class MainController:
             self._simulator._redraw_figure()
         return super().eventFilter(obj, event)
 
-    def show_toolA_page(self):
+    def _run_simulator(self):
         self._stacked.setCurrentWidget(self._window.simulate_cell)
         self._simulator._redraw_figure()
 
@@ -211,7 +263,7 @@ class MainController:
     # navigation
     def _connect_navigation(self):
         # ToolA navigation
-        self._window.button_to_sc.clicked.connect(self.show_toolA_page)
+        self._window.button_to_sc.clicked.connect(self._run_simulator)
         self._window.sc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.sc_table_version.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.table_sim)) 
         # ToolB navigation
@@ -227,7 +279,7 @@ class MainController:
         self._window.gme_switch_to_c.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.get_model))
         # ToolA population navigation
         self._window.ts_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
-        self._window.ts_to_single.clicked.connect(self.show_toolA_page)
+        self._window.ts_to_single.clicked.connect(self._run_simulator)
         # ToolB population navigation
         self._window.tc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.tc_to_single.clicked.connect(self.show_toolB_page)

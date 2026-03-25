@@ -1,24 +1,14 @@
 import logging
 import argparse
-print("IMPORTS 1")
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QSettings
-print("IMPORTS 2")
 
 import ampullary_ui.resources_rc
-print("IMPORTS 2b")
-
 from ampullary_ui.controllers.main_controller import MainController
-print("IMPORTS 3")
-
 from ampullary_ui.controllers.ui_loding_helper import load_ui
-print("IMPORTS 4")
-
 from ampullary_ui.utils import load_style
-print("IMPORTS 5")
-
 from ampullary_ui import info
-print("IMPORTS DONE")
+
 
 logging.basicConfig(level=logging.INFO, force=True)
 log_levels = {"critical": logging.CRITICAL, "error": logging.ERROR,
