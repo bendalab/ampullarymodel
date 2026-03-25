@@ -197,12 +197,12 @@ class MainController:
     def eventFilter(self, obj, event):
         if obj == self.toolA_page and event.type() == QEvent.Type.Show:
             # Call redraw in your ToolA controller
-            self._simulator.redraw_figure()
+            self._simulator._redraw_figure()
         return super().eventFilter(obj, event)
 
     def show_toolA_page(self):
         self._stacked.setCurrentWidget(self._window.simulate_cell)
-        self._simulator.redraw_figure()
+        self._simulator._redraw_figure()
 
     def show_toolB_page(self):
         self._stacked.setCurrentWidget(self._window.create_model)

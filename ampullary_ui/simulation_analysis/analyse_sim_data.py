@@ -15,11 +15,15 @@ from ampullary_ui.simulation_analysis.analysis_helpers import (serial_correlatio
                                                                smoothing,
                                                                cutoff,
                                                                values_high_frequencies,
-                                                               tf_features)
+                                                               gain_features,
+                                                               coherence_features)
 from ampullary_ui.utils import load_common_variables
+
+from IPython import embed
+
 common_variables = load_common_variables()
 
-def sim_baseline_data(data):
+def analyze_baseline_data(data):
     """
     Extract baseline features
 
@@ -30,7 +34,7 @@ def sim_baseline_data(data):
     ----------
     data : dictionary 
         dictionary with spikes, time and membrane_voltage only during simulation without stimulation
-    
+
     Return
     ------
     baseparams : list
@@ -60,7 +64,7 @@ def sim_baseline_data(data):
     return baseparams, baseplot
 
 
-def sim_gwn_data(data, stim_data):
+def analyze_noise_data(data, stim_data):
     """
     Extract features from white noise stimulation
 
@@ -81,46 +85,43 @@ def sim_gwn_data(data, stim_data):
         pandas Dataframe of relevent arrays needed to visuialize the features of the white noise stimulation
     """
     stimulus_og = stim_data['stimulus']
-    wanted_sd = 0.2
-    stim_sd = 0.3
-    eod_amplitude = 2.0 # from -1 to 1
-    scaling = (eod_amplitude*wanted_sd)/stim_sd
-    gwn_stimulus = (stimulus_og * scaling)/eod_amplitude
+    wanted_sd = 0.2     #FIXME hardcode
+    stim_sd = stim_data["sd"]
 
-    # mean coherence and transferfunctions over the 10 trials 
-    collect_tfs = [[] for _ in range(len(data['spikes'][0]))]      
-    collect_cxys = [[] for _ in range(len(data['spikes'][0]))] 
+    scaling = wanted_sd/stim_sd
+    gwn_stimulus = stimulus_og * scaling
+
+    # average coherence and transfer-functions
+    collect_tfs = [[] for _ in range(len(data['spikes'][0]))]
+    collect_cxys = [[] for _ in range(len(data['spikes'][0]))]
     for j in range(len(data['spikes'][0])):
         spike_section = data['spikes'][0][j]
         conv_rate = convolution_rate_single(spike_section, data['time'])
         freq, _, tf_smoothed_single = transferfunction(gwn_stimulus, conv_rate, stim_data['samplingrate'])
         collect_tfs[j] = tf_smoothed_single
-        f, Cxy = sps.coherence(gwn_stimulus, conv_rate, fs=stim_data['samplingrate'], nperseg=2**14, noverlap=2**13, detrend='constant', window='hann') 
+        f, Cxy = sps.coherence(gwn_stimulus, conv_rate, fs=stim_data['samplingrate'], nperseg=2**14, noverlap=2**13,
+                               detrend='constant', window='hann')
         Cxy_smoothed_single = smoothing(Cxy, span=4)
         collect_cxys[j] = Cxy_smoothed_single
+
     cxy_smoothed = np.mean(collect_cxys, axis=0)
     cxy_std = np.std(collect_cxys, axis=0)
+
     tf_smoothed = np.mean(collect_tfs, axis=0)
     tf_std = np.std(collect_tfs, axis=0)
 
-    # extract features from coherence
-    if np.isnan(collect_cxys).all(): # 
-        raise ValueError ("some problem with simulating stimulation, most likely neurongroup's variable 's' has NaN, very large values, or encountered an error in numerical integration. Further features all set to NaN")
-    fcutoff = cutoff(f, cxy_smoothed)
-    fc_max = f[np.where(cxy_smoothed == np.max(cxy_smoothed))[0][0]]
-    highf_coh = values_high_frequencies(f, cxy_smoothed, 120,150)
-    coh_zero = cxy_smoothed[0]
-
-    # extract features from transfer function
-    gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up = tf_features(freq, tf_smoothed, conv_rate)
+    coh_zero, coh_max, fc_max, fcutoff, highf_coh = coherence_features(f, collect_cxys)
+    gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up = gain_features(freq, tf_smoothed, conv_rate)
 
     # mean convolution rate and associates
     conv_rate, conv_std = convolution_rate_with_std(data['spikes'][0], data['time'], sigma=common_variables['sigma_conv_rate']) 
     fr_mod = np.std(conv_rate)
+
     # collect features
-    stimparams =[fr_mod, coh_zero, np.max(cxy_smoothed), highf_coh, fc_max, fcutoff,    
+    stimparams =[fr_mod, coh_zero, coh_max, highf_coh, fc_max, fcutoff,    
                  gain_0, gain_halfup, max_gain, mfr_gain, highf_gain, f_halfup, f_at_gainmax, cutoff_frequency_up]
-    # make dictionary for stimulation plot 
+
+    # make dictionary for stimulation plot
     stim_plot = {
         'spike_times' : data['spikes'], 
         'stimulus' : [stim_data['stimulus']], 

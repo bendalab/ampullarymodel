@@ -14,7 +14,7 @@ Functions for Analysing
 - Get features from Transferfunction
 
 """
-import json
+import logging
 import numpy as np
 import scipy.signal as sps
 from scipy.stats import norm
@@ -269,14 +269,11 @@ def cutoff(f, Cxy):
     cutoff_frequency : float
         cutoff frequency in Hz
     """
-    idx_max = np.where(Cxy == np.max(Cxy))[0][0]
+    idx_max = np.argmax(Cxy)
     Cxy_decline = Cxy[idx_max::]
-    if len(Cxy_decline) == 0:
-        from IPython import embed
-        embed()
     fraction_70 = np.max(Cxy_decline)*0.7071
     nf_70 = find_nearest(Cxy_decline, fraction_70)
-    idx_cutoff = np.where(Cxy_decline == nf_70)[0][0] + idx_max
+    idx_cutoff = np.argmin(np.abs(Cxy_decline - nf_70)) + idx_max
     cutoff_frequency = f[idx_cutoff]
     return cutoff_frequency
 
@@ -353,9 +350,9 @@ def transferfunction(stimulus, f_rate, samplingrate):
     return freq, tf, tf_smoothed
 
 
-def tf_features(freq, tf_smoothed, rate):
+def gain_features(freq, tf_smoothed, rate, highf_min=120, highf_max=150):
     """
-    Get features from Transferfunction, exteneded version
+    Get features from the gain of the Transfer-function, extended version
 
     Get: 
     gain at start/0 frequency, 
@@ -391,8 +388,8 @@ def tf_features(freq, tf_smoothed, rate):
         gain at mean firing rate, expect peak with low contrast stimuli
     cutoff_frequency_up : float
         upper cutoff frequency in Hz
-
     """
+    logging.debug("Analyzing gain function")
     max_gain = np.max(tf_smoothed)
     idx_max = np.where(tf_smoothed == np.max(tf_smoothed))[0][0]
     if idx_max != 0:
@@ -407,7 +404,7 @@ def tf_features(freq, tf_smoothed, rate):
         idx_cutoff_up = np.where(tf_smoothed == nf_70_up)[0][0]
         cutoff_frequency_up = freq[idx_cutoff_up]
     # gain at higher frequencies
-    highf_gain = values_high_frequencies(freq, tf_smoothed, 120.0, 150.0)
+    highf_gain = values_high_frequencies(freq, tf_smoothed, highf_min, highf_max)
     # gain at mean FR
     near_mean_FR = find_nearest(freq, np.mean(rate))
     mfr_gain = tf_smoothed[freq == near_mean_FR][0]
@@ -416,3 +413,25 @@ def tf_features(freq, tf_smoothed, rate):
     f_halfup = find_nearest(freq, f_at_gainmax*0.5)
     gain_halfup = tf_smoothed[freq == f_halfup][0]
     return gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up
+
+
+def coherence_features(freq, coherences, highf_min=120, highf_max=150):
+    logging.debug("Analyzing coherence function")
+    fcutoff = None
+    fc_max = None
+    highf_coh = None
+    coh_zero = None
+    coh_max = None
+    try:
+        average_coherence = np.mean(coherences, axis=0)
+        if np.isnan(coherences).all():
+            raise ValueError ("Some problem with simulating stimulation, most likely neurongroup's variable 's' has NaN, very large values, or encountered an error in numerical integration. Further features all set to NaN")
+        coh_zero = average_coherence[0]
+        fcutoff = cutoff(freq, average_coherence)
+        fc_max = freq[np.argmax(average_coherence)]
+        highf_coh = values_high_frequencies(freq, average_coherence, highf_min, highf_max)
+        coh_max = np.max(average_coherence)
+    except Exception as e:
+        logging.error(f"An error occurred during coherence analysis {e}")
+
+    return coh_zero, coh_max, fc_max, fcutoff, highf_coh

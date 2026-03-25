@@ -10,7 +10,7 @@ from brian2 import second
 from matplotlib.gridspec import GridSpec
 from matplotlib.legend_handler import HandlerTuple
 from matplotlib.ticker import MultipleLocator
-from ampullary_ui.simulation_analysis.analysis_helpers import is_outlier, tf_features, cutoff, values_high_frequencies
+from ampullary_ui.simulation_analysis.analysis_helpers import is_outlier, gain_features, cutoff, values_high_frequencies
 from ampullary_ui.computations.lif_simulation import defaultclock
 from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
@@ -52,6 +52,7 @@ def plot_cell(base, stim):
 
     # fig = plt.figure(figsize=(
     # 14/2.54, 11/2.54))
+    plt.close()
     fig = plt.figure(figsize=(5, 5))
     gs = GridSpec(28, 32, figure=fig)
     # baseline fr
@@ -178,7 +179,7 @@ def plot_cell(base, stim):
                  color=colorcode['standart_blue'], label=r'$G_{xy}(f)$')
     B = ax7.fill_between(freq, tf_smoothed-tf_std, tf_smoothed +
                          tf_std, color=colorcode['light_blue'], alpha=1, label='STD')
-    gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, fcutoff_up = tf_features(
+    gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, fcutoff_up = gain_features(
         freq, tf_smoothed, rate)
     D = ax7.plot([120.0, 150.0], [highf_gain, highf_gain], lw=2.5,
                  color=colorcode['highlight'], label=r'$gain_{high_f}$')

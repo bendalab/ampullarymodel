@@ -14,7 +14,7 @@ from brian2.units.allunits import second
 from ampullary_ui.computations.lif_simulation import defaultclock
 from ampullary_ui.computations.stimulus_helper import scale_stimulus
 from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
-from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, tf_features
+from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, gain_features
 
 
 
@@ -198,7 +198,7 @@ def get_tf_features_sim(data, stimulus):
                 collect_tfs[j] = tf_smoothed_single
             tf_smoothed = np.mean(collect_tfs, axis=0)
             conv_rate = convolution_rate(data['spikes'][i], data['time']) # das hier ist unnötig und geht auch besser...
-            gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up = tf_features(freq, tf_smoothed, conv_rate)
+            gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up = gain_features(freq, tf_smoothed, conv_rate)
         else:   
             gain_0 = np.NAN
             gain_halfup = np.NAN

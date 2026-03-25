@@ -7,22 +7,16 @@ Logic functions for implementing user interactions
 
 import json
 import pickle
-import pathlib
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from typing import Dict, Any
 
-print("IMPORT lif")
 from ampullary_ui.computations.lif_simulation import lif_simulation
-print("IMPORT helper")
 from ampullary_ui.computations.stimulus_helper import load_gwnstimulus, modify_stimulus
-print("IMPORT convert")
 from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
-print("IMPORT anlysis")
-from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
-print("IMPORT utils")
-from ampullary_ui.utils import load_common_variables
+from ampullary_ui.simulation_analysis.analyse_sim_data import analyze_baseline_data, analyze_noise_data
+
 from IPython import embed
 
 
@@ -77,8 +71,8 @@ def simulate_from_input_params(params, baseline_duration=30., prerun_duration=1.
         'parameters': params,
     }
 
-    baseparams, baseplot = sim_baseline_data(baseline)
-    gwnparams, stimplot = sim_gwn_data(rel_stimulation, gwn_stim_data)
+    baseparams, baseplot = analyze_baseline_data(baseline)
+    gwnparams, stimplot = analyze_noise_data(rel_stimulation, gwn_stim_data)
     features = np.array(baseparams + gwnparams)
 
     results = SimulationResult(data=data, stim_data=gwn_stim_data, features=features,
