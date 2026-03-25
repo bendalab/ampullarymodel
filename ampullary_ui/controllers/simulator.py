@@ -1,22 +1,16 @@
 import numpy as np
 import logging
 
-from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame
+from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-print("IMPORT controller functions")
 
-from ampullary_ui.computations.controller_functions import simulate_from_input_params
-print("IMPORT saving helper")
-
+from ampullary_ui.computations.controller_functions import simulate_from_input_params, SimulationResult
 from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
-print("IMPORT internals plot cells")
-
 from ampullary_ui.plotting.plot_cell import plot_cell
 
 from IPython import embed
-print("IMPORT done")
-
+logging.debug("Imports done!")
 
 class SimulationThread(QThread):
     finished = Signal(object)  # emits results when done
@@ -31,10 +25,11 @@ class SimulationThread(QThread):
         self.finished.emit(results)
 
 
-class Simulator:
-    #def __init__(self, window, example_fig, feature_labels):
+class Simulator(QWidget):
+    progress = Signal(str)
 
-    def __init__(self, main_controller, feature_labels):
+    def __init__(self, main_controller, feature_labels, parent=None):
+        super().__init__(parent)
         logging.info(f"ToolA controller: init")
         # attributes
         self.main_controller = main_controller
@@ -52,6 +47,7 @@ class Simulator:
         self.setup_defaults()
         self.setup_placeholder_plot()
         self.connect_signals()
+        self.progress.emit("Simulator initialized...")
 
 
     # initialization and setup
@@ -94,7 +90,6 @@ class Simulator:
                 # Use a point as decimal separator
                 sb.setLocale(QLocale(QLocale.C))  
 
-
     def setup_defaults(self):
         # set other defaults
         self.btn_simulate.setEnabled(True)
@@ -120,9 +115,8 @@ class Simulator:
         self.btn_reset.clicked.connect(self.on_reset)
         self.btn_save.clicked.connect(self.on_save)
 
-
-    # user actions (button pressed)
     def on_simulate(self):
+        # user actions (button pressed)
         self.btn_simulate.setEnabled(False)
         self.btn_reset.setEnabled(False)
         self.btn_simulate.setText("simulating…")
@@ -139,6 +133,7 @@ class Simulator:
         self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
         self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
+        self.progress.emit("simulating ...")
 
     def on_reset(self):
         self.btn_reset.setEnabled(False)
@@ -151,18 +146,15 @@ class Simulator:
         self.show_simulation_figure()
         self.text_output.clear()
         self.text_output.insertPlainText('Just put in a set of parameters and press simulate!\n\nThe simualtion includes 30 ms baseline activity and 100s white noise, which you can find in the stimuli folder.') 
+        self.progress.emit("")
 
-
-
-
-    # async / callback handlers
-    def on_simulation_finished(self, results):
+    def on_simulation_finished(self, results: SimulationResult):
+        # async / callback handlers
         self.main_controller.stop_progress_animation()
         self.results = results
         # Create the matplotlib figure from your data
-        
-        embed()
-        fig = plot_cell(self.results.baseplot, self.results.stimplot)
+        self.progress.emit("Simulation done, plotting ...")
+        fig = plot_cell(results.baseline_data, results.stimulus_data)
         self.current_fig = fig
         # Display the figure
         self.show_simulation_figure()
@@ -177,9 +169,8 @@ class Simulator:
         # print features
         self.print_features()
 
-
-    # update figure   
     def show_simulation_figure(self):
+        # update figure   
         # Remove placeholder canvas if it exists
         if hasattr(self, 'placeholder_canvas') and self.placeholder_canvas:
             self.plot_layout.removeWidget(self.placeholder_canvas)

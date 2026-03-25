@@ -11,14 +11,15 @@ LIF model
     - noise a
 """
 print("IMPORT brian")
-
+import numpy as np
 from brian2 import *
 print("IMPORT done")
+from IPython import embed
 
 defaultclock.dt = 50*us
 
 
-def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
+def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     """
     Lif Simulation Version 08
 
@@ -50,18 +51,17 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     data : dictionary 
         dictionary with spike_idx, spike_times, time and membrane_voltage, depending on mv input
     """
+    timed_stimulus = TimedArray(stimulus, defaultclock.dt)
 
-    # fixed parameters
-    #print(params, params.shape)
     vr = 0.0             # resting potential [mV]
     vt = 1.0             # firing threshold [mV] 
-    t_adaption = 1000*ms  # time for adaption before recording 
-    duration = 30*second + stimulus_length*second    # runtime
+    prerun_duration = prerun_duration * second  # pre-recording duration
+    duration = timed_stimulus.values.shape[0] * timed_stimulus.dt * second
 
     # equation for membrane voltage
     eqs = '''
      dv/dt = (( - v + offset + D*randn() + gain*s - i_a) /tau) : 1 (unless refractory)
-     ds/dt = (- s + stimulus(t))/ tau_d : 1 
+     ds/dt = (- s + timed_stimulus(t))/ tau_d : 1 
      di_a/dt = (- i_a + D_adapt*randn()) / tau_a : 1
 
     # parameters 
@@ -76,7 +76,7 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     D_adapt : 1 (constant)
     '''
 
-    # simulaton 
+    # initialize simulation
     neurons = NeuronGroup(params.shape[0], eqs, threshold='v>vt', reset='v = vr; i_a += delta', refractory='ref', method='euler')
     # starting values for v 
     neurons.v = vr  # Would be the solution when dv/dt = 0
@@ -93,27 +93,20 @@ def lif_simulation(params, stimulus, stimulus_length=200.0, mv=False):
     neurons.D_adapt = params[:,8]         # adaptation noise strength 
 
     # discard first second
-    run(t_adaption)
+    run(prerun_duration)
 
     # run and record
     statemon = StateMonitor(neurons, 'v', record = True)
     spikemon = SpikeMonitor(neurons, record = True)
-    run(duration)
+    run(duration - prerun_duration)
 
-    if mv==False:
-        data = dict(
-        n_neurons = len(params),
-        spike_idx = np.asarray(spikemon.i),
-        spike_times = spikemon.t/ms - (t_adaption/ms),
-        time = statemon.t/ms - (t_adaption/ms))
-    elif mv==True:
-        data = dict(
-        n_neurons = len(params),
-        spike_idx = np.asarray(spikemon.i),
-        spike_times = spikemon.t/ms - (t_adaption/ms),
-        time = statemon.t/ms - (t_adaption/ms), 
-        membrane_voltage = statemon.v,
-        )
+    if record_voltage:
+        data = dict(n_neurons = len(params), spike_idx = np.asarray(spikemon.i),
+                    spike_times = spikemon.t/ms - (prerun_duration/ms),
+                    time = statemon.t/ms - (prerun_duration/ms),
+                    membrane_voltage = statemon.v,)
+    else:
+        data = dict(n_neurons = len(params), spike_idx = np.asarray(spikemon.i),
+                    spike_times = spikemon.t/ms - (prerun_duration/ms),
+                    time = statemon.t/ms - (prerun_duration/ms))
     return data
-
-

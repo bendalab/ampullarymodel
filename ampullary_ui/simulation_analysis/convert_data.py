@@ -15,55 +15,55 @@ from ampullary_ui.computations.lif_simulation import defaultclock
 from IPython import embed
 
 
-def seperate_data(data, baseline_recording):
-    """
-    Seperate simulation data
+# def seperate_data(data, baseline_recording):
+#     """
+#     Seperate simulation data
 
-    Seperate simulated data of baseline activity from simulated data during stimulation with gwn
-    - Simulation time
-    - spikes 
-    and make spike lists out of timepoints and neuron indices
+#     Seperate simulated data of baseline activity from simulated data during stimulation with gwn
+#     - Simulation time
+#     - spikes 
+#     and make spike lists out of timepoints and neuron indices
 
-    Parameter
-    ----------
-    data : dictionary 
-        dictionary with spike_idx, spike_times and time
-    baseline_recording : float 
-        time length for simulating baseline activity in seconds
+#     Parameter
+#     ----------
+#     data : dictionary 
+#         dictionary with spike_idx, spike_times and time
+#     baseline_recording : float 
+#         time length for simulating baseline activity in seconds
 
-    Returns
-    -------
-    baseline : dictionary 
-        dictionary with spikes and time only during simulation without stimulation
-    stimulation : dictionary 
-        dictionary with spikes,and time only during simulation with gwn stimulation
+#     Returns
+#     -------
+#     baseline : dictionary 
+#         dictionary with spikes and time only during simulation without stimulation
+#     stimulation : dictionary 
+#         dictionary with spikes,and time only during simulation with gwn stimulation
 
-    """
-    n_neurons = data['n_neurons']
-    time = np.round(data['time'], 9)
-    switch_time = baseline_recording*1000
-    switch_ind = int(baseline_recording*second/defaultclock.dt)
-    time_baseline = time[:switch_ind]
-    time_stimulation = time[switch_ind:]
-    spikes_baseline = [[] for _ in range(n_neurons)]
-    spikes_stimulation = [[] for _ in range(n_neurons)]
-    for i in range(n_neurons):
-        spikes_baseline[i] = data["spike_times"][(data["spike_idx"] == i) & (
-            data["spike_times"] < switch_time)] / 1000
-        # spikes_baseline[i] = (data['spike_times'])[np.where(((data['spike_idx']) == i) & ((data['spike_times']) < switch_time))[0]] /1000
-        # spikes_stimulation[i] = (data['spike_times'])[np.where(((data['spike_idx']) == i) & ((data['spike_times']) > switch_time))[0]]  /1000
-        spikes_stimulation[i] = data["spike_times"][(data["spike_idx"] == 1) & (
-            data["spike_times"] < switch_time)] / 1000
-    baseline = dict(
-        time=time_baseline/1000,
-        spikes=spikes_baseline)
-    stimulation = dict(
-        time=time_stimulation/1000,
-        spikes=spikes_stimulation)
-    return baseline, stimulation
+#     """
+#     n_neurons = data['n_neurons']
+#     time = np.round(data['time'], 9)
+#     switch_time = baseline_recording*1000
+#     switch_ind = int(baseline_recording*second/defaultclock.dt)
+#     time_baseline = time[:switch_ind]
+#     time_stimulation = time[switch_ind:]
+#     spikes_baseline = [[] for _ in range(n_neurons)]
+#     spikes_stimulation = [[] for _ in range(n_neurons)]
+#     for i in range(n_neurons):
+#         spikes_baseline[i] = data["spike_times"][(data["spike_idx"] == i) & (
+#             data["spike_times"] < switch_time)] / 1000
+#         # spikes_baseline[i] = (data['spike_times'])[np.where(((data['spike_idx']) == i) & ((data['spike_times']) < switch_time))[0]] /1000
+#         # spikes_stimulation[i] = (data['spike_times'])[np.where(((data['spike_idx']) == i) & ((data['spike_times']) > switch_time))[0]]  /1000
+#         spikes_stimulation[i] = data["spike_times"][(data["spike_idx"] == 1) & (
+#             data["spike_times"] < switch_time)] / 1000
+#     baseline = dict(
+#         time=time_baseline/1000,
+#         spikes=spikes_baseline)
+#     stimulation = dict(
+#         time=time_stimulation/1000,
+#         spikes=spikes_stimulation)
+#     return baseline, stimulation
 
 
-def separate_data_incl_membvol(data, baseline_recording):
+def split_data(data, baseline_duration, stimulus_trialduration=10.0):
     """
     Seperate simulation data ! including membrane voltage
 
@@ -90,34 +90,37 @@ def separate_data_incl_membvol(data, baseline_recording):
     """
     n_neurons = data['n_neurons']
     time = np.round(data['time'], 9)
-    switch_time = baseline_recording*1000
-    switch_ind = int(baseline_recording*second/defaultclock.dt)
+    switch_time_ms = baseline_duration*1000
+    switch_ind = int(baseline_duration*second / defaultclock.dt)
+
     time_baseline = time[:switch_ind]
-    time_stimulation = time[switch_ind:]
-    mvoltage_baseline = [[] for _ in range(n_neurons)]
-    mvoltage_stimulation = [[] for _ in range(n_neurons)]
-    for i in range(n_neurons):
-        mvoltage_baseline[i] = data['membrane_voltage'][i][:switch_ind]
-        mvoltage_stimulation[i] = data['membrane_voltage'][i][switch_ind:]
+    time_stimulation = time[switch_ind:] - switch_time_ms
+
+    mvoltage_baseline = None
+    mvoltage_stimulation = None
+
+    if "membrane_voltage" in data:
+        mvoltage_baseline = np.zeros((n_neurons, switch_ind))
+        mvoltage_stimulation = np.zeros((n_neurons, len(time) - switch_ind))
+        for i in range(n_neurons):
+            mvoltage_baseline[i, :] = data['membrane_voltage'][i][:switch_ind]
+            mvoltage_stimulation[i, :] = data['membrane_voltage'][i][switch_ind:]
+
     spikes_baseline = [[] for _ in range(n_neurons)]
     spikes_stimulation = [[] for _ in range(n_neurons)]
     for i in range(n_neurons):
-        spikes_baseline[i] = (data['spike_times'])[np.where(
-            ((data['spike_idx']) == i) & ((data['spike_times']) < switch_time))[0]] / 1000
-        spikes_stimulation[i] = (data['spike_times'])[np.where(
-            ((data['spike_idx']) == i) & ((data['spike_times']) > switch_time))[0]] / 1000
-    baseline = dict(
-        time=time_baseline/1000,
-        membrane_voltage=mvoltage_baseline,
-        spikes=spikes_baseline)
-    stimulation = dict(
-        time=time_stimulation/1000,
-        membrane_voltage=mvoltage_stimulation,
-        spikes=spikes_stimulation)
+        spikes_baseline[i] = data["spike_times"][(data["spike_idx"] == i) & (data["spike_times"] < switch_time_ms)] / 1000
+        temp = data["spike_times"][(data["spike_idx"] == i) & (data["spike_times"] >= switch_time_ms)]
+        spikes_stimulation[i] = (temp - switch_time_ms) / 1000
+
+    baseline = dict(time=time_baseline/1000, membrane_voltage=mvoltage_baseline, spikes=spikes_baseline)
+    stimulation = dict(time=time_stimulation/1000, membrane_voltage=mvoltage_stimulation, spikes=spikes_stimulation,
+                       trial_duration=stimulus_trialduration)
+
     return baseline, stimulation
 
 
-def relativ_stimulation_times(stimulation, baseline_recording):
+def relativ_stimulation_times(stimulation, baseline_duration):
     """
     Compute relative gwn stimulation spike times
 
@@ -132,7 +135,7 @@ def relativ_stimulation_times(stimulation, baseline_recording):
     ----------
     stimulation : dictionary 
         dictionary with spikes and time only during simulation with gwn stimulation, optional: membrane voltage
-    baseline_recording : float 
+    baseline_duration : float 
         time length for simulating baseline activity in seconds 
 
     Returns
@@ -140,34 +143,33 @@ def relativ_stimulation_times(stimulation, baseline_recording):
     data : dict
         dictionary with stimulation time for one repetition of the stimulus (9.9995s) and the relative spike times within the repeated stimulation
     """
-    embed()
-    exit()
-    end_snippet = 0.00095
-    cut_idx = 19
+    #FIXME Why is there one second more?
     n_neurons = len(stimulation['spikes'])
     time = stimulation['time']
-    # + baseline_recording # neet not with 30 but with 2s sim
-    start_times = np.unique(np.round(time, -1))
-    # left in for looping through, so I dont need endtime arrays
-    start_times = np.delete(start_times, -1)
-    stop_times = start_times + 10.0
+    trial_duration = stimulation["trial_duration"]
+    # + baseline_recording # need not with 30 but with 2s sim
+    start_times = np.unique(np.round(time, -1))[:-1]
+    stop_times = start_times + trial_duration
     n_stims = len(start_times)
-    start_idxs = np.zeros(n_stims)
-    for i in range(n_stims):
-        start_idxs[i] = np.where(time == start_times[i])[0][0]
-    start_idxs = start_idxs.astype(int)
-    rel_stim_time = time[start_idxs[0]:start_idxs[1]-cut_idx] - baseline_recording
-    rel_spikes = [[] for _ in range(n_neurons)]
 
+    spikes = [[] for _ in range(n_neurons)]
+    voltages = [[] for _ in range(n_neurons)]
+    trial_time = time[time < trial_duration]
     for j in range(n_neurons):
-        single_stimulations = [[] for _ in range(n_stims)]
+        stim_spikes = [[] for _ in range(n_stims)]
+        neuron_spikes = stimulation['spikes'][j]
         for i in range(n_stims):
-            single_stimulations[i] = stimulation['spikes'][j][(stimulation['spikes'][j] >= start_times[i]) &
-                                                              (stimulation['spikes'][j] < stop_times[i]-end_snippet)]
-        for k in range(len(single_stimulations)):
-            single_stimulations[k] -= k*10.0 + baseline_recording
-        rel_spikes[j] = single_stimulations
+            spike_times = neuron_spikes[(neuron_spikes >= start_times[i]) & (neuron_spikes < stop_times[i])]
+            spike_times -= start_times[i]
+            stim_spikes[i] = spike_times
+        spikes[j] = stim_spikes
+        if "membrane_voltage" in stimulation:
+            voltages[j] = stimulation["membrane_voltage"][j]
+        else:
+            voltages[j] = None
+
     data = {
-        'time': rel_stim_time,
-        'spikes': rel_spikes}
+        'time': trial_time,
+        'spikes': spikes,
+        'membrane_voltages': voltages}
     return data

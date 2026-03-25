@@ -16,7 +16,7 @@ import numpy as np
 from brian2 import TimedArray
 from ampullary_ui.computations.lif_simulation import lif_simulation, defaultclock
 from ampullary_ui.simulation_analysis.summary_statistics import calculate_sum_stats
-from ampullary_ui.simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
+from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 from IPython import embed
 
 
@@ -78,7 +78,8 @@ def wrap_and_save_data(sim_data, stim_data, save_dir, params, start_idx):
     True : bool
         check for "ran"
     """
-    baseline, stimulation = seperate_data(sim_data, stim_data['baseline_recording'])
+    # FIXME!!!
+    baseline, stimulation = split_data(sim_data, stim_data['baseline_recording'])
     rel_stimulation = relativ_stimulation_times(stimulation, stim_data['baseline_recording'])
     for i in range(len(rel_stimulation['spikes'])):
         # Create a stable identifier
@@ -141,7 +142,7 @@ def worker_function_simulate_multi(start_idx, package, stimulus, stim_data, stim
     features = None
     try:
         timed_stimulus = TimedArray(stimulus, defaultclock.dt)  
-        sim_data = lif_simulation(package, timed_stimulus, stimulus_length=stimulus_length, mv=False)
+        sim_data = lif_simulation(package, timed_stimulus, record_voltage=False)
         if save_raw:
             saved_flag = wrap_and_save_data(sim_data, stim_data, save_dir, package, start_idx)
         if calc_feats:

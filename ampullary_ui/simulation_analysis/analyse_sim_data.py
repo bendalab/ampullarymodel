@@ -50,15 +50,14 @@ def sim_baseline_data(data):
     baseparams = [frates[0], isi_cvs[0], corrs_arr[0]]
     ba = {
         'membrane_time' : [data['time']],
-        'membrane_voltage' : data['membrane_voltage'],
+        'membrane_voltage' : [np.squeeze(data['membrane_voltage'])],
         'spike_times' : data['spikes'],
         'lags' : [lags],
         'corrs' : [corrs]
         }
+
     baseplot = pd.DataFrame(data=ba)
     return baseparams, baseplot
-
-
 
 
 def sim_gwn_data(data, stim_data):
@@ -87,6 +86,7 @@ def sim_gwn_data(data, stim_data):
     eod_amplitude = 2.0 # from -1 to 1
     scaling = (eod_amplitude*wanted_sd)/stim_sd
     gwn_stimulus = (stimulus_og * scaling)/eod_amplitude
+
     # mean coherence and transferfunctions over the 10 trials 
     collect_tfs = [[] for _ in range(len(data['spikes'][0]))]      
     collect_cxys = [[] for _ in range(len(data['spikes'][0]))] 
@@ -102,15 +102,18 @@ def sim_gwn_data(data, stim_data):
     cxy_std = np.std(collect_cxys, axis=0)
     tf_smoothed = np.mean(collect_tfs, axis=0)
     tf_std = np.std(collect_tfs, axis=0)
-    # extract features from frequeny coherence plot
+
+    # extract features from coherence
     if np.isnan(collect_cxys).all(): # 
         raise ValueError ("some problem with simulating stimulation, most likely neurongroup's variable 's' has NaN, very large values, or encountered an error in numerical integration. Further features all set to NaN")
     fcutoff = cutoff(f, cxy_smoothed)
     fc_max = f[np.where(cxy_smoothed == np.max(cxy_smoothed))[0][0]]
     highf_coh = values_high_frequencies(f, cxy_smoothed, 120,150)
     coh_zero = cxy_smoothed[0]
+
     # extract features from transfer function
     gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up = tf_features(freq, tf_smoothed, conv_rate)
+
     # mean convolution rate and associates
     conv_rate, conv_std = convolution_rate_with_std(data['spikes'][0], data['time'], sigma=common_variables['sigma_conv_rate']) 
     fr_mod = np.std(conv_rate)
@@ -131,5 +134,6 @@ def sim_gwn_data(data, stim_data):
         'tf_smoothed' : [tf_smoothed],
         'tf_std' : [tf_std], 
         }
+
     stimplot = pd.DataFrame(data=stim_plot)
     return stimparams, stimplot

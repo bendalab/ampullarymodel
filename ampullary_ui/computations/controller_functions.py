@@ -16,9 +16,9 @@ from typing import Dict, Any
 print("IMPORT lif")
 from ampullary_ui.computations.lif_simulation import lif_simulation
 print("IMPORT helper")
-from ampullary_ui.computations.stimulus_helper import load_simulation_stimulus
+from ampullary_ui.computations.stimulus_helper import load_gwnstimulus, modify_stimulus
 print("IMPORT convert")
-from ampullary_ui.simulation_analysis.convert_data import separate_data_incl_membvol, relativ_stimulation_times
+from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 print("IMPORT anlysis")
 from ampullary_ui.simulation_analysis.analyse_sim_data import sim_baseline_data, sim_gwn_data
 print("IMPORT utils")
@@ -29,13 +29,15 @@ from IPython import embed
 @dataclass
 class SimulationResult:
     data: Dict[str, Any]               # simulation data dictionary
+    stim_data : None                   # stimulus data and metadata
     features: np.ndarray               # analysis output features array
-    baseplot: pd.DataFrame             # DataFrame for baseplot data
-    stimplot: pd.DataFrame             # DataFrame for stimulation plot data
+    baseline_data: pd.DataFrame        # DataFrame for baseplot data
+    stimulus_data: pd.DataFrame        # DataFrame for stimulation plot data
 
 
 
-def simulate_from_input_params(params):
+def simulate_from_input_params(params, baseline_duration=30., prerun_duration=1.0,
+                               stimulus_sd=0.2, trials=10):
     """
     Simulate a neuron from a single set of model parameter
 
@@ -53,16 +55,18 @@ def simulate_from_input_params(params):
     Returns
     -------
     SimulationResult : dataclass   
-        simulation data dictionary, analysis output features array, DataFrame for baseplot data, DataFrame for stimulation plot data   
+        simulation data dictionary, analysis output features array, DataFrame
+        for baseplot data, DataFrame for stimulation plot data   
     """
-    common_variables = load_common_variables()
-    stimulus_length = common_variables['stimulus_length']
     params_sample = np.array([params])
 
-    gwn_stim_data, timed_stimulus = load_simulation_stimulus()
-    sim_data = lif_simulation(params_sample, timed_stimulus, stimulus_length=stimulus_length, mv=True)
-    baseline, stimulation = separate_data_incl_membvol(sim_data, gwn_stim_data['baseline_recording'])
-    rel_stimulation = relativ_stimulation_times(stimulation, gwn_stim_data['baseline_recording'])
+    gwn_stim_data = load_gwnstimulus()
+    modified_stimulus = modify_stimulus(gwn_stim_data, baseline_duration, prerun_duration,
+                                        trials, stimulus_sd)
+
+    sim_data = lif_simulation(params_sample, modified_stimulus, prerun_duration, record_voltage=True)
+    baseline, stimulation = split_data(sim_data, baseline_duration, gwn_stim_data["duration"])
+    rel_stimulation = relativ_stimulation_times(stimulation, baseline_duration)
 
     data = {
         'baseline_time': np.round(baseline['time'][0], 7),
@@ -70,18 +74,17 @@ def simulate_from_input_params(params):
         'baseline_spikes': baseline['spikes'][0], 
         'whitenoise_time': np.round(rel_stimulation['time'][0], 7),
         'whitenoise_spikes': np.array(rel_stimulation['spikes'][0], dtype=object),  
-        'parameters': params,  
+        'parameters': params,
     }
+
     baseparams, baseplot = sim_baseline_data(baseline)
     gwnparams, stimplot = sim_gwn_data(rel_stimulation, gwn_stim_data)
     features = np.array(baseparams + gwnparams)
-    return SimulationResult(
-        data=data,
-        features=features,
-        baseplot=baseplot,
-        stimplot=stimplot
-    )
 
+    results = SimulationResult(data=data, stim_data=gwn_stim_data, features=features,
+                               baseline_data=baseplot, stimulus_data=stimplot)
+
+    return results
 
 
 def create_cell_from_input_features(features):

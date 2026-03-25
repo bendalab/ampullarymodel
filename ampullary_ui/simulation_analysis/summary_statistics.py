@@ -12,8 +12,8 @@ import numpy as np
 import scipy.signal as sps
 from brian2.units.allunits import second
 from ampullary_ui.computations.lif_simulation import defaultclock
-from ampullary_ui.computations.stimulus_helper import stimulus_scaling_artificial
-from ampullary_ui.simulation_analysis.convert_data import seperate_data, relativ_stimulation_times
+from ampullary_ui.computations.stimulus_helper import scale_stimulus
+from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, tf_features
 
 
@@ -242,12 +242,13 @@ def calculate_sum_stats(data, stim_data,):
     n_neurons = data['n_neurons']
     sum_stats = [ [] for _ in range(n_neurons)]
     #seperate data
-    baseline, stimulation = seperate_data(data, stim_data['baseline_recording']) # includes spike convert
+    # FIXME! check whether the data, stim_data stuff still works here...
+    baseline, stimulation = split_data(data, stim_data['baseline_recording']) # includes spike convert
     # baseline_properties
     frates, isi_cvs, scorr1= baseline_features(baseline)
     # gwn stimulation
     rel_stimulation = relativ_stimulation_times(stimulation, stim_data['baseline_recording'])
-    gwn_stimulus = stimulus_scaling_artificial(stim_data['stimulus'])
+    gwn_stimulus = scale_stimulus(stim_data['stimulus'])
     fr_mod = get_fr_mod_sim(rel_stimulation)
     coh_params = get_coherence_features_sim(rel_stimulation, gwn_stimulus)
     tf_params = get_tf_features_sim(rel_stimulation, gwn_stimulus)
