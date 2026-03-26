@@ -72,7 +72,7 @@ class Simulator(QWidget):
             {"min": 0.05, "max": 40.0, "default": 21.46},
             {"min": 0.0,  "max": 3.0, "default": 2.47},
             {"min": 1.0,  "max": 100.0, "default": 33.25},
-            {"min": 0.0,  "max": 3.0, "default": 3.14},
+            {"min": 0.0,  "max": 5.0, "default": 3.14},
             {"min": -100.0,  "max": 0.0, "default": -15.62},
             {"min": 0.05, "max": 15.0, "default":7.32},
             {"min": 0.05, "max": 500.0, "default": 43.44},
