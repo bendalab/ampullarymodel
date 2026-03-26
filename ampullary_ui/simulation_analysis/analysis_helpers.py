@@ -412,6 +412,7 @@ def gain_features(freq, tf_smoothed, rate, highf_min=120, highf_max=150):
     f_at_gainmax = freq[tf_smoothed == max_gain][0]
     f_halfup = find_nearest(freq, f_at_gainmax*0.5)
     gain_halfup = tf_smoothed[freq == f_halfup][0]
+
     return gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, cutoff_frequency_up
 
 

@@ -86,7 +86,7 @@ class Simulator(QWidget):
                 sb.setValue(settings["default"])
                 sb.setDecimals(2)
                 # Use a point as decimal separator
-                sb.setLocale(QLocale(QLocale.C))  
+                sb.setLocale(QLocale(QLocale.C))
 
     def _setup_defaults(self):
         # set other defaults

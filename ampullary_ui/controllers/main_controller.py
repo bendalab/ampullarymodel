@@ -3,8 +3,8 @@ import pandas as pd
 
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel, QToolBar, QMenuBar
-from PySide6.QtCore import  QEvent, QTimer, QUrl
-from PySide6.QtGui import QPixmap, QDesktopServices, QAction, QKeySequence
+from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize
+from PySide6.QtGui import QPixmap, QDesktopServices, QAction, QKeySequence, QIcon
 
 from ampullary_ui.controllers.simulator import Simulator
 from ampullary_ui.controllers.tool_b_controller import ToolBController
@@ -62,9 +62,7 @@ class MainController(QWidget):
     def _find_widgets(self):
         self._stacked = self._window.findChild(QWidget, "stackedWidget_main")
         self._menubar = self._window.findChild(QMenuBar, "menubar")
-        self._toolbar = self._window.findChild(QToolBar, "toolBar")
-        from IPython import embed
-        embed()
+        self._toolbar = self._window.findChild(QToolBar, "toolbar")
 
     def _create_actions(self):
         self._quit_action = QAction("Quit", parent=self._window)
@@ -76,6 +74,24 @@ class MainController(QWidget):
         self._simulator_action.setStatusTip("Run simulator tool")
         self._simulator_action.setShortcut(QKeySequence("F2"))
         self._simulator_action.triggered.connect(self._run_simulator)
+
+        self._modelgenerator_action = QAction("Model generator", parent=self._window)
+        self._modelgenerator_action.setStatusTip("Generate models")
+        self._modelgenerator_action.setShortcut(QKeySequence("F3"))
+        self._modelgenerator_action.triggered.connect(self._run_modelgenerator)
+
+        self._modelcatalogue_action = QAction("Model catalog", parent=self._window)
+        self._modelcatalogue_action.setStatusTip("Select models based on the training datasets")
+        self._modelcatalogue_action.setShortcut(QKeySequence("F4"))
+        self._modelcatalogue_action.triggered.connect(self._run_modelpicker)
+
+        self._home_action = QAction(QIcon(":/pictograms/home.png"), "Home")
+        self._home_action.setStatusTip("Back to the start page")
+        self._home_action.setToolTip("Back to the start page")
+        self._home_action.setEnabled(True)
+        self._home_action.setShortcut(QKeySequence("Esc"))
+        self._home_action.triggered.connect(self._go_home)
+
         # self._about_action = QAction("about")
         # self._about_action.setStatusTip("Show about dialog")
         # self._about_action.setEnabled(True)
@@ -86,14 +102,16 @@ class MainController(QWidget):
         # self._help_action.setShortcut(QKeySequence("F1"))
         # self._help_action.setEnabled(True)
         # self._help_action.triggered.connect(self.on_help)
-        pass
-    
+
     def _create_menu(self):
         file_menu = self._menubar.addMenu("&File")
-        # file_menu.addAction(self._quit_action)
+        file_menu.addSeparator()
+        file_menu.addAction(self._quit_action)
 
         tools_menu = self._menubar.addMenu("&Tools")
         tools_menu.addAction(self._simulator_action)
+        tools_menu.addAction(self._modelgenerator_action)
+        tools_menu.addAction(self._modelcatalogue_action)
 
         help_menu = self._menubar.addMenu("&Help")
         # help_menu.addAction(self._about_action)
@@ -108,21 +126,25 @@ class MainController(QWidget):
         #         menu = menu_bar.addMenu(k)
         #     for a in actions:
         #         menu.addAction(a)
-        file_menu.addSeparator()
-        file_menu.addAction(self._quit_action)
         # self.setMenuBar(self._menu_bar)
-    
+
     def _create_toolbar(self):
-        # self._toolbar.setAllowedAreas(Qt.ToolBarArea.TopToolBarArea)
+        self._toolbar.setAllowedAreas(Qt.ToolBarArea.TopToolBarArea)
         self._toolbar.setFloatable(False)
-        # self._toolbar.setIconSize(QSize(32, 32))
-       
+        self._toolbar.setMovable(False)
+        self._toolbar.setIconSize(QSize(32, 32))
+
+        self._toolbar.addAction(self._home_action)
         self._toolbar.addSeparator()
         self._toolbar.addAction(self._simulator_action)
-        # self._toolbar.addAction(self._plot_action)
-        # self._toolbar.addAction(self._table_action)
+        self._toolbar.addSeparator()
+        self._toolbar.addAction(self._modelgenerator_action)
+        self._toolbar.addSeparator()
+        self._toolbar.addAction(self._modelcatalogue_action)
 
     def cleanup_and_close(self, event):
+        logging.info("Cleanup and close!")
+        print("!!!!! PING !!!")
         """Stop all running threads before closing the application."""
         # Stop ToolA thread
         if hasattr(self._simulator, 'sim_thread') and self._simulator.sim_thread is not None:
@@ -144,6 +166,7 @@ class MainController(QWidget):
         
         # Stop ToolB Extension thread
         if hasattr(self.toolB_ex, 'sim_thread') and self.toolB_ex.sim_thread is not None:
+            print(self.toolB_ex.sim_thread is None)
             if self.toolB_ex.sim_thread.isRunning():
                 self.toolB_ex.sim_thread.quit()
                 self.toolB_ex.sim_thread.wait()
@@ -256,9 +279,15 @@ class MainController(QWidget):
         self._stacked.setCurrentWidget(self._window.simulate_cell)
         self._simulator._redraw_figure()
 
-    def show_toolB_page(self):
+    def _run_modelgenerator(self):
         self._stacked.setCurrentWidget(self._window.create_model)
         self.toolB.redraw_figure()
+
+    def _run_modelpicker(self):
+        self._stacked.setCurrentWidget(self._window.get_model)
+
+    def _go_home(self):
+        self._stacked.setCurrentWidget(self._window.startpage)
 
     # navigation
     def _connect_navigation(self):
@@ -267,7 +296,7 @@ class MainController(QWidget):
         self._window.sc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.sc_table_version.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.table_sim)) 
         # ToolB navigation
-        self._window.button_to_cm.clicked.connect(self.show_toolB_page)
+        self._window.button_to_cm.clicked.connect(self._run_modelgenerator)
         self._window.cm_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.cm_table_version.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.table_gen)) 
         # ToolC navigation
@@ -282,4 +311,4 @@ class MainController(QWidget):
         self._window.ts_to_single.clicked.connect(self._run_simulator)
         # ToolB population navigation
         self._window.tc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
-        self._window.tc_to_single.clicked.connect(self.show_toolB_page)
+        self._window.tc_to_single.clicked.connect(self._run_modelgenerator)

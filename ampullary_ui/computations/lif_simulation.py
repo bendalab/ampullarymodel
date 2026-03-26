@@ -10,10 +10,10 @@ LIF model
     - delta a
     - noise a
 """
-print("IMPORT brian")
 import numpy as np
-from brian2 import *
-print("IMPORT done")
+from brian2 import TimedArray, NeuronGroup, StateMonitor, SpikeMonitor, defaultclock, run
+from brian2.units import ms, us, second
+
 from IPython import embed
 
 defaultclock.dt = 50*us
@@ -56,7 +56,7 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     vr = 0.0             # resting potential [mV]
     vt = 1.0             # firing threshold [mV] 
     prerun_duration = prerun_duration * second  # pre-recording duration
-    duration = timed_stimulus.values.shape[0] * timed_stimulus.dt * second
+    total_duration = timed_stimulus.values.shape[0] * timed_stimulus.dt * second
 
     # equation for membrane voltage
     eqs = '''
@@ -77,20 +77,19 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     '''
 
     # initialize simulation
-    neurons = NeuronGroup(params.shape[0], eqs, threshold='v>vt', reset='v = vr; i_a += delta', refractory='ref', method='euler')
+    neurons = NeuronGroup(params.shape[0], eqs, threshold='v>vt', reset='v = vr; i_a += delta',
+                          refractory='ref', method='euler')
     # starting values for v 
     neurons.v = vr  # Would be the solution when dv/dt = 0
-
-    # for every neuron different parameters
     neurons.tau = params[:,0]*ms          # membrane time_constant [ms]
     neurons.ref = params[:,1]*ms          # refractory time [ms]
     neurons.offset = params[:,2]          # offset current [nA]
     neurons.D = params[:,3]               # strength of noise, unitless
-    neurons.gain = params[:,4]            # stimulus gain factor, unitless 
+    neurons.gain = params[:,4]            # stimulus gain factor, unitless
     neurons.tau_d = params[:,5]*ms        # tau dendritic
     neurons.tau_a = params[:,6]*ms        # tau adapation
-    neurons.delta = params[:,7]           # increment adaptation at spike event 
-    neurons.D_adapt = params[:,8]         # adaptation noise strength 
+    neurons.delta = params[:,7]           # increment adaptation at spike event
+    neurons.D_adapt = params[:,8]         # adaptation noise strength
 
     # discard first second
     run(prerun_duration)
@@ -98,7 +97,7 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     # run and record
     statemon = StateMonitor(neurons, 'v', record = True)
     spikemon = SpikeMonitor(neurons, record = True)
-    run(duration - prerun_duration)
+    run(total_duration - prerun_duration)
 
     if record_voltage:
         data = dict(n_neurons = len(params), spike_idx = np.asarray(spikemon.i),
