@@ -14,6 +14,8 @@ from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.utils import load_labels
+from ampullary_ui.dialogs.about import AboutDialog
+
 
 class MainController(QWidget):
     def __init__(self, window):
@@ -92,10 +94,10 @@ class MainController(QWidget):
         self._home_action.setShortcut(QKeySequence("Esc"))
         self._home_action.triggered.connect(self._go_home)
 
-        # self._about_action = QAction("about")
-        # self._about_action.setStatusTip("Show about dialog")
-        # self._about_action.setEnabled(True)
-        # self._about_action.triggered.connect(self.on_about)
+        self._about_action = QAction("about")
+        self._about_action.setStatusTip("Show about dialog")
+        self._about_action.setEnabled(True)
+        self._about_action.triggered.connect(self._on_about)
 
         # self._help_action = QAction(QIcon(":help"), "help")
         # self._help_action.setStatusTip("Show help dialog")
@@ -114,7 +116,7 @@ class MainController(QWidget):
         tools_menu.addAction(self._modelcatalogue_action)
 
         help_menu = self._menubar.addMenu("&Help")
-        # help_menu.addAction(self._about_action)
+        help_menu.addAction(self._about_action)
         # help_menu.addAction(self._help_action)
 
         # menus = {"File": file_menu, "Tools": tools_menu}
@@ -288,6 +290,10 @@ class MainController(QWidget):
 
     def _go_home(self):
         self._stacked.setCurrentWidget(self._window.startpage)
+
+    def _on_about(self):
+        about = AboutDialog(self)
+        about.show()
 
     # navigation
     def _connect_navigation(self):
