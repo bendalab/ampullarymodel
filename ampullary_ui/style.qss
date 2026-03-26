@@ -57,10 +57,6 @@ QPushButton:disabled {
     background-color: #444;
 }
 
-
-
-
-
 /* Same for tool buttons */
 QToolButton {
     background-color: #007ACC;  /* blue button background */
@@ -73,7 +69,6 @@ QToolButton {
     font-weight: bold;
     border: none;
 }
-
 
 /* Change button color when hovered */
 QToolButton:hover {
@@ -90,9 +85,17 @@ QToolButton:disabled {
     background-color: #444;
 }
 
+QMenuBar{
+    background-color: #282829;
+    color: #f4f4f4;
+}
 
-
-
+QMenu {
+    background-color: #444;
+    color: #f4f4f4;
+    border-color: #888;
+    
+}
 
 
 
