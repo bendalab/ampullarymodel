@@ -18,7 +18,7 @@
     <item row="2" column="1">
      <widget class="QStackedWidget" name="stackedWidget_main">
       <property name="currentIndex">
-       <number>6</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="startpage">
        <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -420,274 +420,277 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </item>
               <item>
                <widget class="QWidget" name="sc_input_and_labels" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
-                 <item>
-                  <widget class="QWidget" name="sc_label_box" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="verticalSpacing">
+                  <number>10</number>
+                 </property>
+                 <item row="12" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_4">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_8">
-                    <item>
-                     <widget class="QLabel" name="sc_label_name">
-                      <property name="text">
-                       <string>Cell Name</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_1">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;membrane time constant [ms]    (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;m&lt;/span&gt;) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="textFormat">
-                       <enum>Qt::PlainText</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_2">
-                      <property name="text">
-                       <string>refractory time [ms]</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_3">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;offset current    (I&lt;span style=&quot; vertical-align:sub;&quot;&gt;offset&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="textFormat">
-                       <enum>Qt::PlainText</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_4">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;strength of current noise    (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="textFormat">
-                       <enum>Qt::PlainText</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_5">
-                      <property name="text">
-                       <string>stimulus gain factor   (g)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_6">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dendritic time constant [ms]   (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;d&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_7">
-                      <property name="text">
-                       <string>adapation time constant [ms] &amp;nbsp;&amp;nbsp;(τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_8">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;adaptation increment   (Δ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="textFormat">
-                       <enum>Qt::PlainText</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="sc_label_9">
-                      <property name="text">
-                       <string>adaptation noise strength &amp;nbsp;&amp;nbsp;  (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)</string>
-                      </property>
-                      <property name="textFormat">
-                       <enum>Qt::PlainText</enum>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QWidget" name="sc_inputs_box" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_7">
-                    <item>
-                     <widget class="QLineEdit" name="sc_input_name">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_1">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>0</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_2">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_3">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_4">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_5">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_6">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_7">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_8">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_9">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>26</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                 <item row="13" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_7">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="14" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_8">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="15" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_9">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="17" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_3">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="19" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="1">
+                  <widget class="QLineEdit" name="sc_input_name">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="sc_label_name">
+                   <property name="text">
+                    <string>Cell Name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="19" column="0">
+                  <widget class="QLabel" name="sc_label_9">
+                   <property name="text">
+                    <string>adaptation noise strength &amp;nbsp;&amp;nbsp;  (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="17" column="0">
+                  <widget class="QLabel" name="sc_label_7">
+                   <property name="text">
+                    <string>adapation time constant [ms] &amp;nbsp;&amp;nbsp;(τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="18" column="0">
+                  <widget class="QLabel" name="sc_label_8">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;adaptation increment   (Δ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_1">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="18" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_5">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="1">
+                  <widget class="FreeTypingDoubleSpinBox" name="sc_doubleSpinBox_2">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="sc_label_1">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;membrane time constant [ms]    (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;m&lt;/span&gt;) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="0">
+                  <widget class="QLabel" name="sc_label_2">
+                   <property name="text">
+                    <string>refractory time [ms]</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="12" column="0">
+                  <widget class="QLabel" name="sc_label_3">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;offset current    (I&lt;span style=&quot; vertical-align:sub;&quot;&gt;offset&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="13" column="0">
+                  <widget class="QLabel" name="sc_label_4">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;strength of current noise    (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="14" column="0">
+                  <widget class="QLabel" name="sc_label_5">
+                   <property name="text">
+                    <string>stimulus gain factor   (g)</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="15" column="0">
+                  <widget class="QLabel" name="sc_label_6">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dendritic time constant [ms]   (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;d&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
                   </widget>
                  </item>
                 </layout>
@@ -1836,7 +1839,7 @@ The simualtion includes 30 s of baseline activity and 100s of stimulus driven re
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
+                   <width>32</width>
                    <height>32</height>
                   </rect>
                  </property>
