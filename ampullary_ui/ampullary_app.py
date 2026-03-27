@@ -1,14 +1,22 @@
+print("start")
 import logging
 import argparse
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QSettings
+print("imports 1")
 
 import ampullary_ui.resources_rc
-from ampullary_ui.controllers.main_controller import MainController
-from ampullary_ui.controllers.ui_loding_helper import load_ui
-from ampullary_ui.utils import load_style
-from ampullary_ui import info
+print("imports 2")
 
+from ampullary_ui.controllers.main_controller import MainController
+print("imports 3")
+
+from ampullary_ui.controllers.ui_loding_helper import load_ui
+print("imports 4")
+from ampullary_ui.utils import load_style
+print("imports 5")
+from ampullary_ui import info
+print("imports done")
 
 logging.basicConfig(level=logging.INFO, force=True)
 log_levels = {"critical": logging.CRITICAL, "error": logging.ERROR,
@@ -27,6 +35,7 @@ def create_parser():
     return parser
 
 def main(args=None):
+    print("main")
     if args is None:
         parser = create_parser()
         args = parser.parse_args()

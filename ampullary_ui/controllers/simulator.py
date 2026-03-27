@@ -4,10 +4,12 @@ import logging
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget
 from PySide6.QtCore import QThread, Signal, QLocale
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+print("Simulator:imports 1")
 
 from ampullary_ui.computations.controller_functions import simulate_from_input_params, SimulationResult
 from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
 from ampullary_ui.plotting.plot_cell import plot_cell
+print("Simulator:imports 2")
 
 from IPython import embed
 logging.debug("Imports done!")

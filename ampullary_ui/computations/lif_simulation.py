@@ -11,9 +11,10 @@ LIF model
     - noise a
 """
 import numpy as np
+print("import brian2")
 from brian2 import TimedArray, NeuronGroup, StateMonitor, SpikeMonitor, defaultclock, run
 from brian2.units import ms, us, second
-
+print("import brian done")
 from IPython import embed
 
 defaultclock.dt = 50*us

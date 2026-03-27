@@ -13,19 +13,21 @@ from IPython import embed
 
 
 class ToolDController:
-    def __init__(self, window, data, prior_samples, labels):
+    def __init__(self, window, labels):
         self.window = window 
         self.canvas = None
         self.current_fig = None
         self.find_widgets()
         self.setup_defaults()
-        self.data = data
         self.titles = labels
-        self.prior_samples = prior_samples
-        self.setup_placeholder_plot()
+        self._summarystats = None
+        self._priorsamples = None
         self.connect_signals()
-        
 
+    def set_data(self, summarystats, priorsamples):
+        self._summarystats = summarystats
+        self._priorsamples = priorsamples
+        self.setup_placeholder_plot()
 
     # initialization and setup
     def find_widgets(self):
@@ -58,7 +60,7 @@ class ToolDController:
         #make dummy fig with all samples:
         values = np.array([100, 0.12]+[np.nan]*15)
         n = 100
-        self.near_data_samples, self.near_prior_samples = get_subset_values(self.data, self.prior_samples, values, n)
+        self.near_data_samples, self.near_prior_samples = get_subset_values(self._summarystats, self._priorsamples, values, n)
         fig = plot_samples(values, self.near_data_samples, self.titles)
         self.current_fig = fig
         fig.text(0.5, 0.5, "EXAMPLE", fontsize=80, fontweight='bold', color='#44F9BD', alpha=0.6, ha='center', va='center', rotation=40, zorder=10)
@@ -84,7 +86,7 @@ class ToolDController:
         self.btn_switch.setEnabled(False)
         values = self.get_values_from_lines()
         n = int(self.sample_n.value())
-        self.near_data_samples, self.near_prior_samples = get_subset_values(self.data, self.prior_samples, values, n)
+        self.near_data_samples, self.near_prior_samples = get_subset_values(self._summarystats, self._priorsamples, values, n)
         # figure
         fig = plot_samples(values, self.near_data_samples, self.titles)
         self.current_fig = fig

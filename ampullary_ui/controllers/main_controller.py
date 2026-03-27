@@ -3,18 +3,59 @@ import pandas as pd
 
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel, QToolBar, QMenuBar
-from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize
+from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Signal, Slot, QThreadPool
 from PySide6.QtGui import QPixmap, QDesktopServices, QAction, QKeySequence, QIcon
+print("Main:imports 1")
 
 from ampullary_ui.controllers.simulator import Simulator
+print("Main:imports 2")
+
 from ampullary_ui.controllers.tool_b_controller import ToolBController
+print("Main:imports 3")
+
 from ampullary_ui.controllers.tool_c_controller import ToolCController
+print("Main:imports 4")
 from ampullary_ui.controllers.tool_d_controller import ToolDController
+print("Main:imports 5")
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
+print("Main:imports 6")
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
+print("Main:imports 7")
 from ampullary_ui.plotting.plot_cell import plot_cell
+print("Main:imports 8")
 from ampullary_ui.utils import load_labels
+print("Main:imports 9")
 from ampullary_ui.dialogs.about import AboutDialog
+print("Main:imports 10")
+from ampullary_ui.signals import DataReaderSignals
+print("Main:imports done")
+
+class DataLoader(QRunnable):
+
+    def __init__(self, summaryfile:Path, priorfile:Path) -> None:
+        super().__init__()
+        if not summaryfile.exists() or not priorfile.exists():
+            raise FileNotFoundError(f"Either the summary stats, or the prior samples are not found! {summaryfile}, {priorfile}")
+        self._sfile = summaryfile
+        self._pfile = priorfile
+        self._signals = DataReaderSignals()
+        self._summarystats = None
+        self._priorsamples = None
+
+    @Slot()
+    def run(self):
+        self._signals.progress.emit("Loading summary stats...", 0.3)
+        self._summarystats = pd.read_hdf(self._sfile, key="table").to_numpy()
+
+        self._signals.progress.emit("Loading prior stats...", 0.6)
+        self._priorsamples = pd.read_hdf(self._pfile, key="table").to_numpy()
+
+        self._signals.progress.emit("Done", 1.0)
+        self._signals.finished.emit(True)
+
+    @property
+    def data(self):
+        return self._summarystats, self._priorsamples
 
 
 class MainController(QWidget):
@@ -25,27 +66,29 @@ class MainController(QWidget):
         self._stacked = None
         self._timer = None
         self._status_label = None
+        self._summarystats = None
+        self._priorsamples = None
+        self._threadpool = QThreadPool()
+
         self._find_widgets()
         self._setup_animation()
-        logging.debug(f"MainController: window setup done")
-        self._data, self._prior_samples = self.load_data()
-        logging.debug(f"MainController: load data")
 
         self._example_fig = self._load_example_fig()
         labels = load_labels()
-        #self.toolA = ToolAController(self.window, self.example_fig, labels['feature_labels_casual']) 
-        #self.toolB = ToolBController(self.window, self.example_fig, labels['parameter_labels_casual'], labels['feature_labels_casual'], main_controller=self)
+        self._dataloader = DataLoader(Path.cwd() / "source" / "summary_statistics.h5",
+                                      Path.cwd() / "source" / "prior_samples.h5")
+        self._dataloader._signals.finished.connect(self._on_data_loaded)
+        self._dataloader._signals.progress.connect(self._on_dataprogress)
+
         logging.debug(f"MainController: initialize tools")
         self._simulator = Simulator(self, labels['feature_labels_casual'])
         logging.debug(f"MainController: toolA initialized")
         self.toolB = ToolBController(self, labels['parameter_labels_casual'],
                                      labels['feature_labels_casual'])
         logging.debug(f"MainController: toolB initialized")
-        self.toolC = ToolCController(self._window, self._data, self._prior_samples,
-                                     labels['feature_labels_casual'])
+        self.toolC = ToolCController(self._window, labels['feature_labels_casual'])
         logging.debug(f"MainController: toolC initialized")
-        self.toolD = ToolDController(self._window, self._data, self._prior_samples,
-                                     labels['feature_labels'])
+        self.toolD = ToolDController(self._window, labels['feature_labels'])
         logging.debug(f"MainController: toolD initialized")
 
         self.toolA_ex = ToolAExtention(self)
@@ -60,6 +103,22 @@ class MainController(QWidget):
         self._create_actions()
         self._create_menu()
         self._create_toolbar()
+        self._stacked.setCurrentWidget(self._window.startpage)
+        self.setEnabled(False)
+        logging.debug(f"MainController: initialized")
+        self.start_progress_animation()
+        self._threadpool.start(self._dataloader)
+
+    def _on_data_loaded(self):
+        self.stop_progress_animation()
+        self._summarystats, self._priorsamples = self._dataloader.data
+        self.setEnabled(True)
+        logging.debug("Data loader done")
+        self.toolC.set_data(self._summarystats, self._priorsamples)
+        self.toolD.set_data(self._summarystats, self._priorsamples)
+
+    def _on_dataprogress(self, msg, p):
+        print("load progress", msg,  p)
 
     def _find_widgets(self):
         self._stacked = self._window.findChild(QWidget, "stackedWidget_main")
@@ -175,6 +234,8 @@ class MainController(QWidget):
         
         # Stop ToolC workers (histogram workers)
         if hasattr(self.toolC, 'full_worker') and self.toolC.full_worker is not None:
+            from IPython import embed
+            embed()
             if self.toolC.full_worker.isRunning():
                 self.toolC.full_worker.quit()
                 self.toolC.full_worker.wait()
@@ -216,21 +277,17 @@ class MainController(QWidget):
         self._window.statusBar().addPermanentWidget(self._status_label)
         self._status_label.hide()
 
-
     def start_progress_animation(self):
         self._status_label.show()
         self._timer.start(300)
-
 
     def stop_progress_animation(self):
         self._timer.stop()
         self._status_label.hide()
 
-
     def update_animation(self):
         self._status_label.setText(f"processing... {self.pattern[self._index]}")
         self._index = (self._index + 1) % len(self.pattern)
-        
 
     def open_example(self, url: QUrl):
         rel_path = Path(url.toString())
@@ -238,16 +295,17 @@ class MainController(QWidget):
         abs_path = (base_dir / rel_path).resolve()
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(abs_path)))
 
-
-    # load data and other stuff
     def load_data(self):
         pwd = Path.cwd()
+        logging.info("loading summary stats")
         filepath = pwd / "source" / "summary_statistics.h5"
         sum_stats = pd.read_hdf(filepath, key="table")
+        logging.info("loading prior samples")
+
         filepath = pwd / "source" / "prior_samples.h5"
         prior_samples = pd.read_hdf(filepath, key="table")
+        logging.info("loading stuff done")
         return sum_stats.to_numpy(), prior_samples.to_numpy()
-
 
     def _load_example_fig(self):
         # load cell model simulation plot data
@@ -318,3 +376,10 @@ class MainController(QWidget):
         # ToolB population navigation
         self._window.tc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.tc_to_single.clicked.connect(self._run_modelgenerator)
+
+    def exit_request(self):
+        try:
+            self.cleanup_and_close()
+        except Exception as e:
+            print(e)
+        self.close()

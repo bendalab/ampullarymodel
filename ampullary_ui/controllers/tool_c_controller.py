@@ -1,13 +1,12 @@
-import os 
-import pandas as pd
-import numpy as np
+import logging
 import random
+import numpy as np
+
 from PySide6.QtWidgets import QSpinBox, QWidget
 from PySide6.QtCore import Signal, QThread, QTimer
 from ampullary_ui.controllers.customcombienationwidget import RangeCombine
 from ampullary_ui.computations.saving_helper import save_sampled_subset
 from IPython import embed
-
 
 
 class FullHistogramWorker(QThread):
@@ -53,8 +52,6 @@ class FullHistogramWorker(QThread):
             })
         self.finished.emit(results)
 
-        
-
 
 class ReducedHistogramWorker(QThread):
     finished = Signal(list)
@@ -78,32 +75,25 @@ class ReducedHistogramWorker(QThread):
         self.finished.emit(results)
 
 
-
-
-
-
-
-
 class ToolCController:
     """
     Shows distributions and produces interactive plots.
     Make ranges for the features and take samples from within those ranges
     """
-    def __init__(self, window, data, prior_samples, labels):
+    def __init__(self, window, labels):
         self.window = window 
         self.user_compute = False
         self.find_widgets()
         self.setup_defaults()
-        self.data = data
+        self._summarystats = None
         self.titles = labels
-        self.prior_samples = prior_samples
+        self._priorsamples = None
         self.mins, self.maxs, self.bin_specs, self.decimals, self.steps = self.define_stuff()
         self.full_worker = None  # Initialize worker variables
         self.reduced_worker = None
-        self.insert_range_widgets(3)
         self.connect_signals()
-        QTimer.singleShot(0, self.compute_initial_histograms)
-        
+        # QTimer.singleShot(0, self.compute_initial_histograms)
+
 
     # initialization and setup
     def find_widgets(self):
@@ -144,7 +134,6 @@ class ToolCController:
             steps[k] = 1.0
             decimals[k] = 0
         return mins, maxs, bin_specs, decimals, steps
-    
 
     def insert_range_widgets(self, cols):
         self.range_widgets = []
@@ -152,7 +141,7 @@ class ToolCController:
         if layout is None:
             raise RuntimeError("gm_placeholder_widget has no layout in Qt Designer!")
         for col in range(17):
-            rc = RangeCombine(data=self.data[:, col], min_value=self.mins[col], max_value=self.maxs[col], 
+            rc = RangeCombine(data=self._summarystats[:, col], min_value=self.mins[col], max_value=self.maxs[col], 
                               bin_specs=self.bin_specs[col], decimals=self.decimals[col], step=self.steps[col],
                               label=self.titles[col])
             self.range_widgets.append(rc)
@@ -161,22 +150,29 @@ class ToolCController:
             col_grid = i % cols
             layout.addWidget(rc, row_grid, col_grid)
 
+    def set_data(self, summarystats, priorsamples):
+        logging.debug("ToolC.set_data: received data")
+        self._summarystats = summarystats
+        self._priorsamples = priorsamples
+        self.insert_range_widgets(3)
+        self.compute_initial_histograms()
 
     def compute_initial_histograms(self):
+            if self._summarystats is None:
+                return
             self.user_compute = False
             self.btn_compute.setEnabled(False)
             self.btn_compute.setText("loading…")
-            self.full_worker = FullHistogramWorker(self.data, self.mins, self.maxs, self.bin_specs)
+
+            self.full_worker = FullHistogramWorker(self._summarystats, self.mins, self.maxs, self.bin_specs)
             self.full_worker.finished.connect(self.on_full_histograms_ready)
             self.full_worker.finished.connect(self.full_worker.quit)  # Clean up thread when done
             self.full_worker.finished.connect(self.full_worker.deleteLater)
             self.full_worker.start()
 
-
     def connect_signals(self):
         self.btn_compute.clicked.connect(self.on_compute)
         self.btn_save.clicked.connect(self.on_save)
-
 
     # user actions (button pressed)
     def on_compute(self):
@@ -187,7 +183,7 @@ class ToolCController:
         self.btn_switch.setEnabled(False)
         self.btn_save.setEnabled(False)
         mask = self.compute_shared_mask()
-        self.reduced_worker = ReducedHistogramWorker(self.data, mask, self.hist_cache)
+        self.reduced_worker = ReducedHistogramWorker(self._summarystats, mask, self.hist_cache)
         self.reduced_worker.finished.connect(self.on_histograms_ready)
         self.reduced_worker.finished.connect(self.reduced_worker.quit)  # Clean up thread when done
         self.reduced_worker.finished.connect(self.reduced_worker.deleteLater)
@@ -203,17 +199,14 @@ class ToolCController:
         # --> doesn't really make sence, if you want more samples form the same subset? ask jan 
         self.btn_save.setText("save another set")
 
-
-
     # core computation parts
     def compute_shared_mask(self):
-        mask = np.ones(len(self.data), dtype=bool)
+        mask = np.ones(len(self._summarystats), dtype=bool)
         for col, rc in enumerate(self.range_widgets):
             low, high = rc.current_range()
-            mask &= (self.data[:, col] >= low) & (self.data[:, col] <= high)
+            mask &= (self._summarystats[:, col] >= low) & (self._summarystats[:, col] <= high)
         return mask
-    
-   
+
     # async / callback handlers
     def on_full_histograms_ready(self, results):
         self.hist_cache = results  # save it
@@ -240,13 +233,13 @@ class ToolCController:
             self.btn_back.setEnabled(True)
             self.btn_switch.setEnabled(True)
 
-    
     # saving 
     def sample_subset_for_saving(self):
+        logging.debug("ToolC.sample_subset_for saving")
         mask = self.compute_shared_mask()  
         n = int(self.sample_n.value())
-        subset_data = self.data[mask]
-        subset_prior = self.prior_samples[mask]
+        subset_data = self._summarystats[mask]
+        subset_prior = self._priorsamples[mask]
         if n < len(subset_data):
             ints = random.sample(range(1, len(subset_data)), n)
             subset_data_samples = subset_data[ints]
@@ -259,15 +252,3 @@ class ToolCController:
             subset_data_samples = subset_data
             subset_prior_samples = subset_prior
         return subset_data_samples, subset_prior_samples
-    
-
-
-
-
-    
-
-
-
-
-
-

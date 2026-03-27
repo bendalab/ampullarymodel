@@ -40,7 +40,7 @@ class About(QWidget):
         iconlabel.setPixmap(pixmap)
         iconlabel.setAlignment(Qt.AlignCenter)
         iconlabel.setScaledContents(True)
-        
+
         self.layout().addWidget(iconlabel)
         self.layout().addStretch()
         self.layout().addWidget(subheading)
