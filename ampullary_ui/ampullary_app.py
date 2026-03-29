@@ -1,4 +1,3 @@
-print("start")
 import logging
 import argparse
 from PySide6.QtWidgets import QApplication
@@ -6,15 +5,9 @@ from PySide6.QtCore import QSettings
 print("imports 1")
 
 import ampullary_ui.resources_rc
-print("imports 2")
-
 from ampullary_ui.controllers.main_controller import MainController
-print("imports 3")
-
 from ampullary_ui.controllers.ui_loding_helper import load_ui
-print("imports 4")
 from ampullary_ui.utils import load_style
-print("imports 5")
 from ampullary_ui import info
 print("imports done")
 
