@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget, QFil
 from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
-from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure, get_outputfolder
+from ampullary_ui.utils.saving_helper import save_data, save_features, save_figure, get_outputfolder
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.signals import SimulatorSignals
 
