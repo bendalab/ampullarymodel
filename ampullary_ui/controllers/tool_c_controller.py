@@ -2,10 +2,12 @@ import logging
 import random
 import numpy as np
 
-from PySide6.QtWidgets import QSpinBox, QWidget
-from PySide6.QtCore import Signal, QThread, QTimer
+from pathlib import Path
+
+from PySide6.QtWidgets import QSpinBox, QWidget, QFileDialog
+from PySide6.QtCore import Signal, QThread, QTimer, QSettings
 from ampullary_ui.controllers.customcombienationwidget import RangeCombine
-from ampullary_ui.computations.saving_helper import save_sampled_subset
+from ampullary_ui.computations.saving_helper import save_sampled_subset, get_outputfolder
 from IPython import embed
 
 
@@ -94,7 +96,6 @@ class ToolCController:
         self.connect_signals()
         # QTimer.singleShot(0, self.compute_initial_histograms)
 
-
     # initialization and setup
     def find_widgets(self):
         self.btn_compute = self.window.gm_btn_compute
@@ -106,14 +107,12 @@ class ToolCController:
         self.sample_n = self.window.findChild(QSpinBox, f"gm_spinBox_1")
         self.n_update = self.window.gm_n_update
 
-
     def setup_defaults(self):
         self.btn_save.setEnabled(False)
         self.name_edit.setText("subset_001")
         self.sample_n.setMinimum(1)
         self.sample_n.setMaximum(12_000_000)
         self.sample_n.setValue(100)
-
 
     def define_stuff(self): 
         mins = [30.0, 0.0, -0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 3.66, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -189,14 +188,12 @@ class ToolCController:
         self.reduced_worker.finished.connect(self.reduced_worker.deleteLater)
         self.reduced_worker.start()
 
-
     def on_save(self):
-        subset_data_samples, subset_prior_samples = self.sample_subset_for_saving()
+        output_folder = get_outputfolder()
+
+        data_samples, prior_samples = self.sample_subset_for_saving()
         filename = self.name_edit.text().strip()
-        save_sampled_subset(subset_data_samples, subset_prior_samples, filename)
-        # disable save button after saving once 
-        #self.btn_save.setEnabled(False)
-        # --> doesn't really make sence, if you want more samples form the same subset? ask jan 
+        save_sampled_subset(data_samples, prior_samples, output_folder, filename)
         self.btn_save.setText("save another set")
 
     # core computation parts
@@ -221,7 +218,6 @@ class ToolCController:
         self.btn_compute.setEnabled(True)
         self.btn_compute.setText("Compute")
 
-
     def on_histograms_ready(self, results):
         for rc, hist_data in zip(self.range_widgets, results):
             rc.make_histogram(hist_data)
@@ -233,7 +229,7 @@ class ToolCController:
             self.btn_back.setEnabled(True)
             self.btn_switch.setEnabled(True)
 
-    # saving 
+    # prepare data for saving 
     def sample_subset_for_saving(self):
         logging.debug("ToolC.sample_subset_for saving")
         mask = self.compute_shared_mask()  

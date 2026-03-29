@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget, QFil
 from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
-from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
+from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure, get_outputfolder
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.signals import SimulatorSignals
 
@@ -210,20 +210,23 @@ class Simulator(QWidget):
             self.text_output.insertPlainText(line)
 
     def _on_save(self):
-        # save everything that is checked when savebutton is clicked
-        filename = self.name_edit.text().strip()
+        logging.info("Simulator: saving results...")
         if self.results is None:
             self.text_output.insertPlainText('\nNothing to save\n')
+            logging.debug("Simulator: no results, there is nothing to save")
             return
+        output_folder = get_outputfolder()
+        filename = self.name_edit.text().strip()
+
         if self.checkBox_data.isChecked():
-            save_data(self.results.data, filename)
+            save_data(self.results.data, output_folder, filename)
             self.text_output.insertPlainText('\nData was saved\n')
         if self.checkBox_features.isChecked():
-            save_features(self.results.features, filename) 
+            save_features(self.results.features, output_folder, filename) 
             self.text_output.insertPlainText('\nFeatures were saved\n')
         if self.checkBox_figure.isChecked():
             if hasattr(self, 'current_fig'):
-                save_figure(self.current_fig, filename)
+                save_figure(self.current_fig, output_folder, filename)
                 self.text_output.insertPlainText('\nFigure was saved\n')
             else:
                 self.text_output.insertPlainText('\nNo figure to save\n')

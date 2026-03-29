@@ -5,7 +5,7 @@ from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl, Qt
 from PySide6.QtGui import QDesktopServices
 from ampullary_ui.computations.table_conversion_gui import prepare_feature_inputs, load_posterior, worker_function_generate_multi
-from ampullary_ui.computations.saving_helper import save_parameter_table 
+from ampullary_ui.computations.saving_helper import save_parameter_table, get_outputfolder 
 from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
 
 from IPython import embed
@@ -116,21 +116,17 @@ class ToolBExtention:
         self.info_text.setOpenExternalLinks(False)
         self.info_text.setOpenLinks(False)
 
-
-    
     def open_example(self, url: QUrl):
         rel_path = Path(url.toString())
         base_dir = Path(__file__).resolve().parent
         abs_path = (base_dir / rel_path).resolve()
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(abs_path)))
 
-
     def connect_signals(self):
         # connect button clicks to methode
         self.btn_run.clicked.connect(self.on_generate_multi)
         self.btn_cancel.clicked.connect(self.on_cancelled)
         self.info_text.anchorClicked.connect(self.open_example)
-
 
     # user input
     def path_handling(self):
@@ -221,11 +217,9 @@ class ToolBExtention:
             else:  # Keep Running or closed dialog
                 return
 
-
     # async / callback handlers
     def update_progress_text(self, msg):
         self.text_output.appendPlainText(msg)
-
 
     def on_genmulti_finished(self, results):
         self.main_controller.stop_progress_animation()

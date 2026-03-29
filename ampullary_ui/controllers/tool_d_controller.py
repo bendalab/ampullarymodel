@@ -1,16 +1,16 @@
-import os 
-import pandas as pd
+import logging
 import numpy as np
+
 from PySide6.QtWidgets import QLineEdit, QSpinBox, QFrame, QSizePolicy
 from PySide6.QtCore import Qt
+
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+
 from ampullary_ui.computations.controller_functions import get_subset_values
 from ampullary_ui.plotting.plot_distro import plot_samples
-from ampullary_ui.computations.saving_helper import save_sampled_subset
+from ampullary_ui.computations.saving_helper import save_sampled_subset, get_outputfolder
+
 from IPython import embed
-
-
-
 
 class ToolDController:
     def __init__(self, window, labels):
@@ -40,7 +40,6 @@ class ToolDController:
         self.plot_container = self.window.findChild(QFrame, "gme_figure")
         self.inputs = [self.window.findChild(QLineEdit, f"gme_lineEdit_{i}") for i in range(1, 18)]
 
-
     def setup_defaults(self):
         # note: dont need to set up range, if its to high/low, i will just take the nearest (highest/lowest) anyway
         self.btn_save.setEnabled(False)
@@ -54,7 +53,6 @@ class ToolDController:
             line.setAlignment(Qt.AlignRight)
             #line.setFixedWidth(80)
             line.setStyleSheet("""QLineEdit:placeholder{color: #888;}""")
-    
 
     def setup_placeholder_plot(self):
         #make dummy fig with all samples:
@@ -71,11 +69,9 @@ class ToolDController:
         self.placeholder_canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.plot_layout.addWidget(self.placeholder_canvas)
 
-
     def connect_signals(self):
         self.btn_search.clicked.connect(self.on_search)
         self.btn_save.clicked.connect(self.on_save)
-
 
     # user actions (button pressed)
     def on_search(self):
@@ -99,14 +95,14 @@ class ToolDController:
         self.btn_back.setEnabled(True)
         self.btn_switch.setEnabled(True)
 
-
     def on_save(self):
+        output_folder = get_outputfolder()
         filename = self.name_edit.text().strip()
-        save_sampled_subset(self.near_data_samples, self.near_prior_samples, filename)
+
+        save_sampled_subset(self.near_data_samples, self.near_prior_samples, output_folder, filename)
         # disable save button after saving once 
         # --> actually makes sense here
         self.btn_save.setEnabled(False)
-
 
     # some computation helper
     def get_values_from_lines(self):
@@ -126,7 +122,6 @@ class ToolDController:
                 vals_convert[i] = np.nan
         return vals_convert
 
-
     # update figure
     def show_simulation_figure(self):
             # Remove placeholder canvas if it exists
@@ -143,31 +138,3 @@ class ToolDController:
             self.canvas = FigureCanvas(self.current_fig)
             self.canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.plot_layout.addWidget(self.canvas)
-
-
-
-
-
-
-
-
-    
-
-
-
-"""
-    def save_sampled_subset(self):
-        output_dir = os.path.join( "..", "derived_data", "subsets") 
-        os.makedirs(output_dir, exist_ok=True)
-        filename = self.name_edit.text().strip()
-        df_sum_subset_samples = pd.DataFrame(data =  self.near_data_samples, columns = self.labels["feature_save_labels"])
-        filepath = os.path.join(output_dir, f"feature_sample_subset_{filename}.csv")
-        df_sum_subset_samples.to_csv(filepath, index = False) 
-        df_prior_subset_samples = pd.DataFrame(data = self.near_prior_samples,columns = self.labels["parameter_save_labels"])
-        filepath = os.path.join(output_dir, f"prior_sample_subset_{filename}.csv")
-        df_prior_subset_samples.to_csv(filepath, index = False) 
-        # disable save button
-        self.btn_save.setEnabled(False)
-"""
-
-#pip uninstall sbi && pip install sbi==0.22.0 
