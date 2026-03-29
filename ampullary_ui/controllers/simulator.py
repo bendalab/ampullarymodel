@@ -1,30 +1,40 @@
-import numpy as np
 import logging
+import numpy as np
+from pathlib import Path
 
-from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget
-from PySide6.QtCore import QThread, Signal, QLocale
+from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget, QFileDialog
+from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-print("Simulator:imports 1")
 
-from ampullary_ui.computations.controller_functions import simulate_from_input_params, SimulationResult
 from ampullary_ui.computations.saving_helper import save_data, save_features, save_figure
 from ampullary_ui.plotting.plot_cell import plot_cell
-print("Simulator:imports 2")
+from ampullary_ui.signals import SimulatorSignals
 
 from IPython import embed
 logging.debug("Imports done!")
 
-class SimulationThread(QThread):
-    finished = Signal(object)  # emits results when done
+class SimulationThread(QRunnable):
 
     def __init__(self, params):
         super().__init__()
-        self.params = params
+        self._params = params
+        self._signals = SimulatorSignals()
+        self._results = None
 
+    @Slot()
     def run(self):
-        # This runs in a separate thread!
-        results = simulate_from_input_params(self.params, trials=5, baseline_duration=10.)
-        self.finished.emit(results)
+        self._signals.progress.emit("Imports ...", 0.1)
+        from ampullary_ui.computations.controller_functions import (
+            simulate_from_input_params
+        )
+        self._signals.progress.emit("Running simulation ... ", 0.2)
+        self._results = simulate_from_input_params(self._params, trials=5, baseline_duration=10.)
+        self._signals.progress.emit("...done", 1.0)
+        self._signals.finished.emit(True)
+
+    @property
+    def results(self):
+        return self._results
 
 
 class Simulator(QWidget):
@@ -32,18 +42,18 @@ class Simulator(QWidget):
 
     def __init__(self, main_controller, feature_labels, parent=None):
         super().__init__(parent)
-        logging.info(f"Simulator: init")
-        # attributes
+        logging.info("Simulator: init")
         self.main_controller = main_controller
-        #self.window = window
-        #self.current_fig = example_fig
         self.window = self.main_controller._window
         self.example_fig = self.main_controller._example_fig
         self.current_fig = self.example_fig
         self.results = None
         self.canvas = None
         self.labels = feature_labels
-        self.sim_thread = None
+
+        self._sim_thread = None
+        self._threadpool = QThreadPool()
+
         self._find_widgets()
         self._setup_spinboxes()
         self._setup_defaults()
@@ -107,10 +117,12 @@ class Simulator(QWidget):
         self.plot_layout.addWidget(self.placeholder_canvas)
 
     def _connect_signals(self):
-        # connect button clicks to methode
         self.btn_simulate.clicked.connect(self._on_simulate)
         self.btn_reset.clicked.connect(self._on_reset)
         self.btn_save.clicked.connect(self._on_save)
+
+    def _on_simulation_progress(self, msg, p):
+        print("simulation progress", msg,  p)
 
     def _on_simulate(self):
         logging.info(f"Simulator: run simulation")
@@ -121,16 +133,16 @@ class Simulator(QWidget):
         self.btn_back.setEnabled(False)
         self.btn_multi.setEnabled(False)
         params = [self.spinboxes[i].value() for i in range(0, 9)]
-        self.sim_thread = SimulationThread(params)
-        self.sim_thread.finished.connect(self._on_simulation_finished)
-        self.sim_thread.finished.connect(self.sim_thread.quit)  # Clean up thread when done
-        self.sim_thread.finished.connect(self.sim_thread.deleteLater)
-        self.sim_thread.start()
+    
+        self._sim_thread = SimulationThread(params)
+        self._sim_thread._signals.progress.connect(self._on_simulation_progress)
+        self._sim_thread._signals.finished.connect(self._on_simulation_finished)
 
         self.text_output.clear()
         self.text_output.insertPlainText("Simulating...\n")
         self.btn_simulate.setText("simulating…")
         self.main_controller.start_progress_animation()
+        self._threadpool.start(self._sim_thread)
         self.progress.emit("simulating ...")
 
     def _on_reset(self):
@@ -146,16 +158,17 @@ class Simulator(QWidget):
         self.text_output.insertPlainText('Just put in a set of parameters and press simulate!\n\nThe simulation includes 30 ms baseline activity and 100s white noise.') 
         self.progress.emit("")
 
-    def _on_simulation_finished(self, results: SimulationResult):
+    def _on_simulation_finished(self):
         logging.info("Simulator: simulation done...")
 
         self.main_controller.stop_progress_animation()
-        self.results = results
+        self.results = self._sim_thread.results
+        self._sim_thread = None
         # Create the matplotlib figure from your data
         self.progress.emit("Simulation done, plotting ...")
         self.text_output.insertPlainText('Simulation done, analyzing ...\n')
 
-        fig = plot_cell(results.baseline_data, results.stimulus_data)
+        fig = plot_cell(self.results.baseline_data, self.results.stimulus_data)
         self.current_fig = fig
         self._show_simulation_figure()
         self.btn_save.setEnabled(True)
