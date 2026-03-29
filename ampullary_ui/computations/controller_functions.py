@@ -5,15 +5,15 @@ Logic functions for implementing user interactions
 - Get MAP model for a single set of cell features
 """
 
-import json
 import pickle
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from typing import Dict, Any
+from pathlib import Path
 
 from ampullary_ui.computations.lif_simulation import lif_simulation
-from ampullary_ui.utils.stimulus_helper import load_gwnstimulus, modify_stimulus
+from ampullary_ui.utils import load_gwnstimulus, modify_stimulus, load_new_order
 from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analyse_sim_data import analyze_baseline_data, analyze_noise_data
 
@@ -97,15 +97,12 @@ def create_cell_from_input_features(features):
     parameter : np.array
         model parameter set       
     """
-    # load stuff you need for simulation analysis
-    filepath = os.path.join("general_helpers", "new_order.json")
-    with open(filepath, "r") as file:
-        new_order = json.load(file)['new_order']
-    file.close()
-    filepath = os.path.join("..", "source", "posterior.pkl")
-    with open(filepath, 'rb') as handle:
+    new_order = load_new_order()
+    path = Path.cwd() / "source" / "posterior.pkl"
+    with open(path, 'rb') as handle:
         posterior = pickle.load(handle)
     handle.close()
+
     wanted_cell = np.array(features)
     back_to_original = np.argsort(new_order)
     rel_stats = wanted_cell[back_to_original]
@@ -113,10 +110,8 @@ def create_cell_from_input_features(features):
     p = posterior.set_default_x(rel_stats) 
     mapped_posterior = p.map(num_iter=1000, show_progress_bars=False)
     parameter = mapped_posterior.tolist()[0]
+
     return parameter
-    
-
-
 
 
 def get_subset_values(sum_stats, prior_samples, values, n):
@@ -160,10 +155,3 @@ def get_subset_values(sum_stats, prior_samples, values, n):
         nearest_sum_stats = sum_stats[best_idx[order]]
         nearest_prior_samples = prior_samples[best_idx[order]]
     return nearest_sum_stats, nearest_prior_samples
-
-
-
-
-
-
-

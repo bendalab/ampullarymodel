@@ -13,8 +13,7 @@ from ampullary_ui.controllers.tool_d_controller import ToolDController
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.utils.saving_helper import read_output_folder, get_outputfolder
-from ampullary_ui.utils import load_labels
+from ampullary_ui.utils import get_outputfolder, load_labels, read_output_folder
 from ampullary_ui.dialogs.about import AboutDialog
 from ampullary_ui.signals import DataReaderSignals
 print("Main:imports done")

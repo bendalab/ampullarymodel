@@ -7,7 +7,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QSpinBox, QWidget, QFileDialog
 from PySide6.QtCore import Signal, QThread, QTimer, QSettings
 from ampullary_ui.controllers.customcombienationwidget import RangeCombine
-from ampullary_ui.utils.saving_helper import save_sampled_subset, get_outputfolder
+from ampullary_ui.utils import get_outputfolder, save_sampled_subset
 from IPython import embed
 
 

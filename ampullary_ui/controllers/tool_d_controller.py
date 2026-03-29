@@ -8,7 +8,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from ampullary_ui.computations.controller_functions import get_subset_values
 from ampullary_ui.plotting.plot_distro import plot_samples
-from ampullary_ui.utils.saving_helper import save_sampled_subset, get_outputfolder
+from ampullary_ui.utils import get_outputfolder, save_sampled_subset
 
 from IPython import embed
 

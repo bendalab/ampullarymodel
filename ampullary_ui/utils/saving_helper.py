@@ -20,7 +20,7 @@ from pathlib import Path
 from PySide6.QtCore import QSettings
 from PySide6.QtWidgets import QFileDialog
 
-from ampullary_ui.utils import load_labels
+from . import load_labels
 
 
 labels = load_labels()
