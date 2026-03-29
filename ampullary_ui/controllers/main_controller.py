@@ -31,7 +31,6 @@ from ampullary_ui.signals import DataReaderSignals
 print("Main:imports done")
 
 class DataLoader(QRunnable):
-
     def __init__(self, summaryfile:Path, priorfile:Path) -> None:
         super().__init__()
         if not summaryfile.exists() or not priorfile.exists():
@@ -126,7 +125,7 @@ class MainController(QWidget):
         self._toolbar = self._window.findChild(QToolBar, "toolbar")
 
     def _create_actions(self):
-        self._quit_action = QAction("Quit", parent=self._window)
+        self._quit_action = QAction(QIcon(":/pictograms/exit.png"), "Quit", parent=self._window)
         self._quit_action.setStatusTip("Close current file and quit")
         self._quit_action.setShortcut(QKeySequence("Ctrl+q"))
         self._quit_action.triggered.connect(self.cleanup_and_close)
@@ -196,6 +195,7 @@ class MainController(QWidget):
         self._toolbar.setIconSize(QSize(32, 32))
 
         self._toolbar.addAction(self._home_action)
+        self._toolbar.addAction(self._quit_action)
         self._toolbar.addSeparator()
         self._toolbar.addAction(self._simulator_action)
         self._toolbar.addSeparator()
@@ -205,13 +205,12 @@ class MainController(QWidget):
 
     def cleanup_and_close(self, event):
         logging.info("Cleanup and close!")
-        print("!!!!! PING !!!")
         """Stop all running threads before closing the application."""
-        # Stop ToolA thread
-        if hasattr(self._simulator, 'sim_thread') and self._simulator.sim_thread is not None:
-            if self._simulator.sim_thread.isRunning():
-                self._simulator.sim_thread.quit()
-                self._simulator.sim_thread.wait()
+        # # Stop ToolA thread
+        # if hasattr(self._simulator, 'sim_thread') and self._simulator.sim_thread is not None:
+        #     if self._simulator.sim_thread.isRunning():
+        #         self._simulator.sim_thread.quit()
+        #         # self._simulator.sim_thread.wait()
         
         # Stop ToolB thread
         if hasattr(self.toolB, 'sim_thread') and self.toolB.sim_thread is not None:
@@ -233,19 +232,19 @@ class MainController(QWidget):
                 self.toolB_ex.sim_thread.wait()
         
         # Stop ToolC workers (histogram workers)
-        if hasattr(self.toolC, 'full_worker') and self.toolC.full_worker is not None:
-            from IPython import embed
-            embed()
-            if self.toolC.full_worker.isRunning():
-                self.toolC.full_worker.quit()
-                self.toolC.full_worker.wait()
+        # if hasattr(self.toolC, 'full_worker') and self.toolC.full_worker is not None:
+        #     from IPython import embed
+        #     embed()
+        #     if self.toolC.full_worker.isRunning():
+        #         self.toolC.full_worker.quit()
+        #         self.toolC.full_worker.wait()
         if hasattr(self.toolC, 'reduced_worker') and self.toolC.reduced_worker is not None:
             if self.toolC.reduced_worker.isRunning():
                 self.toolC.reduced_worker.quit()
                 self.toolC.reduced_worker.wait()
         
         # Accept the close event
-        event.accept()
+        #event.accept()
 
     # setup processing animation
     def _setup_animation(self):
