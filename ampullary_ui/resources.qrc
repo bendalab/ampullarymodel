@@ -2,12 +2,13 @@
     <qresource prefix="/icons">
         <file>pictograms/arrow_up.png</file>
         <file>pictograms/arrow_down.png</file>
-        <file>pictograms/arrow_back.png</file>
-        <file>pictograms/arrow_forward.png</file>
+        <file alias="back">pictograms/arrow_back.png</file>
+        <file alias="fwd">pictograms/arrow_forward.png</file>
         <file>pictograms/check_mark.png</file>
-        <file>pictograms/home.png</file>
+        <file alias="home">pictograms/home.png</file>
         <file alias="icon">pictograms/Icon@2x.png</file>
         <file alias="exit">pictograms/exit@2x.png</file>
+        <file alias="help">pictograms/help@2x.png</file>
     </qresource>
     <qresource prefix="/configs">
         <file alias="style">style.qss</file>

@@ -14,7 +14,8 @@ from ampullary_ui.controllers.populationsimulator import PopulationSimulator
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.utils import get_outputfolder, load_labels, read_output_folder
-from ampullary_ui.dialogs.about import AboutDialog
+from ampullary_ui.dialogs import AboutDialog, HelpDialog
+
 from ampullary_ui.signals import DataReaderSignals
 print("Main:imports done")
 
@@ -85,8 +86,7 @@ class MainController(QWidget):
         self._setup_images()
         self._connect_navigation()
         self._window.description_1.anchorClicked.connect(self.open_example)
-        # Setup cleanup on window close
-        self._window.closeEvent = self.cleanup_and_close
+
         self._create_actions()
         self._create_menu()
         self._create_toolbar()
@@ -113,7 +113,7 @@ class MainController(QWidget):
         self._toolbar = self._window.findChild(QToolBar, "toolbar")
 
     def _create_actions(self):
-        self._quit_action = QAction(QIcon(":/pictograms/exit.png"), "Quit", parent=self._window)
+        self._quit_action = QAction(QIcon(":/icons/exit"), "Quit", parent=self._window)
         self._quit_action.setStatusTip("Close current file and quit")
         self._quit_action.setShortcut(QKeySequence("Ctrl+q"))
         self._quit_action.triggered.connect(self.cleanup_and_close)
@@ -133,7 +133,7 @@ class MainController(QWidget):
         self._modelcatalogue_action.setShortcut(QKeySequence("F4"))
         self._modelcatalogue_action.triggered.connect(self._run_modelpicker)
 
-        self._home_action = QAction(QIcon(":/pictograms/home.png"), "Home")
+        self._home_action = QAction(QIcon(":/icons/home"), "Home")
         self._home_action.setStatusTip("Back to the start page")
         self._home_action.setToolTip("Back to the start page")
         self._home_action.setEnabled(True)
@@ -151,11 +151,11 @@ class MainController(QWidget):
         self._set_outfolder_action.setEnabled(True)
         self._set_outfolder_action.triggered.connect(self._on_setoutputfolder)
 
-        # self._help_action = QAction(QIcon(":help"), "help")
-        # self._help_action.setStatusTip("Show help dialog")
-        # self._help_action.setShortcut(QKeySequence("F1"))
-        # self._help_action.setEnabled(True)
-        # self._help_action.triggered.connect(self.on_help)
+        self._help_action = QAction(QIcon(":/icons/help"), "help")
+        self._help_action.setStatusTip("Show help dialog")
+        self._help_action.setShortcut(QKeySequence("F1"))
+        self._help_action.setEnabled(True)
+        self._help_action.triggered.connect(self._on_help)
 
     def _create_menu(self):
         file_menu = self._menubar.addMenu("&File")
@@ -170,7 +170,7 @@ class MainController(QWidget):
 
         help_menu = self._menubar.addMenu("&Help")
         help_menu.addAction(self._about_action)
-        # help_menu.addAction(self._help_action)
+        help_menu.addAction(self._help_action)
 
         # menus = {"File": file_menu, "Tools": tools_menu}
         # for k in self._cw.menuActions:
@@ -187,10 +187,11 @@ class MainController(QWidget):
         self._toolbar.setAllowedAreas(Qt.ToolBarArea.TopToolBarArea)
         self._toolbar.setFloatable(False)
         self._toolbar.setMovable(False)
-        self._toolbar.setIconSize(QSize(32, 32))
+        self._toolbar.setIconSize(QSize(25, 25))
 
         self._toolbar.addAction(self._home_action)
         self._toolbar.addAction(self._quit_action)
+        self._toolbar.addAction(self._help_action)
         self._toolbar.addSeparator()
         self._toolbar.addAction(self._simulator_action)
         self._toolbar.addSeparator()
@@ -198,7 +199,7 @@ class MainController(QWidget):
         self._toolbar.addSeparator()
         self._toolbar.addAction(self._modelcatalogue_action)
 
-    def cleanup_and_close(self, event):
+    def cleanup_and_close(self):
         logging.info("Cleanup and close!")
         """Stop all running threads before closing the application."""
         # # Stop ToolA thread
@@ -240,6 +241,8 @@ class MainController(QWidget):
         
         # Accept the close event
         #event.accept()
+        
+
     def _on_setoutputfolder(self):
         get_outputfolder()
 
@@ -349,6 +352,10 @@ class MainController(QWidget):
         about = AboutDialog(self)
         about.show()
 
+    def _on_help(self):
+        help = HelpDialog(self)
+        help.show()
+
     # navigation
     def _connect_navigation(self):
         # ToolA navigation
@@ -374,8 +381,10 @@ class MainController(QWidget):
         self._window.tc_to_single.clicked.connect(self._run_modelgenerator)
 
     def exit_request(self):
+        print("exit request")
         try:
             self.cleanup_and_close()
+            print("closing now!")
+            self.close()
         except Exception as e:
             print(e)
-        self.close()
