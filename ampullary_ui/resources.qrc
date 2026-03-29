@@ -7,6 +7,7 @@
         <file>pictograms/check_mark.png</file>
         <file>pictograms/home.png</file>
         <file alias="icon">pictograms/Icon@2x.png</file>
+        <file alias="exit">pictograms/exit@2x.png</file>
     </qresource>
     <qresource prefix="/configs">
         <file alias="new_order">general_helpers/new_order.json</file>

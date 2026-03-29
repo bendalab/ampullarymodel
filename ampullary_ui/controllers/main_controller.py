@@ -3,30 +3,19 @@ import pandas as pd
 
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QSizePolicy, QLabel, QToolBar, QMenuBar
-from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Signal, Slot, QThreadPool
+from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QThreadPool
 from PySide6.QtGui import QPixmap, QDesktopServices, QAction, QKeySequence, QIcon
-print("Main:imports 1")
 
 from ampullary_ui.controllers.simulator import Simulator
-print("Main:imports 2")
-
 from ampullary_ui.controllers.tool_b_controller import ToolBController
-print("Main:imports 3")
-
 from ampullary_ui.controllers.tool_c_controller import ToolCController
-print("Main:imports 4")
 from ampullary_ui.controllers.tool_d_controller import ToolDController
-print("Main:imports 5")
 from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
-print("Main:imports 6")
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
-print("Main:imports 7")
 from ampullary_ui.plotting.plot_cell import plot_cell
-print("Main:imports 8")
+from ampullary_ui.computations.saving_helper import read_output_folder, get_outputfolder
 from ampullary_ui.utils import load_labels
-print("Main:imports 9")
 from ampullary_ui.dialogs.about import AboutDialog
-print("Main:imports 10")
 from ampullary_ui.signals import DataReaderSignals
 print("Main:imports done")
 
@@ -157,6 +146,12 @@ class MainController(QWidget):
         self._about_action.setEnabled(True)
         self._about_action.triggered.connect(self._on_about)
 
+        self._set_outfolder_action = QAction("set output folder")
+        self._set_outfolder_action.setStatusTip(str(read_output_folder))
+        self._set_outfolder_action.setToolTip("Define the output folder")
+        self._set_outfolder_action.setEnabled(True)
+        self._set_outfolder_action.triggered.connect(self._on_setoutputfolder)
+
         # self._help_action = QAction(QIcon(":help"), "help")
         # self._help_action.setStatusTip("Show help dialog")
         # self._help_action.setShortcut(QKeySequence("F1"))
@@ -165,6 +160,7 @@ class MainController(QWidget):
 
     def _create_menu(self):
         file_menu = self._menubar.addMenu("&File")
+        file_menu.addAction(self._set_outfolder_action)
         file_menu.addSeparator()
         file_menu.addAction(self._quit_action)
 
@@ -245,6 +241,8 @@ class MainController(QWidget):
         
         # Accept the close event
         #event.accept()
+    def _on_setoutputfolder(self):
+        get_outputfolder()
 
     # setup processing animation
     def _setup_animation(self):

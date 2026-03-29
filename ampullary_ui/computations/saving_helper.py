@@ -27,21 +27,29 @@ labels = load_labels()
 parameter_labels = labels['parameter_save_labels']
 feature_labels = labels['feature_save_labels']
 
-def get_outputfolder():
+def read_output_folder():
     settings = QSettings()
     output_folder = settings.value("app/output_folder", str(Path.cwd()))
-    output_folder = QFileDialog.getExistingDirectory(self, "Select output folder",
+    return output_folder
+
+def store_output_folder(output_folder):
+    settings = QSettings()
+    settings.setValue("app/output_folder", str(output_folder))
+    
+def get_outputfolder():
+    output_folder = read_output_folder()
+    output_folder = QFileDialog.getExistingDirectory(None, "Select output folder",
                                                          dir=output_folder)
     if not output_folder:
         logging.info("Folder selection cancelled")
         return None
     output_folder = Path(output_folder)
-    settings.setValue("app/output_folder", str(output_folder))
+    store_output_folder(output_folder)
 
     return output_folder
 
 def ensure_folder(output_folder):
-    output_folder.mkdir(parents=True, exists_ok=True)
+    output_folder.mkdir(parents=True, exist_ok=True)
     return output_folder
 
 def save_data(data, folder, filename):
@@ -171,7 +179,7 @@ def save_sampled_subset(feature_samples, prior_samples, output_folder, filename)
     df_sum_subset_samples.to_csv(output_dir / f"feature_sample_subset_{filename}.csv", index = False) 
     df_prior_subset_samples = pd.DataFrame(data = prior_samples, columns = parameter_labels)
     df_prior_subset_samples.to_csv(output_dir / f"prior_sample_subset_{filename}.csv", index = False) 
-    
+
 
 def save_parameter_table(collect_params, output_dir, filename):
     """
