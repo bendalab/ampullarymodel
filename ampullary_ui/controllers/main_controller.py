@@ -116,7 +116,7 @@ class MainController(QWidget):
         self._quit_action = QAction(QIcon(":/icons/exit"), "Quit", parent=self._window)
         self._quit_action.setStatusTip("Close current file and quit")
         self._quit_action.setShortcut(QKeySequence("Ctrl+q"))
-        self._quit_action.triggered.connect(self.cleanup_and_close)
+        self._quit_action.triggered.connect(self._on_exit_request)
 
         self._simulator_action = QAction("Simulator", parent=self._window)
         self._simulator_action.setStatusTip("Run simulator tool")
@@ -380,11 +380,11 @@ class MainController(QWidget):
         self._window.tc_back_to_main.clicked.connect(lambda: self._stacked.setCurrentWidget(self._window.startpage))
         self._window.tc_to_single.clicked.connect(self._run_modelgenerator)
 
-    def exit_request(self):
+    def _on_exit_request(self):
         print("exit request")
         try:
             self.cleanup_and_close()
-            print("closing now!")
-            self.close()
         except Exception as e:
             print(e)
+        print("closing now!")
+        self.close()
