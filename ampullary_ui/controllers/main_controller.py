@@ -10,7 +10,7 @@ from ampullary_ui.controllers.simulator import Simulator
 from ampullary_ui.controllers.tool_b_controller import ToolBController
 from ampullary_ui.controllers.tool_c_controller import ToolCController
 from ampullary_ui.controllers.tool_d_controller import ToolDController
-from ampullary_ui.controllers.tool_a_extantion import PopulationSimulator
+from ampullary_ui.controllers.populationsimulator import PopulationSimulator
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.utils import get_outputfolder, load_labels, read_output_folder
