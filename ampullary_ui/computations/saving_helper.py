@@ -1,5 +1,5 @@
 """
-All the saving functions for the different rresults, formats etc. 
+All the saving functions for the different results, formats etc. 
 (except save data in subprocess, thats with table_convert)
 
 - Save simulation data dictionary as npz
@@ -11,10 +11,15 @@ All the saving functions for the different rresults, formats etc.
 - convert multiple feature sets into Dataframe and save
 """
 import os
+import logging
 import pandas as pd
 import numpy as np
 
 from pathlib import Path
+
+from PySide6.QtCore import QSettings
+from PySide6.QtWidgets import QFileDialog
+
 from ampullary_ui.utils import load_labels
 
 
@@ -22,56 +27,74 @@ labels = load_labels()
 parameter_labels = labels['parameter_save_labels']
 feature_labels = labels['feature_save_labels']
 
+def get_outputfolder():
+    settings = QSettings()
+    output_folder = settings.value("app/output_folder", str(Path.cwd()))
+    output_folder = QFileDialog.getExistingDirectory(self, "Select output folder",
+                                                         dir=output_folder)
+    if not output_folder:
+        logging.info("Folder selection cancelled")
+        return None
+    output_folder = Path(output_folder)
+    settings.setValue("app/output_folder", str(output_folder))
 
-def save_data(data, filename):
+    return output_folder
+
+def ensure_folder(output_folder):
+    output_folder.mkdir(parents=True, exists_ok=True)
+    return output_folder
+
+def save_data(data, folder, filename):
     """
     Save simulation data dictionary as npz
     save on pre-directed path
-    
+
     Parameters:
     -----------
     data : dict
         simulation data dictionary, incl simulated voltage for baseline
+    folder : pathlib.Path
+        the parent output folder
     filename : str
         filename, user input
-    
+
     Returns:
     -------
     None
     """
-    output_dir =  os.path.join("..", "derived_data", "simulations")
-    os.makedirs(output_dir, exist_ok=True)
-    filepath = os.path.join(output_dir, f"simulation_data_{filename}.npz")
-    np.savez(filepath, **data)
+    output_dir = ensure_folder(folder / "derived_data" / "simulations")
+    logging.debug(f"Saving data to {output_dir}")
+    np.savez(output_dir / f"simulation_data_{filename}.npz", **data)
 
 
-def save_params(params, filename):
+def save_params(params, folder, filename):
     """
     convert single parameter set into one line Dataframe and save
     save on pre-directed path
-    
+
     Parameters:
     -----------
     params : np.array
         model parameter set
+    folder : pathlib.Path
+        the parent output folder
     filename : str
         filename, user input
-    
+
     Returns:
     -------
     None
     """
-    output_dir =  os.path.join("..", "derived_data", "parameter")
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir =  ensure_folder(folder / "derived_data" / "parameter")
     d = {'name' : filename}  
     for i in range(len(params)):
         d[parameter_labels[i]] = float(params[i])
     df = pd.DataFrame(d, index=[0])
-    filepath = os.path.join(output_dir, f"parameter_{filename}.csv")
-    df.to_csv(filepath, index = False) 
+    logging.debug(f"Saving paramters to {output_dir}")
+    df.to_csv(output_dir / f"parameter_{filename}.csv", index = False) 
 
 
-def save_features(features, filename):
+def save_features(features, folder, filename):
     """
     convert single feature set into one line Dataframe and save
     save on pre-directed path
@@ -80,6 +103,8 @@ def save_features(features, filename):
     -----------
     features : np.array
         feature set
+    folder : pathlib.Path
+        the parent output folder
     filename : str
         filename, user input
 
@@ -87,38 +112,39 @@ def save_features(features, filename):
     -------
     None
     """
-    output_dir =  os.path.join("..", "derived_data", "features")
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = ensure_folder(folder / "derived_data" / "parameter")
+
     d = {'name' : filename}  
     for i in range(len(features)):
         d[feature_labels[i]] = float(features[i])
     df = pd.DataFrame(d, index=[0])
-    filepath = os.path.join(output_dir, f"features_{filename}.csv")
-    df.to_csv(filepath, index = False) 
-    
+    logging.debug(f"Saving features to {output_dir}")
+    df.to_csv(output_dir / f"features_{filename}.csv", index = False) 
 
-def save_figure(fig, filename):
+
+def save_figure(fig, folder: Path, filename: str):
     """
     Save a figure
     save on pre-directed path
-    
+
     Parameters:
     -----------
     fig : matplotlib figure
-    filename : str
-        filename, user input
-    
+    folder : pathlib.Path
+        the parent output folder
+    filename : pathlib.Path
+        the desired filename
+
     Returns:
     -------
     None
     """
-    output_dir =  os.path.join("..", "figures")
-    os.makedirs(output_dir, exist_ok=True)
-    filepath = os.path.join(output_dir, f"cell_simulation_{filename}")
-    fig.savefig(filepath)
+    output_dir = ensure_folder(folder / "derived_data" / "figures")
+    logging.debug(f"Saving figure {filename} to {output_dir}")
+    fig.savefig(output_dir / f"cell_simulation_{filename}")
 
 
-def save_sampled_subset(feature_samples, prior_samples, filename):
+def save_sampled_subset(feature_samples, prior_samples, output_folder, filename):
     """
     Save the sampled subset from catalogue
     save chosen/sampled feature subset and corresponding model parameters
@@ -130,6 +156,8 @@ def save_sampled_subset(feature_samples, prior_samples, filename):
         array of arrays of feature sets 
     prior_samples : np.array
         array of arrays of model parameter sets 
+    output_folder : Path
+        the output parent path
     filename : str
         filename, user input
     
@@ -137,14 +165,12 @@ def save_sampled_subset(feature_samples, prior_samples, filename):
     -------
     None
     """
-    output_dir = os.path.join( "..", "derived_data", "subsets") 
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = ensure_folder(output_folder / "derived_data" / "subsets")
+
     df_sum_subset_samples = pd.DataFrame(data =  feature_samples, columns = feature_labels)
-    filepath = os.path.join(output_dir, f"feature_sample_subset_{filename}.csv")
-    df_sum_subset_samples.to_csv(filepath, index = False) 
+    df_sum_subset_samples.to_csv(output_dir / f"feature_sample_subset_{filename}.csv", index = False) 
     df_prior_subset_samples = pd.DataFrame(data = prior_samples, columns = parameter_labels)
-    filepath = os.path.join(output_dir, f"prior_sample_subset_{filename}.csv")
-    df_prior_subset_samples.to_csv(filepath, index = False) 
+    df_prior_subset_samples.to_csv(output_dir / f"prior_sample_subset_{filename}.csv", index = False) 
     
 
 def save_parameter_table(collect_params, output_dir, filename):
