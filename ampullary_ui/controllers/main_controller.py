@@ -10,7 +10,7 @@ from ampullary_ui.controllers.simulator import Simulator
 from ampullary_ui.controllers.tool_b_controller import ToolBController
 from ampullary_ui.controllers.tool_c_controller import ToolCController
 from ampullary_ui.controllers.tool_d_controller import ToolDController
-from ampullary_ui.controllers.tool_a_extantion import ToolAExtention
+from ampullary_ui.controllers.tool_a_extantion import PopulationSimulator
 from ampullary_ui.controllers.tool_b_extantion import ToolBExtention
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.utils import get_outputfolder, load_labels, read_output_folder
@@ -78,7 +78,7 @@ class MainController(QWidget):
         self.toolD = ToolDController(self._window, labels['feature_labels'])
         logging.debug(f"MainController: toolD initialized")
 
-        self.toolA_ex = ToolAExtention(self)
+        self._pop_simulator = PopulationSimulator(self)
         self.toolB_ex = ToolBExtention(self)
         logging.debug(f"MainController: extensions initialized")
 
@@ -214,10 +214,10 @@ class MainController(QWidget):
                 self.toolB.sim_thread.wait()
         
         # Stop ToolA Extension thread
-        if hasattr(self.toolA_ex, 'sim_thread') and self.toolA_ex.sim_thread is not None:
-            if self.toolA_ex.sim_thread.isRunning():
-                self.toolA_ex.sim_thread.quit()
-                self.toolA_ex.sim_thread.wait()
+        if hasattr(self._pop_simulator, 'sim_thread') and self._pop_simulator.sim_thread is not None:
+            if self._pop_simulator.sim_thread.isRunning():
+                self._pop_simulator.sim_thread.quit()
+                self._pop_simulator.sim_thread.wait()
         
         # Stop ToolB Extension thread
         if hasattr(self.toolB_ex, 'sim_thread') and self.toolB_ex.sim_thread is not None:

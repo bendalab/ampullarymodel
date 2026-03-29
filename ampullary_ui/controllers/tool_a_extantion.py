@@ -34,8 +34,7 @@ class SimulationThreadMulti(QThread):
             self.current_proc.terminate()
             self.current_proc.join()
 
-
-    def run(self):   
+    def run(self):
         # load stimulus and stim length here
         collect_results = []
         stimulus, stim_data, stimulus_length = get_stimulus_and_data()
@@ -45,7 +44,6 @@ class SimulationThreadMulti(QThread):
         raw_data_dir.mkdir(exist_ok=True, parents=True)
         total_rows = sum(package.shape[0] for _, package in self.params)
 
-        
         for start_idx, package in self.params:
             if not self._is_running:
                 self.progress.emit("Simulation cancelled by user.")
@@ -82,13 +80,9 @@ class SimulationThreadMulti(QThread):
         self.finished.emit(results)
 
 
-  
- 
-
-
-class ToolAExtention:
-    def __init__(self, main_controller):
-        # attributes
+class PopulationSimulator(QWidget):
+    def __init__(self, main_controller, parent=None):
+        self.__init__(parent)
         self.main_controller = main_controller
         self.window = self.main_controller._window
         self.results = None
@@ -97,7 +91,6 @@ class ToolAExtention:
         self.find_widgets()
         self.setup_defaults()
         self.connect_signals()
-
 
     # initialization and setup
     def find_widgets(self):
@@ -112,7 +105,6 @@ class ToolAExtention:
         self.text_output = self.window.ts_text_output
         self.info_text = self.window.ts_info
 
-
     def setup_defaults(self):
         # set other defaults
         self.btn_cancel.setEnabled(False)
@@ -123,16 +115,13 @@ class ToolAExtention:
         self.info_text.setOpenExternalLinks(False)
         self.info_text.setOpenLinks(False)
 
-    
     def open_example(self, url: QUrl):
         rel_path = Path(url.toString())
         base_dir = Path(__file__).resolve().parent
         abs_path = (base_dir / rel_path).resolve()
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(abs_path)))
 
-
     def connect_signals(self):
-        # connect button clicks to methode
         self.btn_run.clicked.connect(self.on_simulate)
         self.btn_cancel.clicked.connect(self.on_cancelled)
         self.info_text.anchorClicked.connect(self.open_example)
@@ -140,8 +129,6 @@ class ToolAExtention:
         self.checkBox_data.stateChanged.connect(self.on_checkbox_changed)
         self.checkBox_features.stateChanged.connect(self.on_checkbox_changed)
 
-
-    # user input
     def path_handling(self):
         # Base directory, project root folder:
         # yes, this is bad form with the hardcoded folder depth, I do not care right now
@@ -157,8 +144,7 @@ class ToolAExtention:
             # No output path given, use input's parent directory as output folder
             output_path = input_path.parent
         return input_path, output_path
-      
-    
+
     def path_validating(self, input_path, output_path):
         if not input_path.exists():
             self.text_output.appendPlainText(f"Input file does not exist: {input_path}")
@@ -170,9 +156,6 @@ class ToolAExtention:
         self.text_output.appendPlainText(f"Output path set to: {output_path}")
         return True
 
-        
-
-    # user actions (button pressed)
     def on_simulate(self):
         if hasattr(self, 'sim_thread') and self.sim_thread.isRunning():
             self.text_output.appendPlainText("Please wait for current subprocess to be cancelled.")
@@ -186,7 +169,7 @@ class ToolAExtention:
         self.btn_cancel.setEnabled(True)
 
         self.input_path, self.output_path = self.path_handling()
-        
+
         if not self.path_validating(self.input_path, self.output_path):
             # Abort simulation: reset back so user can try again
             self.btn_run.setEnabled(True)
@@ -210,8 +193,6 @@ class ToolAExtention:
         self.sim_thread.finished.connect(self.sim_thread.deleteLater)
         self.sim_thread.start()
 
-
-
     def on_cancelled(self):
         if hasattr(self, 'sim_thread') and self.sim_thread.isRunning():
             dlg = CancelConfirmDialog(self.btn_cancel)
@@ -223,17 +204,14 @@ class ToolAExtention:
                 self.btn_run.setEnabled(True)
                 self.btn_run.setText("run")
                 # saving handled in on_simulation_finished
-
             elif result == 2:  # Cancel without saving
                 self.save_flag = False
                 self.sim_thread.stop()
                 self.btn_cancel.setEnabled(False)
                 self.btn_run.setEnabled(True)
                 self.btn_run.setText("run")
-
             else:  # Keep Running or closed dialog
                 return
-            
 
     def on_checkbox_changed(self):
         if not (self.checkBox_data.isChecked() or self.checkBox_features.isChecked()):
@@ -242,13 +220,9 @@ class ToolAExtention:
         else:
             self.btn_run.setEnabled(True)
 
-
-
     # async / callback handlers
     def update_progress_text(self, msg):
         self.text_output.appendPlainText(msg)
-
-
 
     # async / callback handlers
     def on_simmulti_finished(self, results):
@@ -265,7 +239,3 @@ class ToolAExtention:
         self.btn_back.setEnabled(True)
         self.btn_single.setEnabled(True)
         self.btn_cancel.setEnabled(False)
-
-
-
-
