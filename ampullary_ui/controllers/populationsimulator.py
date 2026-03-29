@@ -4,6 +4,7 @@ import pandas as pd
 from pathlib import Path
 from PySide6.QtCore import QThread, Signal, QUrl
 from PySide6.QtGui import QDesktopServices
+from PySide6.QtWidgets import QWidget
 from ampullary_ui.computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
 from ampullary_ui.utils import get_stimulus_and_data, save_features_table  #, save_data_table
 from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
@@ -82,7 +83,7 @@ class SimulationThreadMulti(QThread):
 
 class PopulationSimulator(QWidget):
     def __init__(self, main_controller, parent=None):
-        self.__init__(parent)
+        super().__init__(parent)
         self.main_controller = main_controller
         self.window = self.main_controller._window
         self.results = None
