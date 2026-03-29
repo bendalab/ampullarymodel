@@ -10,10 +10,10 @@
         <file alias="exit">pictograms/exit@2x.png</file>
     </qresource>
     <qresource prefix="/configs">
-        <file alias="new_order">general_helpers/new_order.json</file>
-        <file alias="common_variables">general_helpers/common_variables.json</file>
-        <file alias="labels">general_helpers/labels.json</file>
         <file alias="style">style.qss</file>
+        <file alias="new_order">config/new_order.json</file>
+        <file alias="labels">config/labels.json</file>
+        <file alias="common_variables">config/common_variables.json</file>
     </qresource>
     <qresource prefix="/ui">
         <file alias="gui">gui.ui</file>
