@@ -6,7 +6,7 @@ print("imports 1")
 
 import ampullary_ui.resources_rc
 from ampullary_ui.controllers.main_controller import MainController
-from ampullary_ui.controllers.ui_loding_helper import load_ui
+from ampullary_ui.utils.ui_loding_helper import load_ui
 from ampullary_ui.utils import load_style
 from ampullary_ui import info
 print("imports done")
