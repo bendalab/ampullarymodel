@@ -12,7 +12,7 @@ import numpy as np
 import scipy.signal as sps
 from brian2.units.allunits import second
 from ampullary_ui.computations.lif_simulation import defaultclock
-from ampullary_ui.computations.stimulus_helper import scale_stimulus
+from ampullary_ui.utils.stimulus_helper import scale_stimulus
 from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, gain_features
 

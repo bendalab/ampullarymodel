@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import Dict, Any
 
 from ampullary_ui.computations.lif_simulation import lif_simulation
-from ampullary_ui.computations.stimulus_helper import load_gwnstimulus, modify_stimulus
+from ampullary_ui.utils.stimulus_helper import load_gwnstimulus, modify_stimulus
 from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
 from ampullary_ui.simulation_analysis.analyse_sim_data import analyze_baseline_data, analyze_noise_data
 
