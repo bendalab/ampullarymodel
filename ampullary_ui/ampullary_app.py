@@ -58,9 +58,9 @@ def main(args=None):
     window = load_ui(":/ui/gui")
 
     window.setWindowTitle("Ampullary Simulator")
-    window.setGeometry(100, 100, 1024, 768)
-    window.setMinimumWidth(1024)
-    window.setMinimumHeight(768)
+    window.setGeometry(x, y, width, height)
+    window.setMinimumWidth(800)
+    window.setMinimumHeight(600)
     window.resize(width, height)
     window.move(x, y)
     window.show()
