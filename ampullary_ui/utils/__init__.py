@@ -32,7 +32,7 @@ def load_style():
     return style
 
 
-from .saving_helper import (
+from .saving import (
     ensure_folder,
     get_outputfolder,
     read_output_folder,
@@ -45,7 +45,7 @@ from .saving_helper import (
     save_sampled_subset,
     store_output_folder,
 )
-from .stimulus_helper import (
+from .stimulus import (
     filler_length_gwn,
     get_stimulus_and_data,
     load_gwnstimulus,

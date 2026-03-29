@@ -9,7 +9,6 @@
                     "$\\tau_{adaptation}$", 
                     "$\\delta_{adaptation}$",
                     "$\\xi_{adaptation}}$"],
-    
 
 
     "parameter_save_labels" : 
@@ -23,7 +22,7 @@
                      "delta_adaptation",
                      "adapt_noise"], 
 
-    
+
     "parameter_labels_casual" : [
                                 "tau membrane [ms]", 
                                 "refactory time [ms]",
@@ -34,6 +33,7 @@
                                 "tau adaptation [ms]", 
                                 "adaptation strength",
                                 "adapt noise strength"], 
+
 
     "feature_labels" :["rate", 
          "CV$_{ISI}$", 
@@ -52,8 +52,8 @@
          "F$_{1/2F_{max}}$",
          "F$_{max}$",
          "F$_{cutoff}$"],
- 
-    
+
+
     "feature_save_labels": [
                     "base_fr", 
                     "isi_cv", 
@@ -62,19 +62,18 @@
                     "coh_zero",
                     "coh_max", 
                     "coh_highf",
-                    "fcoh_max", 
-                    "fcutoff", 
+                    "coh_fmax", 
+                    "coh_fcutoff", 
                     "gain_0", 
                     "gain_halfup", 
                     "gain_max", 
                     "gain_rate",
                     "gain_highf",
-                    "fhalfup",
+                    "gain_fhalfup",
                     "fgain_max",
-                    "fcuoff"],
+                    "gain_fcutoff"],
 
 
-        
     "feature_labels_casual" : [
                                 "Baseline rate [Hz]", 
                                 "Interspikeinterval CV [ms]", 
@@ -94,5 +93,3 @@
                                 "Freq. of maximum gain [Hz]",
                                 "Cutoff freq. of gain [Hz]"]
 }
-
-
