@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Simulator</class>
+ <widget class="QWidget" name="Simulator">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>757</width>
+    <height>767</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="sc_header" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,2,0">
+      <item>
+       <widget class="QToolButton" name="sc_back_to_main">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>27</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/pictograms/home.png</normaloff>:/icons/pictograms/home.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="arrowType">
+         <enum>Qt::ArrowType::NoArrow</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <family>Ubuntu</family>
+          <pointsize>22</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Simulate an ampullary electroreceptor afferent!</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::TextFormat::PlainText</enum>
+        </property>
+        <property name="role" stdset="0">
+         <string>title</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="sc_table_version">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>130</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>130</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>population</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="sc_content_widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="8,1,20">
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="sc_left_box" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,2,0,0">
+         <item>
+          <widget class="QLabel" name="sc_equation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>figure</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="sc_input_and_labels" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QFormLayout" name="formLayout">
+            <property name="verticalSpacing">
+             <number>10</number>
+            </property>
+            <item row="12" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_4">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_7">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_8">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_6">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QLineEdit" name="sc_input_name">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="sc_label_name">
+              <property name="text">
+               <string>Cell Name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="0">
+             <widget class="QLabel" name="sc_label_9">
+              <property name="text">
+               <string>adaptation noise strength &amp;nbsp;&amp;nbsp;  (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="0">
+             <widget class="QLabel" name="sc_label_7">
+              <property name="text">
+               <string>adapation time constant [ms] &amp;nbsp;&amp;nbsp;(τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="0">
+             <widget class="QLabel" name="sc_label_8">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;adaptation increment   (Δ&lt;span style=&quot; vertical-align:sub;&quot;&gt;a&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_5">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="1">
+             <widget class="QDoubleSpinBox" name="sc_doubleSpinBox_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>26</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="sc_label_1">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;membrane time constant [ms]    (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;m&lt;/span&gt;) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <widget class="QLabel" name="sc_label_2">
+              <property name="text">
+               <string>refractory time [ms]</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0">
+             <widget class="QLabel" name="sc_label_3">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;offset current    (I&lt;span style=&quot; vertical-align:sub;&quot;&gt;offset&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <widget class="QLabel" name="sc_label_4">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;strength of current noise    (D&lt;span style=&quot; vertical-align:sub;&quot;&gt;c&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="0">
+             <widget class="QLabel" name="sc_label_5">
+              <property name="text">
+               <string>stimulus gain factor   (g)</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0">
+             <widget class="QLabel" name="sc_label_6">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dendritic time constant [ms]   (τ&lt;span style=&quot; vertical-align:sub;&quot;&gt;d&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="textFormat">
+               <enum>Qt::TextFormat::AutoText</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="sc_bottom_right" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <property name="bottomMargin">
+             <number>1</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="sc_save_box" native="true">
+              <layout class="QVBoxLayout" name="verticalLayout_11">
+               <property name="rightMargin">
+                <number>30</number>
+               </property>
+               <property name="bottomMargin">
+                <number>1</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="sc_checkBox_data">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>130</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>130</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>save data</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="sc_checkBox_features">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>130</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>130</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>save features</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="sc_checkBox_figure">
+                 <property name="text">
+                  <string>save figure</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget_3" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="rightMargin">
+             <number>39</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="sc_btn_simulate">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>simulate</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="sc_btn_save">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>save</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="sc_btn_reset">
+              <property name="minimumSize">
+               <size>
+                <width>130</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>130</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>reset</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="sc_colspacer1" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>1</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="sc_right_box" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,1">
+         <property name="bottomMargin">
+          <number>1</number>
+         </property>
+         <item>
+          <widget class="QPlainTextEdit" name="sc_text_output">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string>Just put in a set of parameters and press simulate!
+
+The simualtion includes 30 s of baseline activity and 100s of stimulus driven responses. The band noise noise input can be found in the &quot;stimuli&quot; folder.</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="sc_figure">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::NoFrame</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4"/>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

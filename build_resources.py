@@ -59,7 +59,7 @@ def compile_gui():
     package_dir = project_root / "ampullary_ui"
 
     # Look for .qrc files
-    ui_files = list(package_dir.glob("*.ui"))
+    ui_files = list(package_dir.rglob("*.ui"))
 
     if not ui_files:
         print("No .ui files found to compile.")
