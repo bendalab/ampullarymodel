@@ -5,22 +5,18 @@ Simulate artificial cell
 import numpy as np
 
 import matplotlib.pyplot as plt
-from math import ceil
-from brian2 import second
 from matplotlib.gridspec import GridSpec
 from matplotlib.legend_handler import HandlerTuple
 from matplotlib.ticker import MultipleLocator
 from ampullary_ui.simulation_analysis.analysis_helpers import is_outlier, gain_features, cutoff, values_high_frequencies
-from ampullary_ui.computations.lif_simulation import defaultclock
 from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
 
+dt = 1./20_000  # s  FIXME this should go into a config file or Settings
 
 def plot_cell(base, stim):
-
     # base.to_pickle(f'baseplot_data_sim.pkl')
     # stim.to_pickle(f'stimplot_data_sim.pkl')
-
     time = base.membrane_time[0]
     # membrane_voltage = base.membrane_voltage[0]
     spike_times_base = base.spike_times[0]
@@ -42,7 +38,7 @@ def plot_cell(base, stim):
     membrane_voltage = base.membrane_voltage[0].copy()
     mvmax = np.max(membrane_voltage)
     for spike in spike_times_base:
-        i = int(spike / (defaultclock.dt/(second)))
+        i = int(spike / dt)
         membrane_voltage[i] = mvmax*3
 
     time_length_base = 0.1
@@ -123,7 +119,7 @@ def plot_cell(base, stim):
     ax5.set_ylabel("Rate [Hz]")
     ax5.set_xlabel(f"Time [{unit}]")
     ax5.set_xlim(0.1*factor, (0.1*factor)+(time_length*factor))
-    ax5.set_ylim(0.0, ceil(max(rate)/10)*10)
+    ax5.set_ylim(0.0, np.ceil(max(rate)/10)*10)
 
     ax_yDist = plt.subplot(gs[10:14, 26:-2], sharey=ax5)
     ax_yDist.hist(rate, bins=10, density=True, color=colorcode['standart_blue'],
@@ -207,7 +203,7 @@ def plot_cell(base, stim):
                color=colorcode['highlight'], alpha=0.3, linestyles='dotted')
     ax7.hlines(highf_gain, 0.0, 120.0,
                color=colorcode['highlight'], alpha=0.3, linestyles='dotted')
-    up = ceil((max(tf_smoothed) + max(tf_smoothed)*0.15) / 10.0) * 10
+    up = np.ceil((max(tf_smoothed) + max(tf_smoothed)*0.15) / 10.0) * 10
     ax7.set_ylim(0.0, up)
     ax7.set_xlim(0.0, 150.0)
     ticks = [0.0, f_halfup, f_at_gainmax, fcutoff_up,  120, 150]
