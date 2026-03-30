@@ -1,6 +1,18 @@
 import json
-
+from enum import Enum
 from PySide6.QtCore import QFile, QIODevice, QTextStream
+
+from .ui_loding_helper import UiLoader, load_ui
+
+class Tool(Enum):
+    SPLASH = -1
+    START = 0
+    SIMULATOR = 1
+    POPSIMULATOR = 2
+    MODELGENERATOR = 3
+    POPMODELGENERATOR = 4
+    MODELCATALOG = 5
+
 
 def load_json(resource):
     f = QFile(resource)
@@ -56,4 +68,3 @@ from .stimulus import (
 )
 
 
-from .ui_loding_helper import UiLoader, load_ui
