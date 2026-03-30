@@ -16,8 +16,8 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
-      <widget class="Ui_LoadingSplash" name="splash">
+     <widget class="QStackedWidget" name="stack">
+      <widget class="QWidget" name="splash">
        <layout class="QVBoxLayout" name="verticalLayout"/>
       </widget>
       <widget class="QWidget" name="startpage"/>
@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -48,14 +48,6 @@
    </attribute>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Ui_LoadingSplash</class>
-   <extends>QWidget</extends>
-   <header>ampullary_ui.ui.splash_ui</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

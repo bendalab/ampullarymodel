@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>1342</width>
+    <height>828</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,109 +15,14 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QFrame" name="frame_2">
-     <property name="frameShape">
-      <enum>QFrame::Shape::NoFrame</enum>
-     </property>
-     <property name="role" stdset="0">
-      <string>startframe</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0">
-      <item>
-       <spacer name="verticalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="title_2">
-        <property name="font">
-         <font>
-          <pointsize>18</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Model Generator</string>
-        </property>
-        <property name="role" stdset="0">
-         <string>title</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="picture_1">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextBrowser" name="description_2">
-        <property name="font">
-         <font>
-          <pointsize>16</pointsize>
-         </font>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Shape::NoFrame</enum>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-hr { height: 1px; border-width: 0; }
-li.unchecked::marker { content: &quot;\2610&quot;; }
-li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Generate models for real and artificial neurons with the help of &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;s&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;imulation &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;ased &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;i&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;nference. Describe the cell you want to model by a set of desired response features. This tool will then provide you with the Maximum-a-Posteriori model for your feature set. You can immediately check how well the model fits by comparing the response features of the simlulation to your requirements. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="openLinks">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="button_to_cm">
-        <property name="text">
-         <string>Generate Model</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QFrame" name="frame_1">
      <property name="frameShape">
-      <enum>QFrame::Shape::NoFrame</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="role" stdset="0">
       <string>startframe</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item>
        <widget class="QLabel" name="title_1">
         <property name="font">
@@ -136,11 +41,21 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="picture_2">
+       <widget class="QLabel" name="picture_1">
         <property name="text">
          <string>TextLabel</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_2">
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="QTextBrowser" name="description_1">
@@ -150,7 +65,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </font>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Shape::NoFrame</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="html">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -159,7 +74,7 @@ p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Simulate responses of neuron models using the LIF model for ampullary afferents of weakly electric gymnotiform fish. Select model parameters and obtain simulated spike-times of spontaneous activity and in response to stimulation with a band-limited noise (See &lt;/span&gt;&lt;a href=&quot;../../stimuli&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; text-decoration: underline; color:#007acc;&quot;&gt;stimuli&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;). A quick analysis of your simulated data will also be provided.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="openLinks">
@@ -168,7 +83,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="button_to_sc">
+       <widget class="QPushButton" name="simulatorbtn">
         <property name="text">
          <string>Go to Simulator</string>
         </property>
@@ -178,19 +93,38 @@ li.checked::marker { content: &quot;\2612&quot;; }
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame_3">
+    <widget class="QFrame" name="frame_2">
      <property name="frameShape">
-      <enum>QFrame::Shape::NoFrame</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="role" stdset="0">
       <string>startframe</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0">
       <item>
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+       <widget class="QLabel" name="title_2">
+        <property name="font">
+         <font>
+          <pointsize>18</pointsize>
+         </font>
         </property>
+        <property name="text">
+         <string>Model Generator</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>title</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="picture_2">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_4">
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
@@ -199,6 +133,53 @@ li.checked::marker { content: &quot;\2612&quot;; }
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QTextBrowser" name="description_2">
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;Generate models for real and artificial neurons with the help of &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;s&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;imulation &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;b&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;ased &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:700;&quot;&gt;i&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;nference. Describe the cell you want to model by a set of desired response features. This tool will then provide you with the Maximum-a-Posteriori model for your feature set. You can immediately check how well the model fits by comparing the response features of the simlulation to your requirements. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openLinks">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generatorbtn">
+        <property name="text">
+         <string>Generate Model</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_3">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="role" stdset="0">
+      <string>startframe</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0">
       <item>
        <widget class="QLabel" name="title_3">
         <property name="font">
@@ -225,6 +206,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer_5">
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QTextBrowser" name="discription_3">
         <property name="font">
          <font>
@@ -232,7 +223,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </font>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Shape::NoFrame</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="html">
          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -241,7 +232,7 @@ p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:16pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:12pt;&quot;&gt;We offer a catalogue of over 10 Mio models with a corresponding parameter- and feature sets. By choosing which feature properties you are interested in, you can draw subsets of models from this catalogue that have similar response features. For this, you can define ranges for for all available features and draw models from within those restricted ranges or search for models by explicit feature values. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="openLinks">
@@ -250,7 +241,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="button_to_gm">
+       <widget class="QPushButton" name="catalogbtn">
         <property name="text">
          <string>Choose model selection</string>
         </property>
