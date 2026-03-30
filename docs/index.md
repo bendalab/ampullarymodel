@@ -31,11 +31,13 @@ The original data and related python code are available in our [GIN repository](
 
 ## Getting started
 
-![picture](images/mainwindow.png)
+<!-- ![picture](images/mainwindow.png) -->
+<img src="images/mainwindow.png" alt="picture" width="600"/>
 
-The UI provides a set of tools to:
 
-* [simulate](simulator.md) simulate single ampullary afferents with user-specified model parameters.
+### The UI provides a set of tools to:
+
+* [simulate](simulator.md) single ampullary afferents with user-specified model parameters.
 * [generate](modelgenerator.md) individual models from the SBI network with specified response features.
 * [generate populations](modelcatalog.md) of cell models by specifying feature ranges.
 
