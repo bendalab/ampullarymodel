@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import warnings
 
 from pathlib import Path
 
@@ -7,6 +8,8 @@ from PySide6.QtWidgets import QMainWindow, QLabel, QWidget
 from PySide6.QtGui import QPixmap, QAction, QKeySequence, QIcon
 from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QThreadPool
 
+# # Suppress Qt warning about missing tool_selection signal (manually connected in __init__)
+# warnings.filterwarnings("ignore", message=".*QMetaObject::connectSlotsByName.*tool_selection.*")
 
 from ampullary_ui.ui import Ui_MainWindow
 from ampullary_ui.gui.splashpage import SplashPage
@@ -225,7 +228,7 @@ class MainWindow(QMainWindow):
         self._status_label.setText(f"processing... {self.pattern[self._index]}")
         self._index = (self._index + 1) % len(self.pattern)
 
-    @Slot(Tool)
+    @Slot()
     def on_tool_selection(self, tool: Tool):
         if tool not in self._tool_registry:
             logging.error("Cannot switch to tool %s", tool.name)
@@ -240,8 +243,8 @@ class MainWindow(QMainWindow):
     #     QDesktopServices.openUrl(QUrl.fromLocalFile(str(abs_path)))
 
     def _run_simulator(self):
-        self._ui.stack.setCurrentWidget(self._window.simulate_cell)
-        # self._simulator._redraw_figure()
+        self._ui.stack.setCurrentWidget(self.simulator)
+        # self.simulator._redraw_figure()
         pass
 
     def _run_modelgenerator(self):
