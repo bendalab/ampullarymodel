@@ -58,7 +58,7 @@ class Simulator(QWidget):
         self._results = None
         self._spinbox_settings = None
         self._spinboxes = None
-        self._labels = load_labels()
+        self._labels = load_labels()['feature_labels_casual']
         self._threadpool = QThreadPool()
         self._text_output = self._ui.sc_text_output
         self._plot_container = self._ui.sc_figure

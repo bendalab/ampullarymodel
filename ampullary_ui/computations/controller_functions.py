@@ -106,8 +106,8 @@ def create_cell_from_input_features(features):
     wanted_cell = np.array(features)
     back_to_original = np.argsort(new_order)
     rel_stats = wanted_cell[back_to_original]
-    # get MAP model
-    p = posterior.set_default_x(rel_stats) 
+
+    p = posterior.set_default_x(rel_stats)
     mapped_posterior = p.map(num_iter=1000, show_progress_bars=False)
     parameter = mapped_posterior.tolist()[0]
 
