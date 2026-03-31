@@ -34,5 +34,5 @@ requires = ["setuptools >= 77.0.3", "wheel", "pyside6"]
 build-backend = "setuptools.build_meta"
 
 [project.gui-scripts]
-ampullary-gui = "ampullary_ui.ampullary_app:main"
+ampullary-gui = "ampullary_ui.app:main"
 
