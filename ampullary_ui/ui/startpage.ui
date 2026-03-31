@@ -45,6 +45,9 @@
         <property name="text">
          <string>TextLabel</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </item>
       <item>
@@ -120,6 +123,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <widget class="QLabel" name="picture_2">
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -202,6 +208,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <widget class="QLabel" name="picture_3">
         <property name="text">
          <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>

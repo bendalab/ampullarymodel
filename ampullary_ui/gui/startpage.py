@@ -1,7 +1,7 @@
 import logging
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPixmap
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Qt
 
 from ampullary_ui.ui import Ui_StartPage
 from ampullary_ui.utils import Tool
@@ -14,15 +14,14 @@ class StartPage(QWidget):
 
         self.ui = Ui_StartPage()
         self.ui.setupUi(self)
-        # FIXME the aspect ratio is not the same as in the original
-        self.ui.picture_1.setPixmap(QPixmap(":/examples/eqn"))
-        self.ui.picture_2.setPixmap(QPixmap(":/examples/get_model"))
-        self.ui.picture_3.setPixmap(QPixmap(":/examples/table"))
-        # Set a fixed width for all pixmaps
-        pixmap_width = int(0.8 * self.width() / 3)
-        for picture in [self.ui.picture_1, self.ui.picture_2, self.ui.picture_3]:
-            picture.setFixedWidth(pixmap_width)
-            picture.setScaledContents(True)
+        self._icon_width = 0.8 / 3
+        self._icon_maxheight = 500
+        self._pm1 = QPixmap(":/examples/eqn")
+        self._pm2 = QPixmap(":/examples/get_model")
+        self._pm3 = QPixmap(":/examples/table")
+        for pixmap, label in zip([self._pm1, self._pm2, self._pm3],
+                                 [self.ui.picture_1, self.ui.picture_2, self.ui.picture_3]):
+            self._scaletofit(pixmap, label)
 
         self.resizeEvent = self._on_resize
 
@@ -39,9 +38,15 @@ class StartPage(QWidget):
     def _on_catalog(self):
         self.tool_selection.emit(Tool.MODELCATALOG)
 
+    def _scaletofit(self, pixmap, label):
+        aspect_ratio = pixmap.width() / pixmap.height()
+        desired_width = int(self.width() * self._icon_width)
+        new_height = min(desired_width / aspect_ratio, self._icon_maxheight)
+        pm = pixmap.scaled(desired_width, new_height, aspectMode=Qt.KeepAspectRatio, mode=Qt.SmoothTransformation)
+        label.setPixmap(pm)
+
     def _on_resize(self, event):
-        """Handle window resize events."""
-        pixmap_width = int(0.8 * self.width() / 3)
-        for picture in [self.ui.picture_1, self.ui.picture_2, self.ui.picture_3]:
-            picture.setFixedWidth(int(pixmap_width))
+        for pixmap, label in zip([self._pm1, self._pm2, self._pm3],
+                                 [self.ui.picture_1, self.ui.picture_2, self.ui.picture_3]):
+            self._scaletofit(pixmap, label)
         super().resizeEvent(event)

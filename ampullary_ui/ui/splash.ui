@@ -19,7 +19,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>188</height>
+       <height>100</height>
       </size>
      </property>
     </spacer>
@@ -42,7 +42,7 @@
         <string>TextLabel</string>
        </property>
        <property name="scaledContents">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -94,7 +94,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>188</height>
+       <height>100</height>
       </size>
      </property>
     </spacer>
