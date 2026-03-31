@@ -117,7 +117,7 @@ def create_cell_from_input_features(features):
 def get_subset_values(sum_stats, prior_samples, values, n):
 
     if n > len(sum_stats): 
-        raise ValueError(f"Error: wanted number of models {n} surpasses model catalogou size of 12 Mio.")
+        raise ValueError(f"Error: wanted number of models {n} surpasses model catalog size of 12 Mio.")
 
     dims_to_use = np.where(~np.isnan(values))[0]
     if len(dims_to_use) == 0:

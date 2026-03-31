@@ -66,6 +66,8 @@ class MainWindow(QMainWindow):
 
         self.simulator = Simulator(self)
         self.register_tool(Tool.SIMULATOR, 2, self.simulator)
+        self.simulator.simulating.connect(self._on_process_busy)
+        self.simulator.simulation_done.connect(self._on_process_done)
 
         self._ui.stack.setCurrentIndex(0)
 
@@ -227,6 +229,18 @@ class MainWindow(QMainWindow):
     def update_animation(self):
         self._status_label.setText(f"processing... {self.pattern[self._index]}")
         self._index = (self._index + 1) % len(self.pattern)
+
+    def _on_process_busy(self, msg):
+        print(msg)
+        self.start_progress_animation()
+
+    def _on_process_done(self, msg):
+        print(msg)
+        self.stop_progress_animation()
+
+    def _on_process_errored(self, msg):
+        logging.error("Subprocess failed with message: %s", msg)
+        self.stop_progress_animation()
 
     @Slot()
     def on_tool_selection(self, tool: Tool):

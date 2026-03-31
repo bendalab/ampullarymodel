@@ -9,6 +9,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_figure
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.signals import SimulatorSignals
+from ampullary_ui.computations.controller_functions import simulate_from_input_params
 
 from IPython import embed
 logging.debug("Imports done!")
@@ -24,9 +25,6 @@ class SimulationThread(QRunnable):
     @Slot()
     def run(self):
         self._signals.progress.emit("Imports ...", 0.1)
-        from ampullary_ui.computations.controller_functions import (
-            simulate_from_input_params
-        )
         self._signals.progress.emit("Running simulation ... ", 0.2)
         self._results = simulate_from_input_params(self._params, trials=5, baseline_duration=10.)
         self._signals.progress.emit("...done", 1.0)
