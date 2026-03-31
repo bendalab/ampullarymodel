@@ -9,33 +9,28 @@
                     "$\\tau_{adaptation}$", 
                     "$\\delta_{adaptation}$",
                     "$\\xi_{adaptation}}$"],
-
-
     "parameter_save_labels" : 
                     ["tau_membrane", 
                      "ref_time", 
                      "offset_current", 
                      "current_noise",  
                      "stim_gain", 
-                     "tau_dentitic", 
+                     "tau_dendritic", 
                      "tau_adaptation", 
                      "delta_adaptation",
                      "adapt_noise"], 
-
-
     "parameter_labels_casual" : [
                                 "tau membrane [ms]", 
-                                "refactory time [ms]",
+                                "refractory time [ms]",
                                 "offset current", 
                                 "noise strength",  
-                                "stim gain", 
-                                "tau dentitic [ms]", 
+                                "input gain", 
+                                "tau dendritic [ms]", 
                                 "tau adaptation [ms]", 
                                 "adaptation strength",
                                 "adapt noise strength"], 
-
-
-    "feature_labels" :["rate", 
+    "feature_labels" :[
+         "rate", 
          "CV$_{ISI}$", 
          "SC$_{ISI}$", 
          "rate mod.",
@@ -52,8 +47,6 @@
          "F$_{1/2F_{max}}$",
          "F$_{max}$",
          "F$_{cutoff}$"],
-
-
     "feature_save_labels": [
                     "base_fr", 
                     "isi_cv", 
@@ -72,8 +65,6 @@
                     "gain_fhalfup",
                     "fgain_max",
                     "gain_fcutoff"],
-
-
     "feature_labels_casual" : [
                                 "Baseline rate [Hz]", 
                                 "Interspikeinterval CV [ms]", 
