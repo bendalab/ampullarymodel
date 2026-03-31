@@ -32,8 +32,10 @@ def load_labels():
     return load_json(res)
 
 def load_new_order():
-    res = ":/config/new_order"
-    return load_json(res)
+    res = ":/configs/new_order"
+    js =  load_json(res)
+    return js["new_order"]
+
 
 def load_style():
     style_file = QFile(":/configs/style")
