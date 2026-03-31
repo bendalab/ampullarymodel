@@ -15,7 +15,8 @@ from ampullary_ui.ui import Ui_MainWindow
 from ampullary_ui.gui.splashpage import SplashPage
 from ampullary_ui.gui.startpage import StartPage
 from ampullary_ui.gui.simulator import Simulator
-from ampullary_ui.utils import get_outputfolder, load_labels, read_output_folder, Tool
+from ampullary_ui.gui.modelgenerator import Modelgenerator
+from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool
 from ampullary_ui.dialogs import AboutDialog, HelpDialog
 from ampullary_ui.signals import DataReaderSignals
 
@@ -68,6 +69,13 @@ class MainWindow(QMainWindow):
         self.register_tool(Tool.SIMULATOR, 2, self.simulator)
         self.simulator.simulating.connect(self._on_process_busy)
         self.simulator.simulation_done.connect(self._on_process_done)
+
+        self.generator = Modelgenerator(self)
+        self.register_tool(Tool.MODELGENERATOR, 2, self.generator)
+        # self.generator.simulating.connect(self._on_process_busy)
+        # self.generator.simulation_done.connect(self._on_process_done)
+        # self.generator.generating.connect(self._on_process_busy)
+        # self.generator.generating_done.connect(self._on_process_done)
 
         self._ui.stack.setCurrentIndex(0)
 
@@ -250,19 +258,13 @@ class MainWindow(QMainWindow):
         self._ui.stack.setCurrentIndex(self._tool_registry[tool])
         print(f"A tool was selected {tool}")
 
-    # def open_example(self, url: QUrl):
-    #     rel_path = Path(url.toString())
-    #     base_dir = Path(__file__).resolve().parent
-    #     abs_path = (base_dir / rel_path).resolve()
-    #     QDesktopServices.openUrl(QUrl.fromLocalFile(str(abs_path)))
-
     def _run_simulator(self):
         self._ui.stack.setCurrentWidget(self.simulator)
         # self.simulator._redraw_figure()
         pass
 
     def _run_modelgenerator(self):
-        # self._stacked.setCurrentWidget(self._window.create_model)
+        self._ui.stack.setCurrentWidget(self.generator)
         # self.toolB.redraw_figure()
         pass
 
