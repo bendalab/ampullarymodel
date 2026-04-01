@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TabWidget</class>
- <widget class="QTabWidget" name="TabWidget">
+ <class>SimulatorTab</class>
+ <widget class="QTabWidget" name="SimulatorTab">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,9 +12,6 @@
   </property>
   <property name="windowTitle">
    <string>TabWidget</string>
-  </property>
-  <property name="tabPosition">
-   <enum>QTabWidget::West</enum>
   </property>
   <property name="currentIndex">
    <number>0</number>

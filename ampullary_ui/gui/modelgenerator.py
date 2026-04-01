@@ -301,7 +301,7 @@ class Modelgenerator(QWidget):
         f_s =  ["%.2f" % number for number in self._features]
         f_width = max(len(f) for f in f_s)
         for i, label in enumerate(self._feature_labels):
-            line = f'{label + ":":<{label_width + 1}} --> wanted: {np.round(self.features[i], 2):<{f_width + 1}} --> got: {np.round(self.results.features[i], 2)}\n'
+            line = f'{label + ":":<{label_width + 1}} --> wanted: {np.round(self.features[i], 2):<{f_width + 1}} --> got: {np.round(self._simulation_results.features[i], 2)}\n'
             self._text_output.insertPlainText(line)
 
     def _on_save_params(self):
