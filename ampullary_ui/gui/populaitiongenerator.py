@@ -3,11 +3,11 @@ import numpy as np
 from pathlib import Path
 
 from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget, QFileDialog
-from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings
+from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings, QThread
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from ampullary_ui.ui.populationgenerator_ui import Ui_PopulationGenerator
-from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_figure
+from ampullary_ui.utils import read_output_folder, save_data, save_features, save_figure
 from ampullary_ui.plotting.plot_cell import plot_cell
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.computations.controller_functions import simulate_from_input_params
@@ -94,7 +94,7 @@ class PopulationGenerator(QWidget):
         self._sim_thread = None  # Initialize thread variable
 
         self._run_btn = self._ui.btn_run
-        self._cancel_btn = self._ui.cancel_btn
+        self._cancel_btn = self._ui.btn_cancel
         self._input_path_edit = self._ui.input_path
         self._output_path_edit = self._ui.output_path
         self._text_output = self._ui.tc_text_output
@@ -112,7 +112,7 @@ class PopulationGenerator(QWidget):
     def setup_defaults(self):
         self._cancel_btn.setEnabled(False)
         self._input_path_edit.setText("examples/example_features.csv")
-        self._output_path_edit.setText(str(get_outputfolder()))
+        self._output_path_edit.setText(str(read_output_folder()))
 
         self._info_text.setOpenExternalLinks(False)
         self._info_text.setOpenLinks(False)
@@ -131,3 +131,8 @@ class PopulationGenerator(QWidget):
         if dir_path:
             self._output_path_edit.setText(dir_path)
 
+    def _on_run(self):
+        pass
+
+    def open_example(self):
+        pass

@@ -7,7 +7,7 @@ from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QWidget
 from ampullary_ui.computations.table_conversion_gui import worker_function_simulate_multi,  package_parameters
 from ampullary_ui.utils import get_stimulus_and_data, save_features_table  #, save_data_table
-from ampullary_ui.controllers.cancelconformdialog import CancelConfirmDialog
+from ampullary_ui.dialogs.cancelconformdialog import CancelConfirmDialog
 
 from IPython import embed
 
