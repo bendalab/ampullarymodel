@@ -102,7 +102,6 @@ class Modelgenerator(QWidget):
         self._generate_btn = self._ui.btn_generate
         self._save_data_checkbox = self._ui.checkBox_data
         self._save_features_checkbox = self._ui.checkBox_features
-        self._population_btn = self._ui.btn_population
 
         self._setup_spinboxes()
         self._setup_defaults()
@@ -214,7 +213,6 @@ class Modelgenerator(QWidget):
         self._generate_btn.setEnabled(False)
         self._generate_btn.setText("generating…")
 
-        self._population_btn.setEnabled(False)
         self._features = [spinbox.value() for spinbox in self._spinboxes]
         self._text_output.clear()
         self._text_output.insertPlainText("Computing MAP model from posterior...\n")
@@ -238,7 +236,6 @@ class Modelgenerator(QWidget):
         self._simulate_btn.setEnabled(True)
         self._generate_btn.setEnabled(True)
         self._generate_btn.setText("generate")
-        self._population_btn.setEnabled(True)
 
         self._print_params()
 
@@ -249,7 +246,6 @@ class Modelgenerator(QWidget):
         self._reset_btn.setEnabled(False)
         self._save_data_btn.setEnabled(False)
         self._save_params_btn.setEnabled(False)
-        self._population_btn.setEnabled(False)
 
         self._sim_thread = SimulationThread(self._model_params)
         self._sim_thread.signals.progress.connect(self._on_simulation_progress)
