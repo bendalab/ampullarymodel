@@ -129,7 +129,6 @@ class Simulator(QWidget):
         self._ui.sc_btn_simulate.setEnabled(False)
         self._ui.sc_btn_reset.setEnabled(False)
         self._ui.sc_btn_save.setEnabled(False)
-        self._ui.sc_btn_population.setEnabled(False)
         params = [self._spinboxes[i].value() for i in range(0, 9)]
 
         self._sim_thread = SimulationThread(params)
@@ -173,7 +172,6 @@ class Simulator(QWidget):
         self._ui.sc_btn_simulate.setEnabled(True)
         self._ui.sc_btn_simulate.setText("simulate")
         self._ui.sc_btn_reset.setEnabled(True)
-        self._ui.sc_btn_population.setEnabled(True)
 
         self._print_features()
 
