@@ -25,7 +25,37 @@ QWidget {
     background-color: #282829;  /* light gray background */
 }
 
+QTabWidget {
+    background-color: #282829;
+    color: white;               /* white text */
+}
 
+QTabBar::tab {
+    background: #007ACC;
+    color: white;
+    border: 2px solid #2b2b2b;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    min-width: 8ex;
+    padding: 2px;
+}
+
+QFileDialog {
+    color: #f4f4f4;
+}
+
+QFileDialog QLabel {
+    color: #f4f4f4;
+}
+QFileDialog QButton {
+    color: #f4f4f4;
+}
+
+QFileDialog QLineEdit {
+    color: #f4f4f4;
+    background-color: #1d1d1d;
+    border: 2px solid #444;
+}
 /* ==================================================================================
    Buttons
    ================================================================================== */
@@ -257,25 +287,12 @@ QCheckBox::indicator:disabled {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
- QScrollBar:vertical {
+QScrollBar:vertical {
      border: 2px solid #1d1d1d;
      background: #282829;
      width: 20px;
      margin: 22px 0 22px 0;
      border-radius: 4px;
-
  }
  QScrollBar::handle:vertical {
      background: #007ACC;
@@ -343,6 +360,80 @@ QScrollBar::down-arrow:vertical {
      background: none;
  }
 
+
+
+  QScrollBar:horizontal {
+     border: 2px solid #1d1d1d;
+     background: #282829;
+     width: 20px;
+     margin: 22px 0 22px 0;
+     border-radius: 4px;
+ }
+ QScrollBar::handle:horizontal {
+     background: #007ACC;
+     min-height: 20px;
+     border-radius: 4px;
+     border: 0px solid red;
+     margin: 0 2px;
+ }
+
+  QScrollBar::handle:horizontal:hover {
+     background: #005F9E;
+     border: 1px solid #005F9E;
+ }
+
+
+QScrollBar::add-line:horizontal {
+     border: 1px solid #888;
+     background: #d0d0d0;
+     height: 20px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+ }
+
+QScrollBar::add-line:horizontal:hover {
+    background: #f4f4f4;    /* lighter color on hover */
+    border-color: #444444;  /* darker border on hover */
+}
+
+QScrollBar::sub-line:horizontal {
+     border: 1px solid #888;
+     background: #d0d0d0;
+     height: 20px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+     border-bottom-right-radius: 5px;
+     border-bottom-left-radius: 5px;
+ }
+
+/* Hover effect for sub-line */
+QScrollBar::sub-line:horizontal:hover {
+    background: #f4f4f4;
+    border-color: #444444;
+}
+
+QScrollBar::up-arrow:horizontal {
+     image: url(:/icons/pictograms/arrow_up.png);
+     width: 8px;
+     height: 8px;
+ }
+
+
+QScrollBar::down-arrow:horizontal {
+     image: url(:/icons/pictograms/back.png);
+     width: 8px;
+     height: 8px;
+ }
+
+ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+     background: none;
+ }
 
 
 

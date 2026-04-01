@@ -1,10 +1,11 @@
 import logging
+import time
 import pandas as pd
 import warnings
 
 from pathlib import Path
 
-from PySide6.QtWidgets import QMainWindow, QLabel, QWidget
+from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QTabWidget
 from PySide6.QtGui import QPixmap, QAction, QKeySequence, QIcon
 from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QThreadPool
 
@@ -15,8 +16,10 @@ from ampullary_ui.ui import Ui_MainWindow
 from ampullary_ui.gui.splashpage import SplashPage
 from ampullary_ui.gui.startpage import StartPage
 from ampullary_ui.gui.simulator import Simulator
+from ampullary_ui.gui.populationsimulator import PopulationSimulator
 from ampullary_ui.gui.modelgenerator import Modelgenerator
-from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool
+from ampullary_ui.gui.populaitiongenerator import PopulationGenerator
+from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool, load_style
 from ampullary_ui.dialogs import AboutDialog, HelpDialog
 from ampullary_ui.signals import DataReaderSignals
 
@@ -65,17 +68,8 @@ class MainWindow(QMainWindow):
         self.startpage.tool_selection.connect(self.on_tool_selection)
         self.register_tool(Tool.START, 1, self.startpage)
 
-        self.simulator = Simulator(self)
-        self.register_tool(Tool.SIMULATOR, 2, self.simulator)
-        self.simulator.simulating.connect(self._on_process_busy)
-        self.simulator.simulation_done.connect(self._on_process_done)
-
-        self.generator = Modelgenerator(self)
-        self.register_tool(Tool.MODELGENERATOR, 2, self.generator)
-        # self.generator.simulating.connect(self._on_process_busy)
-        # self.generator.simulation_done.connect(self._on_process_done)
-        # self.generator.generating.connect(self._on_process_busy)
-        # self.generator.generating_done.connect(self._on_process_done)
+        self._setup_simulator()
+        self._setup_generator()
 
         self._ui.stack.setCurrentIndex(0)
 
@@ -99,6 +93,36 @@ class MainWindow(QMainWindow):
         self.start_progress_animation()
         self._threadpool.start(self._dataloader)
 
+    def _setup_simulator(self):
+        self.simulator = Simulator()
+        self.simulator.simulating.connect(self._on_process_busy)
+        self.simulator.simulation_done.connect(self._on_process_done)
+
+        self.pop_simulator = PopulationSimulator(self)
+
+        self.stabs = QTabWidget(self)
+        self.stabs.setTabPosition(QTabWidget.TabPosition.West)
+        self.stabs.addTab(self.simulator, "Single cell")
+        self.stabs.addTab(self.pop_simulator, "Population")
+
+        self.register_tool(Tool.SIMULATOR, 2, self.stabs)
+
+    def _setup_generator(self):
+        self.generator = Modelgenerator(self)
+        self.generator.simulating.connect(self._on_process_busy)
+        self.generator.simulation_done.connect(self._on_process_done)
+        self.generator.generating.connect(self._on_process_busy)
+        self.generator.generating_done.connect(self._on_process_done)
+
+        self.pop_generator = PopulationGenerator(self)
+
+        self.gtabs = QTabWidget(self)
+        self.gtabs.setTabPosition(QTabWidget.TabPosition.West)
+        self.gtabs.addTab(self.generator, "Single cell")
+        self.gtabs.addTab(self.pop_generator, "Population")
+
+        self.register_tool(Tool.MODELGENERATOR, 3, self.gtabs)
+
     def register_tool(self, tool: Tool, index: int, widget: QWidget):
         if tool in self._tool_registry:
             logging.warning("Trying to register tool %s to index %i which is already registered.", tool.name, index)
@@ -114,12 +138,12 @@ class MainWindow(QMainWindow):
         self._simulator_action = QAction("Simulator", parent=self)
         self._simulator_action.setStatusTip("Run simulator tool")
         self._simulator_action.setShortcut(QKeySequence("F2"))
-        self._simulator_action.triggered.connect(self._run_simulator)
+        self._simulator_action.triggered.connect(lambda: self.on_tool_selection(Tool.SIMULATOR))
 
         self._modelgenerator_action = QAction("Model generator", parent=self)
         self._modelgenerator_action.setStatusTip("Generate models")
         self._modelgenerator_action.setShortcut(QKeySequence("F3"))
-        self._modelgenerator_action.triggered.connect(self._run_modelgenerator)
+        self._modelgenerator_action.triggered.connect(lambda: self.on_tool_selection(Tool.MODELGENERATOR))
 
         self._modelcatalogue_action = QAction("Model catalog", parent=self)
         self._modelcatalogue_action.setStatusTip("Select models based on the training datasets")
@@ -188,6 +212,7 @@ class MainWindow(QMainWindow):
         logging.debug("Data loader done")
         # self.toolC.set_data(self._summarystats, self._priorsamples)
         # self.toolD.set_data(self._summarystats, self._priorsamples)
+        time.sleep(1.5)
         self._ui.stack.setCurrentIndex(1)
 
     def _on_dataprogress(self, msg, p):
@@ -196,30 +221,38 @@ class MainWindow(QMainWindow):
     def _on_setoutputfolder(self):
         get_outputfolder()
 
-    # setup processing animation
-    def _setup_animation(self):
+    def _setup_animation(self, stepsize=1, maxsteps=40):
         # Create status label and timer for animation
         self._status_label = QLabel()
-        self.pattern = [
-        " ><(((°>        ",
-        "  ><(((°>       ",
-        "   ><(((°>      ",
-        "    ><(((°>     ",
-        "     ><(((°>    ",
-        "      ><(((°>   ",
-        "       ><(((°>  ",
-        "        ><(((°> ",
-        "         ><(((°>",
-        "         <°)))><",
-        "        <°)))>< ",
-        "       <°)))><  ",
-        "      <°)))><   ",
-        "     <°)))><    ",
-        "    <°)))><     ",
-        "   <°)))><      ",
-        "  <°)))><       ",
-        " <°)))><        "
-        ]
+        fish_right = "><(((°>"
+        fish_left = "<°)))><"
+        steps_right = maxsteps//2
+        self.pattern = []
+        for i in range(maxsteps):
+            if i < steps_right:
+                self.pattern.append(f"{" " * i * stepsize}{fish_right}{" " * (maxsteps-i) * stepsize}")
+            else:
+                self.pattern.append(f"{" " * (maxsteps - i) * stepsize}{fish_left}{" " * i * stepsize}")
+        # self.pattern = [
+        # " ><(((°>        ",
+        # "  ><(((°>       ",
+        # "   ><(((°>      ",
+        # "    ><(((°>     ",
+        # "     ><(((°>    ",
+        # "      ><(((°>   ",
+        # "       ><(((°>  ",
+        # "        ><(((°> ",
+        # "         ><(((°>",
+        # "         <°)))><",
+        # "        <°)))>< ",
+        # "       <°)))><  ",
+        # "      <°)))><   ",
+        # "     <°)))><    ",
+        # "    <°)))><     ",
+        # "   <°)))><      ",
+        # "  <°)))><       ",
+        # " <°)))><        "
+        # ]
         self._index = 0
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_animation)
@@ -228,7 +261,7 @@ class MainWindow(QMainWindow):
 
     def start_progress_animation(self):
         self._status_label.show()
-        self._timer.start(300)
+        self._timer.start(100)
 
     def stop_progress_animation(self):
         self._timer.stop()
@@ -256,17 +289,7 @@ class MainWindow(QMainWindow):
             logging.error("Cannot switch to tool %s", tool.name)
             return
         self._ui.stack.setCurrentIndex(self._tool_registry[tool])
-        print(f"A tool was selected {tool}")
-
-    def _run_simulator(self):
-        self._ui.stack.setCurrentWidget(self.simulator)
-        # self.simulator._redraw_figure()
-        pass
-
-    def _run_modelgenerator(self):
-        self._ui.stack.setCurrentWidget(self.generator)
-        # self.toolB.redraw_figure()
-        pass
+        logging.info("A tool was selected %s", tool)
 
     def _run_modelpicker(self):
         # self._stacked.setCurrentWidget(self._window.get_model)
