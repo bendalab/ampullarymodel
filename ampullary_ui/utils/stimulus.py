@@ -1,22 +1,6 @@
-"""
-Helper functions for using the Stimulus in brian2 simulation
-
-- Convert stimulus artificially into Hz/%, use theoretical EOD from -1 to 1 mV/cm as reference
-- Compute needed filler lengths to simplify working with constructed gwn simulation stimulus later on
-- Modify Stimulus including baseline stimulation and gwn stimulation into TimedArray for brian2 LIF simulation
-- Load gwn stimulus data and make stimmulus array for simulation as TimedArray
-- Load gwn stimulus data and make stimulus array for simulation + stimulus length for convenience 
-
---> could probably all go except load stimulus, leave it for now since i might need if if i offer to build own stimulus?
-"""
-import pickle
-import json
 import numpy as np
 
-from pathlib import Path
-
-from PySide6.QtCore import QFile, QIODevice 
-from . import load_common_variables
+from PySide6.QtCore import QFile, QIODevice
 
 
 def scale_stimulus(stimulus_og, og_sd, wanted_sd=0.2):
@@ -204,31 +188,3 @@ def load_gwnstimulus(dt: float = 1./20_000.):
                 }
 
     return stim_data
-
-
-def get_stimulus_and_data(): # FIXME: needs to be replaced in tool_a_extension!
-    """
-    Load gwn stimulus data and make stimulus array for simulation
-    Also load the stimulus length here for convenience 
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    stimulus : np.array
-        stimulus size corresponding to each time point, dt = default 50us
-    stim_data : dict
-        GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
-    stimulus_length : float
-        stimulus length in seconds    
-    """
-    path = Path.cwd()
-    stim_file = path / "stimuli" / "simstimrep_gwn150Hz10s0.3.npy"
-    with open(stim_file, 'rb') as handle:
-        stim_data = pickle.load(handle)
-    stimulus = modify_stimulus(stim_data)
-    common_variables = load_common_variables()
-
-    return stimulus, stim_data, common_variables['stimulus_length']

@@ -63,7 +63,6 @@ from .saving import (
 
 from .stimulus import (
     filler_length_gwn,
-    get_stimulus_and_data,
     load_gwnstimulus,
     modify_stimulus,
     scale_stimulus,

@@ -99,6 +99,8 @@ class MainWindow(QMainWindow):
         self.simulator.simulation_done.connect(self._on_process_done)
 
         self.pop_simulator = PopulationSimulator(self)
+        self.pop_simulator.simulating.connect(self._on_process_busy)
+        self.pop_simulator.simulation_done.connect(self._on_process_done)
 
         self.stabs = QTabWidget(self)
         self.stabs.setTabPosition(QTabWidget.TabPosition.West)
@@ -228,31 +230,11 @@ class MainWindow(QMainWindow):
         fish_left = "<°)))><"
         steps_right = maxsteps//2
         self.pattern = []
-        for i in range(maxsteps):
-            if i < steps_right:
+        for i in range(maxsteps*2):
+            if i < maxsteps:
                 self.pattern.append(f"{" " * i * stepsize}{fish_right}{" " * (maxsteps-i) * stepsize}")
             else:
                 self.pattern.append(f"{" " * (maxsteps - i) * stepsize}{fish_left}{" " * i * stepsize}")
-        # self.pattern = [
-        # " ><(((°>        ",
-        # "  ><(((°>       ",
-        # "   ><(((°>      ",
-        # "    ><(((°>     ",
-        # "     ><(((°>    ",
-        # "      ><(((°>   ",
-        # "       ><(((°>  ",
-        # "        ><(((°> ",
-        # "         ><(((°>",
-        # "         <°)))><",
-        # "        <°)))>< ",
-        # "       <°)))><  ",
-        # "      <°)))><   ",
-        # "     <°)))><    ",
-        # "    <°)))><     ",
-        # "   <°)))><      ",
-        # "  <°)))><       ",
-        # " <°)))><        "
-        # ]
         self._index = 0
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_animation)

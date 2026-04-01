@@ -35,7 +35,7 @@ def read_output_folder():
 def store_output_folder(output_folder):
     settings = QSettings()
     settings.setValue("app/output_folder", str(output_folder))
-    
+
 def get_outputfolder():
     output_folder = read_output_folder()
     output_folder = QFileDialog.getExistingDirectory(None, "Select output folder",
@@ -71,7 +71,7 @@ def save_data(data, folder, filename):
     None
     """
     output_dir = ensure_folder(folder / "derived_data" / "simulations")
-    logging.debug(f"Saving data to {output_dir}")
+    logging.debug("Saving data to %s", output_dir)
     np.savez(output_dir / f"simulation_data_{filename}.npz", **data)
 
 
@@ -98,7 +98,7 @@ def save_params(params, folder, filename):
     for i in range(len(params)):
         d[parameter_labels[i]] = float(params[i])
     df = pd.DataFrame(d, index=[0])
-    logging.debug(f"Saving paramters to {output_dir}")
+    logging.debug("Saving paramters to %s", output_dir)
     df.to_csv(output_dir / f"parameter_{filename}.csv", index = False) 
 
 
@@ -126,7 +126,7 @@ def save_features(features, folder, filename):
     for i in range(len(features)):
         d[feature_labels[i]] = float(features[i])
     df = pd.DataFrame(d, index=[0])
-    logging.debug(f"Saving features to {output_dir}")
+    logging.debug("Saving features to %s", output_dir)
     df.to_csv(output_dir / f"features_{filename}.csv", index = False) 
 
 
@@ -176,9 +176,9 @@ def save_sampled_subset(feature_samples, prior_samples, output_folder, filename)
     output_dir = ensure_folder(output_folder / "derived_data" / "subsets")
 
     df_sum_subset_samples = pd.DataFrame(data =  feature_samples, columns = feature_labels)
-    df_sum_subset_samples.to_csv(output_dir / f"feature_sample_subset_{filename}.csv", index = False) 
+    df_sum_subset_samples.to_csv(output_dir / f"feature_sample_subset_{filename}.csv", index = False)
     df_prior_subset_samples = pd.DataFrame(data = prior_samples, columns = parameter_labels)
-    df_prior_subset_samples.to_csv(output_dir / f"prior_sample_subset_{filename}.csv", index = False) 
+    df_prior_subset_samples.to_csv(output_dir / f"prior_sample_subset_{filename}.csv", index = False)
 
 
 def save_parameter_table(collect_params, output_dir, filename):
@@ -203,7 +203,7 @@ def save_parameter_table(collect_params, output_dir, filename):
     df.to_csv(filepath, index = False)  
 
 
-def save_features_table(collect_features, output_dir, filename):
+def save_features_table(collect_features, output_folder, filename):
     """
     convert multiple feature sets into Dataframe and save
     
@@ -211,15 +211,16 @@ def save_features_table(collect_features, output_dir, filename):
     -----------
     collect_features : np.array
         arrays of multiple feature sets
-    output_dir : str
+    output_folder : pathlib.Path
         Directory path where feature sets will be stored
     filename : str
         filename, user input
-    
+
     Returns:
     -------
     None
     """
-    df = pd.DataFrame(data = collect_features,columns = feature_labels)
-    filepath = os.path.join(output_dir, f"{filename}_feature_table.csv")
-    df.to_csv(filepath, index = False)  
+    output_dir = ensure_folder(output_folder)
+    df = pd.DataFrame(data = collect_features, columns = feature_labels)
+    filepath = output_dir / f"{filename}_feature_table.csv"
+    df.to_csv(filepath, index = False)
