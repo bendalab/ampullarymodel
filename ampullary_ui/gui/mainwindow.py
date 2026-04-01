@@ -16,10 +16,11 @@ from ampullary_ui.ui import Ui_MainWindow
 from ampullary_ui.gui.splashpage import SplashPage
 from ampullary_ui.gui.startpage import StartPage
 from ampullary_ui.gui.simulator import Simulator
+from ampullary_ui.gui.modelcatalog import ModelCatalog
 from ampullary_ui.gui.populationsimulator import PopulationSimulator
 from ampullary_ui.gui.modelgenerator import Modelgenerator
 from ampullary_ui.gui.populaitiongenerator import PopulationGenerator
-from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool, load_style
+from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool
 from ampullary_ui.dialogs import AboutDialog, HelpDialog
 from ampullary_ui.signals import DataReaderSignals
 
@@ -70,6 +71,7 @@ class MainWindow(QMainWindow):
 
         self._setup_simulator()
         self._setup_generator()
+        self._setup_modelpicker()
 
         self._ui.stack.setCurrentIndex(0)
 
@@ -125,6 +127,19 @@ class MainWindow(QMainWindow):
 
         self.register_tool(Tool.MODELGENERATOR, 3, self.gtabs)
 
+    def _setup_modelpicker(self):
+        self.modelpicker = ModelCatalog(self)
+        self.modelpicker.generating.connect(self._on_process_busy)
+        self.modelpicker.generation_done.connect(self._on_process_done)
+        
+        
+        self.ctabs = QTabWidget(self)
+        self.ctabs.setTabPosition(QTabWidget.TabPosition.West)
+        self.ctabs.addTab(self.modelpicker, "Pick by range")
+        # self.ctabs.addTab(self.pop_generator, "Population")
+
+        self.register_tool(Tool.MODELCATALOG, 4, self.ctabs)
+        
     def register_tool(self, tool: Tool, index: int, widget: QWidget):
         if tool in self._tool_registry:
             logging.warning("Trying to register tool %s to index %i which is already registered.", tool.name, index)
@@ -150,7 +165,7 @@ class MainWindow(QMainWindow):
         self._modelcatalogue_action = QAction("Model catalog", parent=self)
         self._modelcatalogue_action.setStatusTip("Select models based on the training datasets")
         self._modelcatalogue_action.setShortcut(QKeySequence("F4"))
-        self._modelcatalogue_action.triggered.connect(self._run_modelpicker)
+        self._modelcatalogue_action.triggered.connect(lambda: self.on_tool_selection(Tool.MODELCATALOG))
 
         self._home_action = QAction(QIcon(":/icons/home"), "Home", parent=self)
         self._home_action.setStatusTip("Back to the start page")
@@ -212,8 +227,13 @@ class MainWindow(QMainWindow):
         self._summarystats, self._priorsamples = self._dataloader.data
         self.setEnabled(True)
         logging.debug("Data loader done")
-        # self.toolC.set_data(self._summarystats, self._priorsamples)
+    
+        self.modelpicker.set_data(self._summarystats, self._priorsamples)
+        self.modelpicker.generation_done.connect(self.on_data_processed)
+
+    def on_data_processed(self):
         # self.toolD.set_data(self._summarystats, self._priorsamples)
+
         time.sleep(1.5)
         self._ui.stack.setCurrentIndex(1)
 
@@ -272,10 +292,6 @@ class MainWindow(QMainWindow):
             return
         self._ui.stack.setCurrentIndex(self._tool_registry[tool])
         logging.info("A tool was selected %s", tool)
-
-    def _run_modelpicker(self):
-        # self._stacked.setCurrentWidget(self._window.get_model)
-        pass
 
     def _go_home(self):
         self._ui.stack.setCurrentWidget(self.startpage)
