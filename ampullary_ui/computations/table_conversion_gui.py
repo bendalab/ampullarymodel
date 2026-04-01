@@ -79,6 +79,9 @@ def wrap_and_save_data(sim_data, stim_data, save_dir, params, start_idx):
         check for "ran"
     """
     # FIXME!!!
+    print("wrap and save")
+    from IPython import embed
+    embed()
     baseline, stimulation = split_data(sim_data, stim_data['baseline_recording'])
     rel_stimulation = relativ_stimulation_times(stimulation, stim_data['baseline_recording'])
     for i in range(len(rel_stimulation['spikes'])):
@@ -95,7 +98,7 @@ def wrap_and_save_data(sim_data, stim_data, save_dir, params, start_idx):
     return True
 
 
-def worker_function_simulate_multi(start_idx, package, stimulus, stim_data, stimulus_length, 
+def worker_function_simulate_multi(start_idx, package_params, stimulus, stim_data,
                                    result_queue, progress_queue, save_raw, calc_feats, save_dir):
     """
     Worker function for running a single LIF simulation in a multiprocessing setup.
@@ -108,15 +111,13 @@ def worker_function_simulate_multi(start_idx, package, stimulus, stim_data, stim
     ----------
     start_idx : int
         Index identifying the current simulation job for naming saved files.
-    packages : list of list of arrays
+    packages_params : list of list of arrays
         list of packages of max 100 model parameter sets for `lif_simulation`
     stimulus : np.array
         stimulus size corresponding to each time point, dt = default 50us
         Input stimulus array to be converted into a `TimedArray` and passed to the simulation.
     stim_data : dict
         GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
-    stimulus_length : float
-        Duration of the stimulus used in the simulation.
     result_queue : multiprocessing.Queue
         Queue used to return results to the parent process. On success,
         a dictionary with keys:
@@ -137,20 +138,22 @@ def worker_function_simulate_multi(start_idx, package, stimulus, stim_data, stim
     None
         Results are returned via `result_queue`. Errors are reported via `progress_queue`.
     """
-    
+
     saved_flag = False
     features = None
     try:
-        timed_stimulus = TimedArray(stimulus, defaultclock.dt)  
-        sim_data = lif_simulation(package, timed_stimulus, record_voltage=False)
+        sim_data = lif_simulation(package_params, stimulus, record_voltage=False)
+        print(sim_data)
         if save_raw:
-            saved_flag = wrap_and_save_data(sim_data, stim_data, save_dir, package, start_idx)
+            print(save_raw)
+            saved_flag = wrap_and_save_data(sim_data, stim_data, save_dir, package_params, start_idx)
         if calc_feats:
             features = calculate_sum_stats(sim_data, stim_data)
         del sim_data
         result_queue.put({"features": features, "saved_flag": saved_flag})
     except Exception as e:
         progress_queue.put(f'Error: {str(e)}')
+        print(e)
         result_queue.put(None)
 
 
