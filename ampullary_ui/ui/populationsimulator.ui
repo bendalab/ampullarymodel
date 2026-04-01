@@ -180,9 +180,9 @@ If not provided, results are saved in same folder as parameter CSV</string>
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="compute_features_checkbox">
+             <widget class="QCheckBox" name="save_features_checkbox">
               <property name="text">
-               <string>compute feature table</string>
+               <string>save feature table</string>
               </property>
              </widget>
             </item>
