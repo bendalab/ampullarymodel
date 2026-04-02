@@ -13,8 +13,8 @@ from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QTh
 # warnings.filterwarnings("ignore", message=".*QMetaObject::connectSlotsByName.*tool_selection.*")
 
 from ampullary_ui.ui import Ui_MainWindow
-from ampullary_ui.gui.splashpage import SplashPage
-from ampullary_ui.gui.startpage import StartPage
+from ampullary_ui.gui import SplashPage, StartPage
+
 from ampullary_ui.gui.simulator import Simulator
 from ampullary_ui.gui.modelcatalog import ModelCatalog
 from ampullary_ui.gui.populationsimulator import PopulationSimulator

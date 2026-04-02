@@ -7,7 +7,7 @@ from PySide6.QtCore import QSettings
 
 import ampullary_ui.resources_rc
 from ampullary_ui.utils import load_style
-from ampullary_ui.gui import MainWindow
+from ampullary_ui.gui.mainwindow import MainWindow
 
 logging.basicConfig(level=logging.INFO, force=True)
 log_levels = {"critical": logging.CRITICAL, "error": logging.ERROR,
