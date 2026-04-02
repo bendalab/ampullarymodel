@@ -13,10 +13,10 @@ from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QTh
 # warnings.filterwarnings("ignore", message=".*QMetaObject::connectSlotsByName.*tool_selection.*")
 
 from ampullary_ui.ui import Ui_MainWindow
-from ampullary_ui.gui import SplashPage, StartPage
+from ampullary_ui.gui import SplashPage, StartPage, ModelCatalog, ModelCatalogExplicit
 
 from ampullary_ui.gui.simulator import Simulator
-from ampullary_ui.gui.modelcatalog import ModelCatalog
+
 from ampullary_ui.gui.populationsimulator import PopulationSimulator
 from ampullary_ui.gui.modelgenerator import Modelgenerator
 from ampullary_ui.gui.populaitiongenerator import PopulationGenerator
@@ -63,15 +63,15 @@ class MainWindow(QMainWindow):
 
         self.splash = SplashPage(self)
         self._ui.stack.removeWidget(self._ui.stack.widget(0))
-        self.register_tool(Tool.SPLASH, 0, self.splash)
+        self._register_tool(Tool.SPLASH, 0, self.splash)
 
         self.startpage = StartPage(self)
         self.startpage.tool_selection.connect(self.on_tool_selection)
-        self.register_tool(Tool.START, 1, self.startpage)
+        self._register_tool(Tool.START, 1, self.startpage)
 
         self._setup_simulator()
         self._setup_generator()
-        self._setup_modelpicker()
+        self._setup_modelcatalog()
 
         self._ui.stack.setCurrentIndex(0)
 
@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
         self.stabs.addTab(self.simulator, "Single cell")
         self.stabs.addTab(self.pop_simulator, "Population")
 
-        self.register_tool(Tool.SIMULATOR, 2, self.stabs)
+        self._register_tool(Tool.SIMULATOR, 2, self.stabs)
 
     def _setup_generator(self):
         self.generator = Modelgenerator(self)
@@ -125,22 +125,28 @@ class MainWindow(QMainWindow):
         self.gtabs.addTab(self.generator, "Single cell")
         self.gtabs.addTab(self.pop_generator, "Population")
 
-        self.register_tool(Tool.MODELGENERATOR, 3, self.gtabs)
+        self._register_tool(Tool.MODELGENERATOR, 3, self.gtabs)
 
-    def _setup_modelpicker(self):
+    def _setup_modelcatalog(self):
         self.modelpicker = ModelCatalog(self)
         self.modelpicker.generating.connect(self._on_process_busy)
         self.modelpicker.generation_done.connect(self._on_process_done)
-        
-        
+        self.modelpicker.processing.connect(self._on_dataprogress)
+        self.modelpicker.processing_done.connect(self._on_dataprogress)
+
+        self.modelpicker_exp = ModelCatalogExplicit(self)
+        self.modelpicker_exp.processing.connect(self._on_process_busy)
+        self.modelpicker_exp.processing.connect(self._on_dataprogress)
+        self.modelpicker_exp.processing_done.connect(self._on_process_done)
+        self.modelpicker_exp.processing_done.connect(self._on_dataprogress)
+
         self.ctabs = QTabWidget(self)
         self.ctabs.setTabPosition(QTabWidget.TabPosition.West)
-        self.ctabs.addTab(self.modelpicker, "Pick by range")
-        # self.ctabs.addTab(self.pop_generator, "Population")
+        self.ctabs.addTab(self.modelpicker, "Select by range")
+        self.ctabs.addTab(self.modelpicker_exp, "Select by feature")
+        self._register_tool(Tool.MODELCATALOG, 4, self.ctabs)
 
-        self.register_tool(Tool.MODELCATALOG, 4, self.ctabs)
-        
-    def register_tool(self, tool: Tool, index: int, widget: QWidget):
+    def _register_tool(self, tool: Tool, index: int, widget: QWidget):
         if tool in self._tool_registry:
             logging.warning("Trying to register tool %s to index %i which is already registered.", tool.name, index)
         self._tool_registry[tool] = index
@@ -223,18 +229,16 @@ class MainWindow(QMainWindow):
         self._ui.toolbar.addAction(self._modelcatalogue_action)
 
     def _on_data_loaded(self):
-        self.stop_progress_animation()
         self._summarystats, self._priorsamples = self._dataloader.data
-        self.setEnabled(True)
         logging.debug("Data loader done")
-    
+        self._on_dataprogress("Processing data ...", 0.0)
         self.modelpicker.set_data(self._summarystats, self._priorsamples)
-        self.modelpicker.generation_done.connect(self.on_data_processed)
-
-    def on_data_processed(self):
-        # self.toolD.set_data(self._summarystats, self._priorsamples)
-
+        logging.info("data sent to modelpikcer")
+        logging.info("Sending data to modelpicker expl.")
+        self.modelpicker_exp.set_data(self._summarystats, self._priorsamples)
+        logging.info("ModelPicker_expl done")
         time.sleep(1.5)
+        self.stop_progress_animation()
         self._ui.stack.setCurrentIndex(1)
 
     def _on_dataprogress(self, msg, p):
