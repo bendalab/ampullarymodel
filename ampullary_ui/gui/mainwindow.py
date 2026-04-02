@@ -81,7 +81,6 @@ class MainWindow(QMainWindow):
         self._create_menu()
         self._create_toolbar()
 
-        self._status_label = None
         self._index = 0
 
         self._summarystats = None
