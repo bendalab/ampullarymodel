@@ -443,7 +443,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="rate_edit">
+                <widget class="QLineEdit" name="rate_edit_1">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -459,7 +459,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="cv_edit">
+                <widget class="QLineEdit" name="cv_edit_2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -475,7 +475,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="sc_edit">
+                <widget class="QLineEdit" name="sc_edit_3">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -491,7 +491,7 @@
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="rate_modulation_edit">
+                <widget class="QLineEdit" name="rate_modulation_edit_4">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -507,7 +507,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QLineEdit" name="coh_zero_edit">
+                <widget class="QLineEdit" name="coh_zero_edit_5">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -523,7 +523,7 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QLineEdit" name="coh_max_edit">
+                <widget class="QLineEdit" name="coh_max_edit_6">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -539,7 +539,7 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="coh_high_edit">
+                <widget class="QLineEdit" name="coh_high_edit_7">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -555,7 +555,7 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="coh_fmax_edit">
+                <widget class="QLineEdit" name="coh_fmax_edit_8">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -571,7 +571,7 @@
                 </widget>
                </item>
                <item row="9" column="1">
-                <widget class="QLineEdit" name="coh_fcutoff_edit">
+                <widget class="QLineEdit" name="coh_fcutoff_edit_9">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -587,7 +587,7 @@
                 </widget>
                </item>
                <item row="10" column="1">
-                <widget class="QLineEdit" name="gain_zero_edit">
+                <widget class="QLineEdit" name="gain_zero_edit_10">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -597,7 +597,7 @@
                 </widget>
                </item>
                <item row="11" column="1">
-                <widget class="QLineEdit" name="gain_halfup_edit">
+                <widget class="QLineEdit" name="gain_halfup_edit_11">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -613,7 +613,7 @@
                 </widget>
                </item>
                <item row="12" column="1">
-                <widget class="QLineEdit" name="gain_max_edit">
+                <widget class="QLineEdit" name="gain_max_edit_12">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -629,7 +629,7 @@
                 </widget>
                </item>
                <item row="13" column="1">
-                <widget class="QLineEdit" name="gain_rate_edit">
+                <widget class="QLineEdit" name="gain_rate_edit_13">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -645,7 +645,7 @@
                 </widget>
                </item>
                <item row="14" column="1">
-                <widget class="QLineEdit" name="gain_high_edit">
+                <widget class="QLineEdit" name="gain_high_edit_13">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -661,7 +661,7 @@
                 </widget>
                </item>
                <item row="15" column="1">
-                <widget class="QLineEdit" name="gain_fhalf_edit">
+                <widget class="QLineEdit" name="gain_fhalf_edit_14">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -677,7 +677,7 @@
                 </widget>
                </item>
                <item row="16" column="1">
-                <widget class="QLineEdit" name="gain_fmax_edit">
+                <widget class="QLineEdit" name="gain_fmax_edit_16">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>26</horstretch>
@@ -693,7 +693,7 @@
                 </widget>
                </item>
                <item row="17" column="1">
-                <widget class="QLineEdit" name="gain_fcutoff_edit">
+                <widget class="QLineEdit" name="gain_fcutoff_edit_17">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -820,7 +820,7 @@
             </size>
            </property>
            <property name="frameShape">
-            <enum>QFrame::Shape::NoFrame</enum>
+            <enum>QFrame::NoFrame</enum>
            </property>
            <property name="readOnly">
             <bool>true</bool>
@@ -832,7 +832,7 @@ p, li { white-space: pre-wrap; }
 hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;Choose models from the catalogue by providing explicit feature values. Models will be proposed that are as close as possible to all selected values. The corresponding figure shows how close the models match the given features. &lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;If no choises are provided, random samples will be chosen!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -850,7 +850,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </sizepolicy>
            </property>
            <property name="frameShape">
-            <enum>QFrame::Shape::NoFrame</enum>
+            <enum>QFrame::NoFrame</enum>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5"/>
           </widget>
@@ -863,9 +863,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
             <item>
              <spacer name="horizontalSpacer_16">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
