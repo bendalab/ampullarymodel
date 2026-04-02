@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QWidget, QSizePolicy
 from PySide6.QtCore import QLocale, QRunnable, Slot, QThreadPool, Signal
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
-from ampullary_ui.ui.modelgenerator_ui import Ui_ModelGenerator
+from ampullary_ui.ui import Ui_ModelGenerator
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_params, load_labels
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.plotting.plot_cell import plot_cell
