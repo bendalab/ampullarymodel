@@ -58,24 +58,25 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._ui = Ui_MainWindow()
         self._ui.setupUi(self)
+        self._setup_animation()
+        self.start_progress_animation()
 
         self._tool_registry = {}
-
+        self._stack = self._ui.stack
         self.splash = SplashPage(self)
-        self._ui.stack.removeWidget(self._ui.stack.widget(0))
+        self._stack.removeWidget(self._ui.stack.widget(0))
         self._register_tool(Tool.SPLASH, 0, self.splash)
+        self._stack.setCurrentIndex(0)
 
         self.startpage = StartPage(self)
-        self.startpage.tool_selection.connect(self.on_tool_selection)
+        self.startpage.tool_selection.connect(self._on_tool_selection)
         self._register_tool(Tool.START, 1, self.startpage)
 
         self._setup_simulator()
         self._setup_generator()
         self._setup_modelcatalog()
 
-        self._ui.stack.setCurrentIndex(0)
 
-        self.splash.message("do this")
         self._create_actions()
         self._create_menu()
         self._create_toolbar()
@@ -90,10 +91,8 @@ class MainWindow(QMainWindow):
         self._dataloader._signals.finished.connect(self._on_data_loaded)
         self._dataloader._signals.progress.connect(self._on_dataprogress)
         self._threadpool = QThreadPool()
-
-        self._setup_animation()
-        self.start_progress_animation()
         self._threadpool.start(self._dataloader)
+
 
     def _setup_simulator(self):
         self.simulator = Simulator()
@@ -150,7 +149,7 @@ class MainWindow(QMainWindow):
         if tool in self._tool_registry:
             logging.warning("Trying to register tool %s to index %i which is already registered.", tool.name, index)
         self._tool_registry[tool] = index
-        self._ui.stack.insertWidget(index, widget)
+        self._stack.insertWidget(index, widget)
 
     def _create_actions(self):
         self._quit_action = QAction(QIcon(":/icons/exit"), "Quit", parent=self)
@@ -161,17 +160,17 @@ class MainWindow(QMainWindow):
         self._simulator_action = QAction("Simulator", parent=self)
         self._simulator_action.setStatusTip("Run simulator tool")
         self._simulator_action.setShortcut(QKeySequence("F2"))
-        self._simulator_action.triggered.connect(lambda: self.on_tool_selection(Tool.SIMULATOR))
+        self._simulator_action.triggered.connect(lambda: self._on_tool_selection(Tool.SIMULATOR))
 
         self._modelgenerator_action = QAction("Model generator", parent=self)
         self._modelgenerator_action.setStatusTip("Generate models")
         self._modelgenerator_action.setShortcut(QKeySequence("F3"))
-        self._modelgenerator_action.triggered.connect(lambda: self.on_tool_selection(Tool.MODELGENERATOR))
+        self._modelgenerator_action.triggered.connect(lambda: self._on_tool_selection(Tool.MODELGENERATOR))
 
         self._modelcatalogue_action = QAction("Model catalog", parent=self)
         self._modelcatalogue_action.setStatusTip("Select models based on the training datasets")
         self._modelcatalogue_action.setShortcut(QKeySequence("F4"))
-        self._modelcatalogue_action.triggered.connect(lambda: self.on_tool_selection(Tool.MODELCATALOG))
+        self._modelcatalogue_action.triggered.connect(lambda: self._on_tool_selection(Tool.MODELCATALOG))
 
         self._home_action = QAction(QIcon(":/icons/home"), "Home", parent=self)
         self._home_action.setStatusTip("Back to the start page")
@@ -261,19 +260,21 @@ class MainWindow(QMainWindow):
                 self.pattern.append(f"{" " * (maxsteps - i) * stepsize}{fish_left}{" " * i * stepsize}")
         self._index = 0
         self._timer = QTimer()
-        self._timer.timeout.connect(self.update_animation)
+        self._timer.timeout.connect(self._update_animation)
         self._ui.statusbar.addPermanentWidget(self._status_label)
         self._status_label.hide()
 
     def start_progress_animation(self):
+        """ Starts the progress animation """
         self._status_label.show()
         self._timer.start(100)
 
     def stop_progress_animation(self):
+        """ Stops the progress animation """
         self._timer.stop()
         self._status_label.hide()
 
-    def update_animation(self):
+    def _update_animation(self):
         self._status_label.setText(f"processing... {self.pattern[self._index]}")
         self._index = (self._index + 1) % len(self.pattern)
 
@@ -290,15 +291,15 @@ class MainWindow(QMainWindow):
         self.stop_progress_animation()
 
     @Slot()
-    def on_tool_selection(self, tool: Tool):
+    def _on_tool_selection(self, tool: Tool):
         if tool not in self._tool_registry:
             logging.error("Cannot switch to tool %s", tool.name)
             return
-        self._ui.stack.setCurrentIndex(self._tool_registry[tool])
+        self._stack.setCurrentIndex(self._tool_registry[tool])
         logging.info("A tool was selected %s", tool)
 
     def _go_home(self):
-        self._ui.stack.setCurrentWidget(self.startpage)
+        self._stack.setCurrentWidget(self.startpage)
 
     def _on_about(self):
         about_dlg = AboutDialog(self)
