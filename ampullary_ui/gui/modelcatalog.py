@@ -84,6 +84,8 @@ class ReducedHistogramWorker(QThread):
 class ModelCatalog(QWidget):
     generating = Signal(str)
     generation_done = Signal(str)
+    processing = Signal(str, float)
+    processing_done = Signal(str, float)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -96,19 +98,21 @@ class ModelCatalog(QWidget):
         self._user_compute = False
         self._summarystats = None
         self._priorsamples = None
+        self._hist_cache = None
         self._titles = load_labels()['feature_labels']
-        
+        self._range_widgets = []
+
         self._compute_btn = self._ui.compute_btn
         self._save_btn = self._ui.save_btn
         self._name_edit = self._ui.name_prefix_edit
         self._range_widget_container = self._ui.placeholder
         self._samples_spinbox = self._ui.sample_spinbox
         self._update_label = self._ui.gm_n_update
-        
+
         self._setup_defaults()
-        self.define_stuff()
-        self._compute_btn.clicked.connect(self.on_compute)
-        self._save_btn.clicked.connect(self.on_save)
+        self._define_stuff()
+        self._compute_btn.clicked.connect(self._on_compute)
+        self._save_btn.clicked.connect(self._on_save)
         # QTimer.singleShot(0, self.compute_initial_histograms)
 
     def _setup_defaults(self):
@@ -118,7 +122,7 @@ class ModelCatalog(QWidget):
         self._samples_spinbox.setMaximum(12_000_000)
         self._samples_spinbox.setValue(100)
 
-    def define_stuff(self): 
+    def _define_stuff(self): 
         self._mins = [30.0, 0.0, -0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 3.66,
                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self._maxs = [250.0, 1.0, 1.0, 200, 1.0, 1.0, 0.4, 50, 150.0,
@@ -141,14 +145,26 @@ class ModelCatalog(QWidget):
             self._decimals[k] = 0
 
     def set_data(self, summarystats, priorsamples):
+        """
+        Set data for processing and initialize histogram widgets.
+        This method receives summary statistics and prior samples, stores them,
+        creates range selection widgets, and computes initial histograms for visualization.
+        Args:
+            summarystats: Summary statistics data to be stored and processed.
+            priorsamples: Prior samples data to be stored and processed.
+        Emits:
+            processing: Signal with status message "Data processing..." and progress value 0.0.
+        """
+
         logging.debug("ToolC.set_data: received data")
+        self.processing.emit("Data processing...", 0.0)
         self._summarystats = summarystats
         self._priorsamples = priorsamples
         self._insert_range_widgets(3)
-        self.compute_initial_histograms()
+        self._compute_initial_histograms()
 
     def _insert_range_widgets(self, cols):
-        self.range_widgets = []
+        self._range_widgets = []
         layout = self._range_widget_container.layout()
         if layout is None:
             raise RuntimeError("gm_placeholder_widget has no layout in Qt Designer!")
@@ -160,14 +176,14 @@ class ModelCatalog(QWidget):
                               decimals=self._decimals[col],
                               step=self._steps[col],
                               label=self._titles[col])
-            self.range_widgets.append(rc)
-        for i, rc in enumerate(self.range_widgets):
+            self._range_widgets.append(rc)
+        for i, rc in enumerate(self._range_widgets):
             row_grid = i // cols
             col_grid = i % cols
             layout.addWidget(rc, row_grid, col_grid)
 
-    def compute_initial_histograms(self):
-        self.generating.emit("Processing summary statistics ...")
+    def _compute_initial_histograms(self):
+        self.processing.emit("Processing summary statistics ...", 0.5)
 
         if self._summarystats is None:
             return
@@ -178,44 +194,44 @@ class ModelCatalog(QWidget):
         self.full_worker = FullHistogramWorker(self._summarystats,
                                                self._mins, self._maxs,
                                                self._bin_specs)
-        self.full_worker.finished.connect(self.on_full_histograms_ready)
+        self.full_worker.finished.connect(self._on_full_histograms_ready)
         self.full_worker.finished.connect(self.full_worker.quit)  # Clean up thread when done
         self.full_worker.finished.connect(self.full_worker.deleteLater)
         self.full_worker.start()
 
-    def on_compute(self):
+    def _on_compute(self):
         self.generating.emit("Computing samples ...")
         self._user_compute = True
         self._compute_btn.setEnabled(False)
         self._compute_btn.setText("computing…")
         self._save_btn.setEnabled(False)
-        mask = self.compute_shared_mask()
+        mask = self._compute_shared_mask()
         self.reduced_worker = ReducedHistogramWorker(self._summarystats, mask,
-                                                     self.hist_cache)
-        self.reduced_worker.finished.connect(self.on_histograms_ready)
+                                                     self._hist_cache)
+        self.reduced_worker.finished.connect(self._on_histograms_ready)
         self.reduced_worker.finished.connect(self.reduced_worker.quit)  # Clean up thread when done
         self.reduced_worker.finished.connect(self.reduced_worker.deleteLater)
         self.reduced_worker.start()
-        
-    def on_save(self):
+
+    def _on_save(self):
         output_folder = get_outputfolder()
 
-        data_samples, prior_samples = self.sample_subset_for_saving()
+        data_samples, prior_samples = self._sample_subset_for_saving()
         filename = self._name_edit.text().strip()
         save_sampled_subset(data_samples, prior_samples, output_folder, filename)
         self._save_btn.setText("save another set")
 
-    def compute_shared_mask(self):
+    def _compute_shared_mask(self):
         mask = np.ones(len(self._summarystats), dtype=bool)
-        for col, rc in enumerate(self.range_widgets):
+        for col, rc in enumerate(self._range_widgets):
             low, high = rc.current_range()
             mask &= (self._summarystats[:, col] >= low) & (self._summarystats[:, col] <= high)
         return mask
-    
-    def on_full_histograms_ready(self, results):
-        self.hist_cache = results  # save it
+
+    def _on_full_histograms_ready(self, results):
+        self._hist_cache = results  # save it
         # Initial display: no reduced histograms
-        for rc, hist in zip(self.range_widgets, results):
+        for rc, hist in zip(self._range_widgets, results):
             rc.make_histogram({
                 "bins": hist["bins"],
                 "full": hist["full"],
@@ -225,9 +241,10 @@ class ModelCatalog(QWidget):
         self._compute_btn.setEnabled(True)
         self._compute_btn.setText("Compute")
         self.generation_done.emit("Done.")
+        self.processing_done.emit("Done.", 1.0)
 
-    def on_histograms_ready(self, results):
-        for rc, hist_data in zip(self.range_widgets, results):
+    def _on_histograms_ready(self, results):
+        for rc, hist_data in zip(self._range_widgets, results):
             rc.make_histogram(hist_data)
         self._compute_btn.setEnabled(True)
         self._compute_btn.setText("compute")
@@ -236,9 +253,9 @@ class ModelCatalog(QWidget):
             self._save_btn.setEnabled(True)
         self.generation_done.emit("Done.")
 
-    def sample_subset_for_saving(self):
-        logging.debug("ToolC.sample_subset_for saving")
-        mask = self.compute_shared_mask()  
+    def _sample_subset_for_saving(self):
+        logging.debug("ModelCatalog.sample_subset_for saving")
+        mask = self._compute_shared_mask()  
         n = int(self._samples_spinbox.value())
         subset_data = self._summarystats[mask]
         subset_prior = self._priorsamples[mask]
@@ -254,4 +271,3 @@ class ModelCatalog(QWidget):
             subset_data_samples = subset_data
             subset_prior_samples = subset_prior
         return subset_data_samples, subset_prior_samples
-
