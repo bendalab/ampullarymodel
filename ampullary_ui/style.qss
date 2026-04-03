@@ -33,11 +33,21 @@ QTabWidget {
 QTabBar::tab {
     background: #007ACC;
     color: white;
-    border: 2px solid #2b2b2b;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border: 3px solid #2b2b2b;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     min-width: 8ex;
-    padding: 2px;
+    padding: 5px;
+    font-size: 16pt;
+    font-weight: bold;
+    font: Ubuntu;
+}
+
+QTabBar::tab:!selected {
+    margin-top: 2px; /* make non-selected tabs look smaller */
+    background: #005F9E
 }
 
 QFileDialog {
