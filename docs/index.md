@@ -28,12 +28,10 @@ Mayer et al., 2026
 
 The original data and related python code are available in our [GIN repository](https://gin.g-node.org/jgrewe)
 
-
 ## Getting started
 
 <!-- ![picture](images/mainwindow.png) -->
 <img src="images/mainwindow.png" alt="picture" width="600"/>
-
 
 ### The UI provides a set of tools to:
 
@@ -41,3 +39,6 @@ The original data and related python code are available in our [GIN repository](
 * [generate](modelgenerator.md) individual models from the SBI network with specified response features.
 * [generate populations](modelcatalog.md) of cell models by specifying feature ranges.
 
+### More package information
+
+can be found in [here](packagestructure.md).
