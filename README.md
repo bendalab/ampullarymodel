@@ -20,7 +20,7 @@ Clone or download the entire project folder from the internal GitHub repository.
 The folder structure should look like this:
 
 ```
-ampullary_tool/
+ampullary_ui/
 ├─ code/
 ├─ examples/
 ├─ source/
@@ -84,14 +84,21 @@ pip install -e .
 make install-dev
 ```
 
-This should also build the ``qt`` resources file. If this needs to be done manually, 
+This should also build the ``qt`` resources file. If this needs to be done manually,
 
 ```bash
-python build_resources.py
+python build_resources.py --rcc
 # or
 make build-resources
 ```
 
+We further need to compile the qt ``ui`` files that describe the user interface to respective UI classes.
+
+```bash
+python build_resources.py --ui
+# or
+make build-ui
+```
 
 ## Running the application
 

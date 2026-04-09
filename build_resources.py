@@ -102,7 +102,7 @@ def main(args):
     return 0
 
 def create_parser():
-    parser = argparse.ArgumentParser(description="build_resources. Tool for building the qt resources of the amplullary simulator gui")
+    parser = argparse.ArgumentParser(description="build_resources. Tool for building the qt resources of the ampullary simulator gui")
     parser.add_argument("--rcc", action="store_true", 
                         help="Build the qt resources file")
     parser.add_argument("--ui", action="store_true", 
