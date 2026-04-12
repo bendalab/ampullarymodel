@@ -4,7 +4,6 @@ Logic functions for implementing user interactions
 - Simulate a neuron from a single set of model parameter
 - Get MAP model for a single set of cell features
 """
-
 import pickle
 import numpy as np
 import pandas as pd
@@ -12,12 +11,11 @@ from dataclasses import dataclass
 from typing import Dict, Any
 from pathlib import Path
 
-from ampullary_ui.computations.lif_simulation import lif_simulation
+from ampullary_ui.simulation.lif_simulation import ampullary_lif
 from ampullary_ui.utils import load_gwnstimulus, modify_stimulus, load_new_order
-from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
-from ampullary_ui.simulation_analysis.analyse_sim_data import analyze_baseline_data, analyze_noise_data
-
-from IPython import embed
+from ampullary_ui.analysis.utils import split_data, spiketimes_to_trials
+from ampullary_ui.analysis.baseline import baseline_features, baseline_plot_data
+from ampullary_ui.analysis.whitenoise import whitenoise_features, whitenoise_plot_data
 
 
 @dataclass
@@ -30,7 +28,8 @@ class SimulationResult:
 
 
 
-def simulate_from_input_params(params, baseline_duration=30., prerun_duration=1.0,
+def simulate_from_input_params(params, baseline_duration=30.,
+                               prerun_duration=1.0,
                                stimulus_sd=0.2, trials=10):
     """
     Simulate a neuron from a single set of model parameter
@@ -58,9 +57,9 @@ def simulate_from_input_params(params, baseline_duration=30., prerun_duration=1.
     modified_stimulus = modify_stimulus(gwn_stim_data, baseline_duration, prerun_duration,
                                         trials, stimulus_sd)
 
-    sim_data = lif_simulation(params_sample, modified_stimulus, prerun_duration, record_voltage=True)
+    sim_data = ampullary_lif(params_sample, modified_stimulus, prerun_duration, record_voltage=True)
     baseline, stimulation = split_data(sim_data, baseline_duration, gwn_stim_data["duration"])
-    rel_stimulation = relativ_stimulation_times(stimulation, baseline_duration)
+    rel_stimulation = spiketimes_to_trials(stimulation)
 
     data = {
         'baseline_time': np.round(baseline['time'][0], 7),
@@ -71,12 +70,18 @@ def simulate_from_input_params(params, baseline_duration=30., prerun_duration=1.
         'parameters': params,
     }
 
-    baseparams, baseplot = analyze_baseline_data(baseline)
-    gwnparams, stimplot = analyze_noise_data(rel_stimulation, gwn_stim_data)
-    features = np.array(baseparams + gwnparams)
+    basefeatures = baseline_features(baseline["spikes"], baseline['time'])
+    baseplot = baseline_plot_data(baseline)
+    noisefeatures = whitenoise_features(rel_stimulation, gwn_stim_data, sigma=0.0025)
+    noiseplot = whitenoise_plot_data(rel_stimulation, gwn_stim_data)
 
-    results = SimulationResult(data=data, stim_data=gwn_stim_data, features=features,
-                               baseline_data=baseplot, stimulus_data=stimplot)
+    feat_tensor = np.array([basefeatures[k].item() for k in basefeatures] + 
+                           [noisefeatures[k].item() for k in noisefeatures])
+
+    results = SimulationResult(data=data, stim_data=gwn_stim_data,
+                               features=feat_tensor,
+                               baseline_data=baseplot,
+                               stimulus_data=noiseplot)
 
     return results
 
@@ -98,6 +103,9 @@ def create_cell_from_input_features(features):
         model parameter set       
     """
     new_order = load_new_order()
+    # from IPython import embed
+    # embed()
+    # import torch
     path = Path.cwd() / "source" / "posterior.pkl"
     with open(path, 'rb') as handle:
         posterior = pickle.load(handle)
@@ -110,48 +118,5 @@ def create_cell_from_input_features(features):
     p = posterior.set_default_x(rel_stats)
     mapped_posterior = p.map(num_iter=1000, show_progress_bars=False)
     parameter = mapped_posterior.tolist()[0]
-
     return parameter
 
-
-def get_subset_values(sum_stats, prior_samples, values, n):
-
-    if n > len(sum_stats): 
-        raise ValueError(f"Error: wanted number of models {n} surpasses model catalog size of 12 Mio.")
-
-    dims_to_use = np.where(~np.isnan(values))[0]
-    if len(dims_to_use) == 0:
-        #print("Warning: no valid choices provided, returning random samples.")
-        nearest_idx = np.random.choice(sum_stats.shape[0], size=n, replace=False)
-        nearest_sum_stats = sum_stats[nearest_idx]
-        nearest_prior_samples = prior_samples[nearest_idx]
-    else: 
-        # cut down vals and sum stats to relevent dimentions 
-        vals_sub = values[dims_to_use]
-        sum_stats_sub = sum_stats[:, dims_to_use]
-        # best needs to start relly high to be cut off
-        best_dist = np.full(n, np.inf, dtype=np.float32)
-        best_idx = np.full(n, -1, dtype=np.int64)
-        # chunks to be able to run this with less RAM
-        chunk_size = 500_000 
-        for start in range(0, sum_stats.shape[0], chunk_size):
-            stop = min(start + chunk_size, sum_stats.shape[0])
-            block = sum_stats_sub[start:stop]
-            # distange between wanted an have
-            diff = block - vals_sub   
-            dist2 = np.einsum('ij,ij->i', diff, diff) # distance without creating a giant temporary
-            idx = np.argpartition(dist2, n)[:n]
-            cand_dist = dist2[idx]
-            cand_idx = idx + start
-            # merge with current best
-            all_dist = np.concatenate((best_dist, cand_dist))
-            all_idx = np.concatenate((best_idx, cand_idx))
-            # take n best fitting
-            keep = np.argpartition(all_dist, n)[:n] # if same distance, will be 'random-ish' no need for random samples implementation (ask Jan if I am right)
-            best_dist = all_dist[keep]
-            best_idx = all_idx[keep]
-        # final ordering
-        order = np.argsort(best_dist)
-        nearest_sum_stats = sum_stats[best_idx[order]]
-        nearest_prior_samples = prior_samples[best_idx[order]]
-    return nearest_sum_stats, nearest_prior_samples

@@ -8,27 +8,19 @@ Functions for Table extentions:
 - Convert feature table into usable format and order
 - Worker function for generating a model sample from a posterior distribution in a multiprocessing setup.
 """
-
 import pickle
 import os
 import json
 import numpy as np
-from brian2 import TimedArray
-from ampullary_ui.computations.lif_simulation import lif_simulation, defaultclock
-from ampullary_ui.simulation_analysis.summary_statistics import calculate_sum_stats
-from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
-from IPython import embed
-
-
 
 
 def package_parameters(parameters, package_size=100):
     """
     Chop parameters table into packages 
 
-    Chop table of parameters sets into packages of package_size + restsidual.
-    Needed for simulating with brian2, since I simulate parallel. This ensures its max 100 neurons that are
-    simulated on the same time and the simulations doesn't need much RAM.
+    Chop table of parameters sets into packages of package_size + residual.
+    Needed for simulation with brian2, since I simulate parallel. This ensures it is at max 100 neurons that are
+    simulated at the same time and the simulations doesn't need too much RAM.
     --> change package size for strong computers if many cells need to be simulated
 
     Parameters
@@ -52,109 +44,6 @@ def package_parameters(parameters, package_size=100):
         packages.append((start, chunk))
     return packages
 
-
-
-def wrap_and_save_data(sim_data, stim_data, save_dir, params, start_idx):
-    """
-    Convert raw simulation data into pre-processed data format and save data
-
-    Seperate simulated data of baseline activity from simulated data during stimulation with gwn
-    Compute spike times relative to stimulus start for all repetitions of the stimulation
-    Pack together and save as .npz
-    
-    sim_data: dictionary 
-        dictionary with spike_idx, spike_times and time array
-    stim_data : dict
-        GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
-    save_dir: str
-        Directory path where simulation data will be stored
-    params : np.array
-        array of arrays with model parameter sets
-    start_idx : int
-        Index identifying the current simulation job for naming saved files.
-
-    Returns
-    -------
-    True : bool
-        check for "ran"
-    """
-    # FIXME!!!
-    print("wrap and save")
-    from IPython import embed
-    embed()
-    baseline, stimulation = split_data(sim_data, stim_data['baseline_recording'])
-    rel_stimulation = relativ_stimulation_times(stimulation, stim_data['baseline_recording'])
-    for i in range(len(rel_stimulation['spikes'])):
-        # Create a stable identifier
-        cell_id = start_idx + i
-        filepath = save_dir / f"cell_{cell_id}.npz"
-        np.savez_compressed(
-        filepath,
-        baseline_time=np.round(baseline['time'], 7),
-        baseline_spikes=baseline['spikes'][i],
-        whitenoise_time=np.round(rel_stimulation['time'], 7),
-        whitenoise_spikes=np.array(rel_stimulation['spikes'][i], dtype=object),  # list of arrays
-        params=params[i])
-    return True
-
-
-def worker_function_simulate_multi(start_idx, package_params, stimulus, stim_data,
-                                   result_queue, progress_queue, save_raw, calc_feats, save_dir):
-    """
-    Worker function for running a single LIF simulation in a multiprocessing setup.
-
-    This function wraps the full simulation pipeline for one parameter package (max 100 sets):
-    it generates a timed stimulus, runs the LIF simulation, optionally saves minimally pre-processed simulation data, optionally computes features,
-    and communicates results back through multiprocessing queues.
-
-    Parameters
-    ----------
-    start_idx : int
-        Index identifying the current simulation job for naming saved files.
-    packages_params : list of list of arrays
-        list of packages of max 100 model parameter sets for `lif_simulation`
-    stimulus : np.array
-        stimulus size corresponding to each time point, dt = default 50us
-        Input stimulus array to be converted into a `TimedArray` and passed to the simulation.
-    stim_data : dict
-        GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
-    result_queue : multiprocessing.Queue
-        Queue used to return results to the parent process. On success,
-        a dictionary with keys:
-            - "features": computed summary statistics or None
-            - "saved_flag": bool indicating whether raw data was saved
-        On failure, `None` is placed in the queue.
-    progress_queue : multiprocessing.Queue
-        Queue used to report progress or error messages to the parent process.
-    save_raw : bool
-        If True, raw simulation output is wrapped and saved to disk.
-    calc_feats : bool
-        If True, summary statistics are computed from the simulation output.
-    save_dir : str
-        Directory path where simulation data will be stored if`save_raw` is True.
-
-    Returns
-    -------
-    None
-        Results are returned via `result_queue`. Errors are reported via `progress_queue`.
-    """
-
-    saved_flag = False
-    features = None
-    try:
-        sim_data = lif_simulation(package_params, stimulus, record_voltage=False)
-        print(sim_data)
-        if save_raw:
-            print(save_raw)
-            saved_flag = wrap_and_save_data(sim_data, stim_data, save_dir, package_params, start_idx)
-        if calc_feats:
-            features = calculate_sum_stats(sim_data, stim_data)
-        del sim_data
-        result_queue.put({"features": features, "saved_flag": saved_flag})
-    except Exception as e:
-        progress_queue.put(f'Error: {str(e)}')
-        print(e)
-        result_queue.put(None)
 
 
 def load_posterior():
