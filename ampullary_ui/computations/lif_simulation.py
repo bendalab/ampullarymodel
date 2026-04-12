@@ -2,25 +2,57 @@
 LIF model
 + refractory time
 + offset current
-+ noice
++ noise
 + stimulus gain factor
-+ dentritic filter
-+ adapation:
++ dendritic filter
++ adaptation:
     - tau a
     - delta a
     - noise a
 """
 import numpy as np
-print("import brian2")
+import pandas as pd
+
 from brian2 import TimedArray, NeuronGroup, StateMonitor, SpikeMonitor, defaultclock, run
 from brian2.units import ms, us, second
-print("import brian done")
-from IPython import embed
+
+from pathlib import Path
 
 defaultclock.dt = 50*us
 
 
-def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
+def package_parameters(parameters, package_size=100):
+    """
+    Chop parameters table into packages 
+
+    Chop table of parameters sets into packages of package_size + residual.
+    Needed for simulation with brian2, since I simulate parallel. This ensures it is at max 100 neurons that are
+    simulated at the same time and the simulations doesn't need too much RAM.
+    --> change package size for strong computers if many cells need to be simulated
+
+    Parameters
+    ----------   
+    parameters: pd.Dataframe
+        parameter table as loaded with pandas
+    param package_size: int
+        package size, default = 100
+
+    Returns
+    -------
+    packages : list of list of arrays
+        list of packages of max 100 model parameter sets
+    """
+
+    params = parameters.to_numpy()
+    n_rows = params.shape[0]
+    packages = []
+    for start in range(0, n_rows, package_size):
+        chunk = params[start:start + package_size]
+        packages.append((start, chunk))
+    return packages
+
+
+def ampullary_lif(params, stimulus, prerun_duration=1.0, record_voltage=False):
     """
     Lif Simulation Version 08
 
@@ -30,21 +62,21 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     - strength of noise 
     - refractory time
     - stimulus gain factor
-    - tau dentritic
-    - tau adapation
+    - tau dendritic
+    - tau adaptation
     - increment adaptation at spike event 
     - strength of adaptation noise
-    during baseline activity/no stim situation and gwn stimulation
 
     Parameters
     ----------
     params : np.array
-        values for membrane time constant, offset current, strength of noise, refractory time, stimulus gain factor, tau dentritic, tau adapation, increment adaptation at spike event 
+        shape (n, 9). First dimension is the number of parallel simulations, second dimension the model parameters.
+        (1) membrane time constant (2) offset current (3) strength of intrinsic noise, 4) refractory time, (5) stimulus gain factor, (6) tau dendritic, (7) tau adaptation, (8) adaptation increment at spike event, and (9) the adaptation noise. 
     stimulus : TimedArray
         stimulus size corresponding to each time point, unit-less as a function of time
-    stimulus_length : float
-        length of white noise stimulus in seconds, default is 100.00005 (len(stimulusx10)+defaultclock.dt)
-    mv : bool
+    prerun_duration: float
+        Additional time the simulation should be allowed to run without being recorded. The pre-run data is discarded. defaults t0 1.0s
+    record_votage : bool
         decision whether membrane voltage should be included in the return dict. Default is False 
 
     Returns
@@ -88,11 +120,11 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     neurons.D = params[:,3]               # strength of noise, unitless
     neurons.gain = params[:,4]            # stimulus gain factor, unitless
     neurons.tau_d = params[:,5]*ms        # tau dendritic
-    neurons.tau_a = params[:,6]*ms        # tau adapation
+    neurons.tau_a = params[:,6]*ms        # tau adaptation
     neurons.delta = params[:,7]           # increment adaptation at spike event
     neurons.D_adapt = params[:,8]         # adaptation noise strength
 
-    # discard first second
+    # discard pre-run duration
     run(prerun_duration)
 
     # run and record
@@ -100,13 +132,37 @@ def lif_simulation(params, stimulus, prerun_duration=1.0, record_voltage=False):
     spikemon = SpikeMonitor(neurons, record = True)
     run(total_duration - prerun_duration)
 
+    data = dict(n_neurons = len(params),
+                spike_idx = np.asarray(spikemon.i),
+                spike_times = spikemon.t/second - (prerun_duration/second),
+                time = statemon.t/second - (prerun_duration/second),
+                dt = defaultclock.dt)
     if record_voltage:
-        data = dict(n_neurons = len(params), spike_idx = np.asarray(spikemon.i),
-                    spike_times = spikemon.t/ms - (prerun_duration/ms),
-                    time = statemon.t/ms - (prerun_duration/ms),
-                    membrane_voltage = statemon.v,)
-    else:
-        data = dict(n_neurons = len(params), spike_idx = np.asarray(spikemon.i),
-                    spike_times = spikemon.t/ms - (prerun_duration/ms),
-                    time = statemon.t/ms - (prerun_duration/ms))
+        data["membrane_voltage"] = statemon.v
     return data
+
+
+def main():
+    from ampullary_ui.utils import load_gwnstimulus, modify_stimulus
+
+    baseline_duration = 30
+    prerun_duration = 1.0
+    trials = 10
+    contrast = 0.2
+
+    stimulus = Path.cwd() / "stimuli" / "gwn150Hz10s0.3.dat"
+    parameter_table = Path.cwd() / "examples" / "example_parameters_short.csv"
+    stim = load_gwnstimulus(filename=stimulus)
+    stimulus = modify_stimulus(stim, baseline_duration, prerun_duration, trials, contrast)
+    parameters = pd.read_csv(parameter_table)
+    params = package_parameters(parameters)
+    lif_data = ampullary_lif(params[0][1], stimulus, prerun_duration, False)
+    np.savez("./lif_data.npz", lif_data=lif_data, stim_data=stim,
+             model_params=parameters, 
+             sim_params={"baseline_duration": 30, "prerun_duration": 1.0,
+                        "trials": 10, "contrast": 0.2},
+             allow_pickle=True)
+
+
+if __name__ == "__main__":
+    main()
