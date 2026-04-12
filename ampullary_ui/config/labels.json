@@ -57,7 +57,7 @@
                     "coh_highf",
                     "coh_fmax", 
                     "coh_fcutoff", 
-                    "gain_0", 
+                    "gain_zero", 
                     "gain_halfup", 
                     "gain_max", 
                     "gain_rate",
