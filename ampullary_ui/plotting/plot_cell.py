@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.legend_handler import HandlerTuple
 from matplotlib.ticker import MultipleLocator
-from ampullary_ui.simulation_analysis.analysis_helpers import is_outlier, gain_features, cutoff, values_high_frequencies
+from ampullary_ui.analysis.whitenoise import gain_features, cutoff,values_high_frequencies, is_outlier
 from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
 
@@ -17,6 +17,7 @@ dt = 1./20_000  # s  FIXME this should go into a config file or Settings
 def plot_cell(base, stim):
     # base.to_pickle(f'baseplot_data_sim.pkl')
     # stim.to_pickle(f'stimplot_data_sim.pkl')
+
     time = base.membrane_time[0]
     # membrane_voltage = base.membrane_voltage[0]
     spike_times_base = base.spike_times[0]
@@ -103,7 +104,7 @@ def plot_cell(base, stim):
     ax_yDist.get_xaxis().set_visible(False)
     ax_yDist.spines['bottom'].set_visible(False)
 
-    # stim response
+    # noise response
     ax5 = fig.add_subplot(gs[10:14, :25])
     ax5.plot(stimulus_time*factor, rate, color=colorcode['standart_blue'])
     ax5.fill_between(stimulus_time*factor, rate - error, rate + error,
@@ -175,6 +176,7 @@ def plot_cell(base, stim):
                  color=colorcode['standart_blue'], label=r'$G_{xy}(f)$')
     B = ax7.fill_between(freq, tf_smoothed-tf_std, tf_smoothed +
                          tf_std, color=colorcode['light_blue'], alpha=1, label='STD')
+
     gain_0, gain_halfup, f_halfup, max_gain, f_at_gainmax, highf_gain, mfr_gain, fcutoff_up = gain_features(
         freq, tf_smoothed, rate)
     D = ax7.plot([120.0, 150.0], [highf_gain, highf_gain], lw=2.5,
