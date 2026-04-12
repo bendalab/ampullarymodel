@@ -9,8 +9,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from ampullary_ui.ui import Ui_ModelCatalogExplicit
 from ampullary_ui.utils import get_outputfolder, load_labels, save_sampled_subset
 from ampullary_ui.plotting.plot_distro import plot_samples
-from ampullary_ui.computations.controller_functions import get_subset_values
-
+# from ampullary_ui.computations.controller_functions import get_subset_values
 
 
 class ModelCatalogExplicit(QWidget):
@@ -72,10 +71,51 @@ class ModelCatalogExplicit(QWidget):
         self._setup_placeholder_plot()
         self.processing_done.emit("Processing done.", 1.0)
 
+    def _get_subset_values(self, sum_stats, prior_samples, values, n):
+        if n > len(sum_stats): 
+            raise ValueError(f"Error: wanted number of models {n} surpasses model catalog size of 12 Mio.")
+
+        dims_to_use = np.where(~np.isnan(values))[0]
+        if len(dims_to_use) == 0:
+            #print("Warning: no valid choices provided, returning random samples.")
+            nearest_idx = np.random.choice(sum_stats.shape[0], size=n, replace=False)
+            nearest_sum_stats = sum_stats[nearest_idx]
+            nearest_prior_samples = prior_samples[nearest_idx]
+        else: 
+            # cut down vals and sum stats to relevent dimentions 
+            vals_sub = values[dims_to_use]
+            sum_stats_sub = sum_stats[:, dims_to_use]
+            # best needs to start relly high to be cut off
+            best_dist = np.full(n, np.inf, dtype=np.float32)
+            best_idx = np.full(n, -1, dtype=np.int64)
+            # chunks to be able to run this with less RAM
+            chunk_size = 500_000 
+            for start in range(0, sum_stats.shape[0], chunk_size):
+                stop = min(start + chunk_size, sum_stats.shape[0])
+                block = sum_stats_sub[start:stop]
+                # distange between wanted an have
+                diff = block - vals_sub   
+                dist2 = np.einsum('ij,ij->i', diff, diff) # distance without creating a giant temporary
+                idx = np.argpartition(dist2, n)[:n]
+                cand_dist = dist2[idx]
+                cand_idx = idx + start
+                # merge with current best
+                all_dist = np.concatenate((best_dist, cand_dist))
+                all_idx = np.concatenate((best_idx, cand_idx))
+                # take n best fitting
+                keep = np.argpartition(all_dist, n)[:n] # if same distance, will be 'random-ish' no need for random samples implementation (ask Jan if I am right)
+                best_dist = all_dist[keep]
+                best_idx = all_idx[keep]
+            # final ordering
+            order = np.argsort(best_dist)
+            nearest_sum_stats = sum_stats[best_idx[order]]
+            nearest_prior_samples = prior_samples[best_idx[order]]
+        return nearest_sum_stats, nearest_prior_samples
+
     def _setup_placeholder_plot(self):
         values = np.array([100, 0.12]+[np.nan]*15)
         n = 100
-        self._near_data_samples, self._near_prior_samples = get_subset_values(self._summarystats, self._priorsamples, values, n)
+        self._near_data_samples, self._near_prior_samples = self._get_subset_values(self._summarystats, self._priorsamples, values, n)
         fig = plot_samples(values, self._near_data_samples, self._feature_labels)
         self._current_fig = fig
         fig.text(0.5, 0.5, "EXAMPLE", fontsize=80, fontweight='bold', color='#44F9BD', alpha=0.6, ha='center',

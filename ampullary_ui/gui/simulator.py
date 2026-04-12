@@ -164,7 +164,8 @@ class Simulator(QWidget):
         self._sim_thread = None
         # Create the matplotlib figure from your data
         self._text_output.insertPlainText('Simulation done, analyzing ...\n')
-
+        from IPython import embed
+        embed()
         fig = plot_cell(self._results.baseline_data, self._results.stimulus_data)
         self._current_fig = fig
         self._show_simulation_figure()

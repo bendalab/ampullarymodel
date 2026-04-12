@@ -9,12 +9,115 @@ from PySide6.QtWidgets import QWidget, QFileDialog
 from PySide6.QtCore import Signal, QThread
 
 from ampullary_ui.ui.populationsimulator_ui import Ui_PopulationSimulator
-from ampullary_ui.computations.table_conversion_gui import package_parameters, worker_function_simulate_multi
+from ampullary_ui.computations.table_conversion_gui import package_parameters
 from ampullary_ui.dialogs import CancelConfirmDialog
-from ampullary_ui.utils import save_data, save_features, read_output_folder, save_features_table, load_gwnstimulus, modify_stimulus
-from ampullary_ui.signals import SimulatorSignals
-from ampullary_ui.computations.controller_functions import simulate_from_input_params
+from ampullary_ui.utils import read_output_folder, save_features_table, load_gwnstimulus, modify_stimulus
+from ampullary_ui.analysis import summary_statistics
+from ampullary_ui.computations.lif_simulation import package_parameters, ampullary_lif
+from ampullary_ui.analysis.utils import split_data, spiketimes_to_trials
 
+
+def worker_function(start_idx, package_params, stimulus,
+                    stim_data, result_queue, progress_queue,
+                    save_raw, calc_feats, save_dir):
+    """
+    Worker function for running a single LIF simulation in a multiprocessing setup.
+
+    This function wraps the full simulation pipeline for one parameter package (max 100 sets):
+    it generates a timed stimulus, runs the LIF simulation, optionally saves minimally pre-processed simulation data, optionally computes features,
+    and communicates results back through multiprocessing queues.
+
+    Parameters
+    ----------
+    start_idx : int
+        Index identifying the current simulation job for naming saved files.
+    packages_params : list of list of arrays
+        list of packages of max 100 model parameter sets for `lif_simulation`
+    stimulus : np.array
+        stimulus size corresponding to each time point, dt = default 50us
+        Input stimulus array to be converted into a `TimedArray` and passed to the simulation.
+    stim_data : dict
+        GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
+    result_queue : multiprocessing.Queue
+        Queue used to return results to the parent process. On success,
+        a dictionary with keys:
+            - "features": computed summary statistics or None
+            - "saved_flag": bool indicating whether raw data was saved
+        On failure, `None` is placed in the queue.
+    progress_queue : multiprocessing.Queue
+        Queue used to report progress or error messages to the parent process.
+    save_raw : bool
+        If True, raw simulation output is wrapped and saved to disk.
+    calc_feats : bool
+        If True, summary statistics are computed from the simulation output.
+    save_dir : str
+        Directory path where simulation data will be stored if`save_raw` is True.
+
+    Returns
+    -------
+    None
+        Results are returned via `result_queue`. Errors are reported via `progress_queue`.
+    """
+
+    saved_flag = False
+    features = None
+    try:
+        print(package_params)
+        print(stimulus)
+        sim_data = ampullary_lif(package_params, stimulus, record_voltage=False)
+        print(sim_data)
+        if save_raw:
+            print(save_raw)
+            saved_flag = save_data(sim_data, stim_data, save_dir, package_params, start_idx)
+        if calc_feats:
+            features = summary_statistics(sim_data, stim_data)
+        del sim_data
+        result_queue.put({"features": features, "saved_flag": saved_flag})
+    except Exception as e:
+        progress_queue.put(f'Error: {str(e)}')
+        print(e)
+        result_queue.put(None)
+
+
+def save_data(lif_data, stim_data, save_dir, params, start_idx,
+              baseline_duration=30.):
+    """
+    Convert raw simulation data into pre-processed data format and save data
+
+    Separate simulated data of baseline activity from simulated data during stimulation with gwn
+    Compute spike times relative to stimulus start for all repetitions of the stimulation
+    Pack together and save as .npz
+    
+    sim_data: dictionary 
+        dictionary with spike_idx, spike_times and time array
+    stim_data : dict
+        GWN Stimulus used for training, dictionary includes stimulus itself, as well as meta data and time array
+    save_dir: str
+        Directory path where simulation data will be stored
+    params : np.array
+        array of arrays with model parameter sets
+    start_idx : int
+        Index identifying the current simulation job for naming saved files.
+
+    Returns
+    -------
+    True : bool
+        check for "ran"
+    """
+    stimulus_duration = stim_data["duration"]
+    baseline, stimulation = split_data(lif_data, baseline_duration, stimulus_duration)
+
+    trials = spiketimes_to_trials(stimulation)
+    for i in range(len(trials['spikes'])):
+        cell_id = start_idx + i
+        filepath = save_dir / f"cell_{cell_id}.npz"
+        print(filepath)
+        np.savez_compressed(filepath, baseline_time=np.round(baseline['time'], 7),
+                            baseline_spikes=baseline['spikes'][i],
+                            whitenoise_time = np.round(trials['time'], 7),
+                            whitenoise_spikes = np.array(trials['spikes'][i], dtype=object),
+                            params = params[i])
+    return True
 
 
 class SimulationThreadMulti(QThread):
@@ -63,7 +166,7 @@ class SimulationThreadMulti(QThread):
 
             self.result_queue = multiprocessing.Queue()
             self.progress_queue = multiprocessing.Queue()
-            self.current_proc = multiprocessing.Process(target=worker_function_simulate_multi, 
+            self.current_proc = multiprocessing.Process(target=worker_function, 
                                                         args=(start_idx, package_params, stimulus, stim_data,
                                                               self.result_queue, self.progress_queue, 
                                                               self.save_raw, self.calc_feats, raw_data_dir))
@@ -74,6 +177,7 @@ class SimulationThreadMulti(QThread):
             try:
                 result = self.result_queue.get_nowait()
                 if result is None:
+                    print("results are None!")
                     collect_results.append(np.full((len(package_params), 17), np.nan))
                     saved_flag = False
                 else:
@@ -204,10 +308,9 @@ class PopulationSimulator(QWidget):
         self._text_output.appendPlainText(msg)
 
     def _on_simulations_finished(self, results):
+        print(self.sim_thread)
         logging.info("Simulations done, saving.")
         self.simulation_done.emit("Simulations are done!")
-        from IPython import embed   
-        embed()
         self._text_output.insertPlainText("\nSimulations finished")
         self._results = results
         if self._save_flag:
