@@ -9,8 +9,8 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from ampullary_ui.ui import Ui_ModelCatalog
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_figure, load_labels, save_sampled_subset
-# from ampullary_ui.computations.controller_functions import simulate_from_input_params
 from ampullary_ui.gui.customcombienationwidget import RangeCombine
+
 
 class FullHistogramWorker(QThread):
     finished = Signal(list)

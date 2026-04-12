@@ -9,7 +9,6 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from ampullary_ui.ui import Ui_ModelCatalogExplicit
 from ampullary_ui.utils import get_outputfolder, load_labels, save_sampled_subset
 from ampullary_ui.plotting.plot_distro import plot_samples
-# from ampullary_ui.computations.controller_functions import get_subset_values
 
 
 class ModelCatalogExplicit(QWidget):
@@ -130,7 +129,7 @@ class ModelCatalogExplicit(QWidget):
         self._search_btn.setText("Searching…")
         values = self._get_values_from_lines()
         n = int(self._nsamples_spinbox.value())
-        self._near_data_samples, self._near_prior_samples = get_subset_values(self._summarystats, self._priorsamples, values, n)
+        self._near_data_samples, self._near_prior_samples = self._get_subset_values(self._summarystats, self._priorsamples, values, n)
 
         fig = plot_samples(values, self._near_data_samples, self._feature_labels)
         self._current_fig = fig

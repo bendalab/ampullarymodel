@@ -6,17 +6,15 @@ import warnings
 from pathlib import Path
 
 from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QTabWidget
-from PySide6.QtGui import QPixmap, QAction, QKeySequence, QIcon
-from PySide6.QtCore import QEvent, QTimer, QUrl, Qt, QSize, QRunnable, Slot, QThreadPool
+from PySide6.QtGui import QAction, QKeySequence, QIcon
+from PySide6.QtCore import QTimer, Qt, QSize, QRunnable, Slot, QThreadPool
 
 # # Suppress Qt warning about missing tool_selection signal (manually connected in __init__)
 # warnings.filterwarnings("ignore", message=".*QMetaObject::connectSlotsByName.*tool_selection.*")
 
 from ampullary_ui.ui import Ui_MainWindow
 from ampullary_ui.gui import SplashPage, StartPage, ModelCatalog, ModelCatalogExplicit
-
 from ampullary_ui.gui.simulator import Simulator
-
 from ampullary_ui.gui.populationsimulator import PopulationSimulator
 from ampullary_ui.gui.modelgenerator import Modelgenerator
 from ampullary_ui.gui.populaitiongenerator import PopulationGenerator
@@ -246,17 +244,16 @@ class MainWindow(QMainWindow):
         get_outputfolder()
 
     def _setup_animation(self, stepsize=1, maxsteps=40):
-        # Create status label and timer for animation
         self._status_label = QLabel()
         fish_right = "><(((°>"
         fish_left = "<°)))><"
-        steps_right = maxsteps//2
         self.pattern = []
-        for i in range(maxsteps*2):
-            if i < maxsteps:
-                self.pattern.append(f"{" " * i * stepsize}{fish_right}{" " * (maxsteps-i) * stepsize}")
-            else:
-                self.pattern.append(f"{" " * (maxsteps - i) * stepsize}{fish_left}{" " * i * stepsize}")
+        for i in range(maxsteps):
+            left = " " * i * stepsize
+            right = " " * (maxsteps-i) * stepsize
+            self.pattern.append(f"{left}{fish_right}{right}")
+        for i in range(maxsteps, 0, -1):
+            self.pattern.append(f"{" " * i * stepsize}{fish_left}{" " * (maxsteps - i) * stepsize}")
         self._index = 0
         self._timer = QTimer()
         self._timer.timeout.connect(self._update_animation)

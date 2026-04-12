@@ -1,16 +1,12 @@
 import logging
 import numpy as np
-from pathlib import Path
 
-from PySide6.QtWidgets import QDoubleSpinBox, QSizePolicy, QFrame, QWidget, QFileDialog
-from PySide6.QtCore import Signal, QLocale, QRunnable, Slot, QThreadPool, QSettings, QThread
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from PySide6.QtWidgets import  QWidget, QFileDialog
+from PySide6.QtCore import Signal, QThread
 
 from ampullary_ui.ui.populationgenerator_ui import Ui_PopulationGenerator
-from ampullary_ui.utils import read_output_folder, save_data, save_features, save_figure
-from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.signals import SimulatorSignals
-from ampullary_ui.computations.controller_functions import simulate_from_input_params
+from ampullary_ui.utils import read_output_folder
+
 
 class GenerationThreadMulti(QThread):
     finished = Signal(object)   # emits results when done

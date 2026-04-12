@@ -9,11 +9,11 @@ from PySide6.QtWidgets import QWidget, QFileDialog
 from PySide6.QtCore import Signal, QThread
 
 from ampullary_ui.ui.populationsimulator_ui import Ui_PopulationSimulator
-from ampullary_ui.computations.table_conversion_gui import package_parameters
+from ampullary_ui.simulation.table_conversion_gui import package_parameters
 from ampullary_ui.dialogs import CancelConfirmDialog
 from ampullary_ui.utils import read_output_folder, save_features_table, load_gwnstimulus, modify_stimulus
 from ampullary_ui.analysis import summary_statistics
-from ampullary_ui.computations.lif_simulation import package_parameters, ampullary_lif
+from ampullary_ui.simulation.lif_simulation import package_parameters, ampullary_lif
 from ampullary_ui.analysis.utils import split_data, spiketimes_to_trials
 
 

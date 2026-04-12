@@ -14,7 +14,7 @@ from ampullary_ui.ui.simulator_ui import Ui_Simulator
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_figure, load_labels
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.computations.controller_functions import simulate_from_input_params
+from ampullary_ui.simulation.helper import simulate_from_input_params
 
 
 class SimulationThread(QRunnable):

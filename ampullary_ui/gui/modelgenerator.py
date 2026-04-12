@@ -9,7 +9,7 @@ from ampullary_ui.ui import Ui_ModelGenerator
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_params, load_labels
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.computations.controller_functions import simulate_from_input_params, create_cell_from_input_features, SimulationResult
+from ampullary_ui.simulation.helper import SimulationResult, simulate_from_input_params 
 
 
 class SimulationThread(QRunnable):
@@ -176,12 +176,12 @@ class Modelgenerator(QWidget):
             plot_layout.removeWidget(self._placeholder_canvas)
             self._placeholder_canvas.deleteLater()
             self._placeholder_canvas = None
-        # Remove old simulation canvas if needed
+
         if hasattr(self, 'canvas') and self._canvas:
             plot_layout.removeWidget(self._canvas)
             self._canvas.deleteLater()
             self._canvas = None
-        # Add matplotlib new canvas for updated simulation figure
+
         self._canvas = FigureCanvas(self._current_fig)
         self._canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         plot_layout.addWidget(self._canvas)
@@ -236,7 +236,7 @@ class Modelgenerator(QWidget):
         self._simulate_btn.setEnabled(True)
         self._generate_btn.setEnabled(True)
         self._generate_btn.setText("generate")
-
+        self._gen_thread = None
         self._print_params()
 
     def _on_simulate(self):
@@ -278,9 +278,8 @@ class Modelgenerator(QWidget):
         self._generate_btn.setEnabled(True)
         self._reset_btn.setEnabled(True)
         self._save_params_btn.setEnabled(True)
-        self._population_btn.setEnabled(True)
         self._text_output.insertPlainText(' simulation finished\n')
-
+        self._sim_thread = None
         self._print_feature_comparison()
 
     def _print_params(self):
