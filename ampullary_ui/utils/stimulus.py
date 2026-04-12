@@ -1,3 +1,4 @@
+import pathlib
 import numpy as np
 
 from PySide6.QtCore import QFile, QIODevice
@@ -82,7 +83,7 @@ def modify_stimulus(stim_data, baseline_duration=30., base_extratime=1.0,
     return mod_stimulus
 
 
-def load_gwnstimulus(dt: float = 1./20_000.):
+def load_gwnstimulus(dt: float = 1./20_000., filename:pathlib.Path=None, resource=":/stimulus/gwn150Hz10s0.3.dat"):
     """
     Load gwn stimulus data  
 
@@ -90,7 +91,7 @@ def load_gwnstimulus(dt: float = 1./20_000.):
     ----------
     dt : float
         The desired time step of the stimulus. Defaults to 1/20000
-
+    
     Returns
     -------
     gwn_stim_data : dict
@@ -156,12 +157,22 @@ def load_gwnstimulus(dt: float = 1./20_000.):
                 item = _finditem(v, key)
                 if item is not None:
                     return item
-
-    f = QFile(":/stimuli/gwn150Hz10s0.3.dat")
-    if not f.open(QIODevice.ReadOnly):
-        raise FileNotFoundError(f.name())
-    lines = f.readAll().data().decode("utf-8").split("\n")
-    f.close()
+    
+    lines = []
+    name = ""
+    if filename:
+        name = filename.stem
+        with open(filename, "r") as f:
+            lines = f.readlines()
+    else:
+        f = QFile(":/stimuli/gwn150Hz10s0.3.dat")
+        if not f.open(QIODevice.ReadOnly):
+            raise FileNotFoundError(f.name())
+        lines = f.readAll().data().decode("utf-8").split("\n")
+        f.close()
+        name = f.fileName().split("/")[-1].split(".dat")[0]
+    if len(lines) == 0:
+        raise ValueError("Could not read stimulus file.")
     lines = [l.lstrip().rstrip() for l in lines]
     s = _parse_stim_lines(lines)
     dur = _finditem(s[0], "T")
@@ -177,7 +188,7 @@ def load_gwnstimulus(dt: float = 1./20_000.):
     ampl_new = np.interp(time_new, time, ampl)
     ampl_new[ampl_new > time[-1]] = ampl[-1]
 
-    stim_data = {"name" : f.fileName().split("/")[-1].split(".dat")[0],
+    stim_data = {"name" : name,
                  "samplingrate" : np.round(1 / dt),
                  "duration" : dur,
                  "dt" : dt,

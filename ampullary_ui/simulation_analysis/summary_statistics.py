@@ -13,73 +13,37 @@ import scipy.signal as sps
 from brian2.units.allunits import second
 from ampullary_ui.computations.lif_simulation import defaultclock
 from ampullary_ui.utils import scale_stimulus
-from ampullary_ui.simulation_analysis.convert_data import split_data, relativ_stimulation_times
-from ampullary_ui.simulation_analysis.analysis_helpers import serial_correlations, smoothing, cutoff, convolution_rate, convolution_rate_single, values_high_frequencies, transferfunction, gain_features
+from ampullary_ui.simulation_analysis.convert_data import split_data, relative_stimulation_times
+from ampullary_ui.analysis.baseline import serial_correlations
+from ampullary_ui.analysis.whitenoise import smoothing, cutoff, transferfunction, gain_features, values_high_frequencies
+from ampullary_ui.analysis.utils import convolution_rate, convolution_rate_single
+
+# def get_fr_mod_sim(data):
+#     """
+#     Get firing rate modulation
+
+#     Makes convolution based firing rate, computes standart deviation.
 
 
-
-
-
-def baseline_features(data):
-    """
-    Extract baseline features
-
-    Computes firing rate, ISI CV and first lag correlation  for every simulated cell 
-
-    Parameters 
-    ----------
-    data : dictionary 
-        dictionary with spikes, time and membrane_voltage only during simulation without stimulation
-    
-    Return
-    ------
-    frates : np.array
-        mean firing rate of every simulated cell
-    isi_cv : np.array
-        Interstimulusintervall CV of every simulated cell
-    corrs_arr : np.array
-        first lag correlation of every simulated cell
-
-    """
-    counts = np.asarray([len(i) for i in data['spikes']])
-    frates = counts/(np.round(data['time'][-1]-  data['time'][0]))
-    isis = [np.diff(i) for i in data['spikes']] 
-    isi_cvs = [np.std(i)/np.mean(i) for i in isis]
-    isi_cvs = np.array(isi_cvs)
-    n_neurons = len(data['spikes'])
-    corrs_arr = np.zeros(n_neurons)
-    for i in range(n_neurons):
-        _, corrs = serial_correlations(data['spikes'][i], max_lag=10)
-        corrs_arr[i] = corrs[1]
-    return frates, isi_cvs, corrs_arr 
-
-
-def get_fr_mod_sim(data):
-    """
-    Get firing rate modulation
-
-    Makes convolution based firing rate, computes standart deviation.
-
-
-    Parameters
-    ----------
-    data : dictionary 
-        dictionary with spikes, time and membrane_voltage only during simulation with gwn stimulation
-    Returns
-    -------
-    fr_mods : list
-        list of firing rate modulations for every simulated cell
-    """
-    n_neurons = len(data['spikes'])
-    fr_mods= np.zeros(n_neurons)
-    for i in range(n_neurons):
-        if len(data['spikes'][i]) != 0:  # if there are spikes
-            conv_rate = convolution_rate(data['spikes'][i], data['time'])
-            fr_mod =  np.std(conv_rate)
-        else:             
-            fr_mod = np.NAN
-        fr_mods[i] = fr_mod
-    return fr_mods
+#     Parameters
+#     ----------
+#     data : dictionary 
+#         dictionary with spikes, time and membrane_voltage only during simulation with gwn stimulation
+#     Returns
+#     -------
+#     fr_mods : list
+#         list of firing rate modulations for every simulated cell
+#     """
+#     n_neurons = len(data['spikes'])
+#     fr_mods= np.zeros(n_neurons)
+#     for i in range(n_neurons):
+#         if len(data['spikes'][i]) != 0:  # if there are spikes
+#             conv_rate = convolution_rate(data['spikes'][i], data['time'])
+#             fr_mod =  np.std(conv_rate)
+#         else:             
+#             fr_mod = np.NAN
+#         fr_mods[i] = fr_mod
+#     return fr_mods
     
 
 
@@ -238,6 +202,9 @@ def calculate_sum_stats(data, stim_data,):
     sum_stats : np.array
         tensor of summary statistics
     """
+    print("calculating summary stats!")
+    print(data, stim_data)
+    
     # make spikelists 
     n_neurons = data['n_neurons']
     sum_stats = [ [] for _ in range(n_neurons)]
@@ -246,8 +213,10 @@ def calculate_sum_stats(data, stim_data,):
     baseline, stimulation = split_data(data, stim_data['baseline_recording']) # includes spike convert
     # baseline_properties
     frates, isi_cvs, scorr1= baseline_features(baseline)
+    print("baseline properties: ", frates, isi_cvs, scorr1)
+
     # gwn stimulation
-    rel_stimulation = relativ_stimulation_times(stimulation, stim_data['baseline_recording'])
+    rel_stimulation = relative_stimulation_times(stimulation, stim_data['baseline_recording'])
     gwn_stimulus = scale_stimulus(stim_data['stimulus'])
     fr_mod = get_fr_mod_sim(rel_stimulation)
     coh_params = get_coherence_features_sim(rel_stimulation, gwn_stimulus)

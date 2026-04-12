@@ -8,18 +8,12 @@ Functions helping to analyse the cell models
 import numpy as np
 import pandas as pd 
 import scipy.signal as sps 
-from ampullary_ui.simulation_analysis.analysis_helpers import (serial_correlations,
-                                                               convolution_rate_single, 
-                                                               convolution_rate_with_std,
-                                                               transferfunction,
-                                                               smoothing,
-                                                               cutoff,
-                                                               values_high_frequencies,
-                                                               gain_features,
-                                                               coherence_features)
+from ampullary_ui.analysis.whitenoise import transferfunction, smoothing, gain_features, coherence_features
+from ampullary_ui.analysis.baseline import serial_correlations
+from ampullary_ui.analysis.utils import convolution_rate_single, convolution_rate_with_std
+
 from ampullary_ui.utils import load_common_variables
 
-from IPython import embed
 
 common_variables = load_common_variables()
 
