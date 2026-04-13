@@ -9,7 +9,7 @@ from ampullary_ui.ui import Ui_ModelGenerator
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_params, load_labels
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.simulation.helper import SimulationResult, simulate_from_input_params 
+from ampullary_ui.simulation.helper import SimulationResult, simulate_from_input_params, create_cell_from_input_features
 
 
 class SimulationThread(QRunnable):
@@ -296,7 +296,7 @@ class Modelgenerator(QWidget):
         f_s =  ["%.2f" % number for number in self._features]
         f_width = max(len(f) for f in f_s)
         for i, label in enumerate(self._feature_labels):
-            line = f'{label + ":":<{label_width + 1}} --> wanted: {np.round(self.features[i], 2):<{f_width + 1}} --> got: {np.round(self._simulation_results.features[i], 2)}\n'
+            line = f'{label + ":":<{label_width + 1}} --> wanted: {np.round(self._features[i], 2):<{f_width + 1}} --> got: {np.round(self._simulation_results.features[i], 2)}\n'
             self._text_output.insertPlainText(line)
 
     def _on_save_params(self):
