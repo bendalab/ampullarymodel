@@ -79,7 +79,7 @@
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="gme_label_1">
+                <widget class="QLabel" name="gme_label_01">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -98,7 +98,7 @@
                 </widget>
                </item>
                <item row="4" column="0">
-                <widget class="QLabel" name="gme_label_4">
+                <widget class="QLabel" name="gme_label_04">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -117,7 +117,7 @@
                 </widget>
                </item>
                <item row="8" column="0">
-                <widget class="QLabel" name="gme_label_8">
+                <widget class="QLabel" name="gme_label_08">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -136,7 +136,7 @@
                 </widget>
                </item>
                <item row="9" column="0">
-                <widget class="QLabel" name="gme_label_9">
+                <widget class="QLabel" name="gme_label_09">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -174,7 +174,7 @@
                 </widget>
                </item>
                <item row="3" column="0">
-                <widget class="QLabel" name="gme_label_3">
+                <widget class="QLabel" name="gme_label_03">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -193,7 +193,7 @@
                 </widget>
                </item>
                <item row="7" column="0">
-                <widget class="QLabel" name="gme_label_7">
+                <widget class="QLabel" name="gme_label_07">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -256,7 +256,7 @@
                 </widget>
                </item>
                <item row="6" column="0">
-                <widget class="QLabel" name="gme_label_6">
+                <widget class="QLabel" name="gme_label_06">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -332,7 +332,7 @@
                 </widget>
                </item>
                <item row="5" column="0">
-                <widget class="QLabel" name="gme_label_5">
+                <widget class="QLabel" name="gme_label_05">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -408,7 +408,7 @@
                 </widget>
                </item>
                <item row="2" column="0">
-                <widget class="QLabel" name="gme_label_2">
+                <widget class="QLabel" name="gme_label_02">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -443,7 +443,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLineEdit" name="rate_edit_1">
+                <widget class="QLineEdit" name="gme_edit_01">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -459,7 +459,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QLineEdit" name="cv_edit_2">
+                <widget class="QLineEdit" name="gme_edit_02">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -475,7 +475,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="sc_edit_3">
+                <widget class="QLineEdit" name="gme_edit_03">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -491,7 +491,7 @@
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLineEdit" name="rate_modulation_edit_4">
+                <widget class="QLineEdit" name="gme_edit_04">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -507,7 +507,7 @@
                 </widget>
                </item>
                <item row="5" column="1">
-                <widget class="QLineEdit" name="coh_zero_edit_5">
+                <widget class="QLineEdit" name="gme_edit_05">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -523,7 +523,7 @@
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QLineEdit" name="coh_max_edit_6">
+                <widget class="QLineEdit" name="gme_edit_06">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -539,7 +539,7 @@
                 </widget>
                </item>
                <item row="7" column="1">
-                <widget class="QLineEdit" name="coh_high_edit_7">
+                <widget class="QLineEdit" name="gme_edit_07">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -555,7 +555,7 @@
                 </widget>
                </item>
                <item row="8" column="1">
-                <widget class="QLineEdit" name="coh_fmax_edit_8">
+                <widget class="QLineEdit" name="gme_edit_08">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -571,7 +571,7 @@
                 </widget>
                </item>
                <item row="9" column="1">
-                <widget class="QLineEdit" name="coh_fcutoff_edit_9">
+                <widget class="QLineEdit" name="gme_edit_09">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -587,7 +587,7 @@
                 </widget>
                </item>
                <item row="10" column="1">
-                <widget class="QLineEdit" name="gain_zero_edit_10">
+                <widget class="QLineEdit" name="gme_edit_10">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -597,7 +597,7 @@
                 </widget>
                </item>
                <item row="11" column="1">
-                <widget class="QLineEdit" name="gain_halfup_edit_11">
+                <widget class="QLineEdit" name="gme_edit_11">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -613,7 +613,7 @@
                 </widget>
                </item>
                <item row="12" column="1">
-                <widget class="QLineEdit" name="gain_max_edit_12">
+                <widget class="QLineEdit" name="gme_edit_12">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -629,7 +629,7 @@
                 </widget>
                </item>
                <item row="13" column="1">
-                <widget class="QLineEdit" name="gain_rate_edit_13">
+                <widget class="QLineEdit" name="gme_edit_13">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -645,7 +645,7 @@
                 </widget>
                </item>
                <item row="14" column="1">
-                <widget class="QLineEdit" name="gain_high_edit_13">
+                <widget class="QLineEdit" name="gme_edit_14">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -661,7 +661,7 @@
                 </widget>
                </item>
                <item row="15" column="1">
-                <widget class="QLineEdit" name="gain_fhalf_edit_14">
+                <widget class="QLineEdit" name="gme_edit_15">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -677,7 +677,7 @@
                 </widget>
                </item>
                <item row="16" column="1">
-                <widget class="QLineEdit" name="gain_fmax_edit_16">
+                <widget class="QLineEdit" name="gme_edit_16">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>26</horstretch>
@@ -693,7 +693,7 @@
                 </widget>
                </item>
                <item row="17" column="1">
-                <widget class="QLineEdit" name="gain_fcutoff_edit_17">
+                <widget class="QLineEdit" name="gme_edit_17">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>130</horstretch>
@@ -863,6 +863,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
             <item>
              <spacer name="horizontalSpacer_16">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>

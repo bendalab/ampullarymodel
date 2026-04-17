@@ -20,6 +20,10 @@ class ModelCatalogExplicit(QWidget):
 
         self._ui = Ui_ModelCatalogExplicit()
         self._ui.setupUi(self)
+
+        self._feature_labels = load_labels()['feature_labels']
+        self._feature_labels_casual = load_labels()['feature_labels_casual']
+
         self._canvas = None
         self._current_fig = None
         self._placeholder_canvas = None
@@ -37,7 +41,6 @@ class ModelCatalogExplicit(QWidget):
         self._nsamples_spinbox.setMaximum(12_000_000) #!!!
         self._nsamples_spinbox.setValue(100)
 
-        self._feature_labels = load_labels()['feature_labels']
         self._summarystats = None
         self._priorsamples = None
         self._near_data_samples = None
@@ -47,20 +50,18 @@ class ModelCatalogExplicit(QWidget):
         self._save_btn.clicked.connect(self._on_save)
 
     def _find_inputs(self):
-        temp = []
-        candidates = [name for name in self._ui.__dir__() if "_edit_" in name]
-        for i in range(1, 18):
-            stub = f"_edit_{i}"
-            for c in candidates:
-                if stub in c:
-                    temp.append(getattr(self._ui, c))
-                    candidates.remove(c)
-        for inp in temp:
-            inp.setPlaceholderText("None")
-            inp.setAlignment(Qt.AlignRight)
-            inp.setStyleSheet("""QLineEdit:placeholder{color: #888;}""") 
+        edit_widgets = sorted([name for name in self._ui.__dir__() if "gme_edit_" in name])
+        label_widgets = sorted([name for name in self._ui.__dir__() if "gme_label_" in name])
+        for i, (label, edit) in enumerate(zip(label_widgets, edit_widgets)):
+            edit = getattr(self._ui, edit)
+            edit.setPlaceholderText("None")
+            edit.setAlignment(Qt.AlignRight)
+            edit.setStyleSheet("""QLineEdit:placeholder{color: #888;}""") 
 
-        return temp
+            label = getattr(self._ui, label)
+            label.setText(self._feature_labels_casual[i])
+
+        return edit_widgets
 
     def set_data(self, summarystats, priorsamples):
         self.processing.emit("Processing data ...", 0.0)
@@ -71,41 +72,39 @@ class ModelCatalogExplicit(QWidget):
         self.processing_done.emit("Processing done.", 1.0)
 
     def _get_subset_values(self, sum_stats, prior_samples, values, n):
-        if n > len(sum_stats): 
+        if n > len(sum_stats):
             raise ValueError(f"Error: wanted number of models {n} surpasses model catalog size of 12 Mio.")
 
         dims_to_use = np.where(~np.isnan(values))[0]
         if len(dims_to_use) == 0:
-            #print("Warning: no valid choices provided, returning random samples.")
             nearest_idx = np.random.choice(sum_stats.shape[0], size=n, replace=False)
             nearest_sum_stats = sum_stats[nearest_idx]
             nearest_prior_samples = prior_samples[nearest_idx]
-        else: 
-            # cut down vals and sum stats to relevent dimentions 
+        else:
             vals_sub = values[dims_to_use]
             sum_stats_sub = sum_stats[:, dims_to_use]
             # best needs to start relly high to be cut off
             best_dist = np.full(n, np.inf, dtype=np.float32)
             best_idx = np.full(n, -1, dtype=np.int64)
             # chunks to be able to run this with less RAM
-            chunk_size = 500_000 
+            chunk_size = 500_000
             for start in range(0, sum_stats.shape[0], chunk_size):
                 stop = min(start + chunk_size, sum_stats.shape[0])
                 block = sum_stats_sub[start:stop]
-                # distange between wanted an have
-                diff = block - vals_sub   
+
+                diff = block - vals_sub
                 dist2 = np.einsum('ij,ij->i', diff, diff) # distance without creating a giant temporary
                 idx = np.argpartition(dist2, n)[:n]
                 cand_dist = dist2[idx]
                 cand_idx = idx + start
-                # merge with current best
+
                 all_dist = np.concatenate((best_dist, cand_dist))
                 all_idx = np.concatenate((best_idx, cand_idx))
-                # take n best fitting
+
                 keep = np.argpartition(all_dist, n)[:n] # if same distance, will be 'random-ish' no need for random samples implementation (ask Jan if I am right)
                 best_dist = all_dist[keep]
                 best_idx = all_idx[keep]
-            # final ordering
+
             order = np.argsort(best_dist)
             nearest_sum_stats = sum_stats[best_idx[order]]
             nearest_prior_samples = prior_samples[best_idx[order]]
@@ -149,7 +148,8 @@ class ModelCatalogExplicit(QWidget):
     def _get_values_from_lines(self):
         vals_convert = np.full(len(self._inputs), np.nan, dtype=float)  # Initialize with NaNs
         for i, line in enumerate(self._inputs):
-            text = line.text().strip()
+            edit = getattr(self._ui, line)
+            text = edit.text().strip()
             if text == "" or text.lower() == "none":
                 # Keep NaN for empty or "None"
                 continue
@@ -159,6 +159,7 @@ class ModelCatalogExplicit(QWidget):
                 val = float(normalized_text)
                 vals_convert[i] = val
             except ValueError:
+                logging.error("Error converting %s to float!", normalized_text)
                 # Invalid input → np.nan
                 vals_convert[i] = np.nan
         return vals_convert
