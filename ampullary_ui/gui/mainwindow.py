@@ -1,7 +1,6 @@
 import logging
 import time
 import pandas as pd
-import warnings
 
 from pathlib import Path
 
@@ -164,7 +163,7 @@ class MainWindow(QMainWindow):
         self._modelgenerator_action.setShortcut(QKeySequence("F3"))
         self._modelgenerator_action.triggered.connect(lambda: self._on_tool_selection(Tool.MODELGENERATOR))
 
-        self._modelcatalogue_action = QAction("Model catalog", parent=self)
+        self._modelcatalogue_action = QAction("Model catalogue", parent=self)
         self._modelcatalogue_action.setStatusTip("Select models based on the training datasets")
         self._modelcatalogue_action.setShortcut(QKeySequence("F4"))
         self._modelcatalogue_action.triggered.connect(lambda: self._on_tool_selection(Tool.MODELCATALOG))

@@ -312,7 +312,7 @@ class Modelgenerator(QWidget):
 
     def _on_save_data(self):
         folder = get_outputfolder()
-        filename = self.name_edit.text().strip()
+        filename = self._name_edit.text().strip()
 
         if self._simulation_results is None:
             self._text_output.insertPlainText('\nNothing to save\n')
