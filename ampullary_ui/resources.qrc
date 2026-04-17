@@ -16,9 +16,6 @@
         <file alias="labels">config/labels.json</file>
         <file alias="common_variables">config/common_variables.json</file>
     </qresource>
-    <qresource prefix="/ui">
-        <file alias="gui">gui.ui</file>
-    </qresource>
     <qresource prefix="/examples">
         <file alias="eqn">../examples/example_figures/equation.png</file>
         <file alias="eqn2">../examples/example_figures/equation2.png</file>

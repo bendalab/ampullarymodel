@@ -9,3 +9,7 @@ torch
 numba
 sbi
 pyside6
+arviz
+arviz-base
+arviz-stats
+arviz-plots
