@@ -12,13 +12,13 @@ from setuptools.command.install import install
 
 class BuildQtResources:
     """Mixin class to add Qt resource compilation to setuptools commands."""
-    
+
     def run_build_resources(self):
         """Execute the resource compilation script."""
         print("Compiling Qt resources...")
         try:
-            result = subprocess.run([sys.executable, "build_resources.py"], 
-                                  capture_output=True, text=True, check=True)
+            result = subprocess.run([sys.executable, "build_resources.py", "--rcc"],
+                                    capture_output=True, text=True, check=True)
             print(result.stdout)
             if result.stderr:
                 print("Warnings:", result.stderr)
@@ -29,27 +29,47 @@ class BuildQtResources:
             raise
 
 
-class BuildPyCommand(build_py, BuildQtResources):
+class BuildQtUI:
+
+    def run_build_ui(self):
+        print("Compiling Qt UI Forms...")
+        try:
+            result = subprocess.run([sys.executable, "build_resources.py", "--ui"],
+                                     capture_output=True, text=True, check=True)
+            print(result.stdout)
+            if result.stderr:
+                print("Warnings:", result.stderr)
+        except subprocess.CalledProcessError as e:
+            print(f"Resource compilation failed: {e}")
+            print("stdout:", e.stdout)
+            print("stderr:", e.stderr)
+            raise
+
+
+class BuildPyCommand(build_py, BuildQtResources, BuildQtUI):
     """Custom build_py command that compiles resources first."""
-    
+
     def run(self):
         self.run_build_resources()
+        self.run_build_ui()
         super().run()
 
 
-class DevelopCommand(develop, BuildQtResources):
+class DevelopCommand(develop, BuildQtResources, BuildQtUI):
     """Custom develop command that compiles resources first."""
-    
+
     def run(self):
         self.run_build_resources()
+        self.run_build_ui()
         super().run()
 
 
-class InstallCommand(install, BuildQtResources):
+class InstallCommand(install, BuildQtResources, BuildQtUI):
     """Custom install command that compiles resources first."""
-    
+
     def run(self):
         self.run_build_resources()
+        self.run_build_ui()
         super().run()
 
 

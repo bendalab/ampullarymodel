@@ -63,7 +63,7 @@
                     "gain_rate",
                     "gain_highf",
                     "gain_fhalfup",
-                    "fgain_max",
+                    "gain_fmax",
                     "gain_fcutoff"],
     "feature_labels_casual" : [
                                 "Baseline rate [Hz]", 
