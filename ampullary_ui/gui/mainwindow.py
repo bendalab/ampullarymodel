@@ -212,15 +212,14 @@ class MainWindow(QMainWindow):
         self._ui.toolbar.setFloatable(False)
         self._ui.toolbar.setMovable(False)
         self._ui.toolbar.setIconSize(QSize(25, 25))
+        self._ui.toolbar.setStyleSheet("QToolButton{min-height: 30px;}")
 
         self._ui.toolbar.addAction(self._home_action)
         self._ui.toolbar.addAction(self._quit_action)
         self._ui.toolbar.addAction(self._help_action)
         self._ui.toolbar.addSeparator()
         self._ui.toolbar.addAction(self._simulator_action)
-        self._ui.toolbar.addSeparator()
         self._ui.toolbar.addAction(self._modelgenerator_action)
-        self._ui.toolbar.addSeparator()
         self._ui.toolbar.addAction(self._modelcatalogue_action)
 
     def _on_data_loaded(self):
