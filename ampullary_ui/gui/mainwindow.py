@@ -6,7 +6,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QTabWidget
 from PySide6.QtGui import QAction, QKeySequence, QIcon
-from PySide6.QtCore import QTimer, Qt, QSize, QRunnable, Slot, QThreadPool
+from PySide6.QtCore import QTimer, Qt, QSize, QRunnable, Slot, QThreadPool, QSettings
 
 # # Suppress Qt warning about missing tool_selection signal (manually connected in __init__)
 # warnings.filterwarnings("ignore", message=".*QMetaObject::connectSlotsByName.*tool_selection.*")
@@ -72,7 +72,6 @@ class MainWindow(QMainWindow):
         self._setup_simulator()
         self._setup_generator()
         self._setup_modelcatalog()
-
 
         self._create_actions()
         self._create_menu()

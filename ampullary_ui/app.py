@@ -50,7 +50,6 @@ def main(args=None):
     y = int(settings.value("app/pos_y", 100))
 
     window = MainWindow()
-    window.show()
     window.setWindowTitle("Ampullary Simulator")
     window.setGeometry(x, y, width, height)
     window.setMinimumWidth(800)
