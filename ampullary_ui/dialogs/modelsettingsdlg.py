@@ -1,3 +1,4 @@
+import logging
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout, QWidget, QHBoxLayout
 from PySide6.QtCore import Qt, QSettings
 
@@ -30,7 +31,6 @@ class ModelSettingsDialog(QDialog):
         self.move(x, y)
         self.finished.connect(self.on_finished)
 
-
     def on_finished(self):
         print("on_finished!")
         self._settings.setValue("msettings/width", self.width())
@@ -38,14 +38,11 @@ class ModelSettingsDialog(QDialog):
         self._settings.setValue("msettings/pos_x", self.x())
         self._settings.setValue("msettings/pos_y", self.y())
 
-
     def _on_accept(self):
-        # TODO
-        print("accept!")
-        self.accept()
-
+        logging.info("modelsettingsdialog.on_accept!")
+        if self._modelsettings.store_settings():
+            self.accept()
 
     def _on_reject(self):
-        # TODO
-        print("on_reject!")
+        logging.info("modelsettingsdialog.on_cancel!")
         self.reject()

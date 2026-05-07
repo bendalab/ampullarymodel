@@ -36,7 +36,7 @@ def store_output_folder(output_folder):
     settings = QSettings()
     settings.setValue("app/output_folder", str(output_folder))
 
-def get_outputfolder():
+def get_outputfolder(store_folder=True):
     output_folder = read_output_folder()
     output_folder = QFileDialog.getExistingDirectory(None, "Select output folder",
                                                          dir=output_folder)
@@ -44,7 +44,8 @@ def get_outputfolder():
         logging.info("Folder selection cancelled")
         return None
     output_folder = Path(output_folder)
-    store_output_folder(output_folder)
+    if store_folder:
+        store_output_folder(output_folder)
 
     return output_folder
 

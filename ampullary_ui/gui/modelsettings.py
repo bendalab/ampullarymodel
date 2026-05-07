@@ -2,12 +2,12 @@ import logging
 import pathlib
 import urllib
 import zipfile
-from PySide6.QtWidgets import QWidget, QMessageBox, QApplication
+
+from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QFileDialog
 from PySide6.QtCore import QSettings
 
 from ampullary_ui.ui.manage_model_ui import Ui_ManageModel
 from ampullary_ui.utils.saving import get_outputfolder
-from IPython import embed
 
 
 class ModelSettings(QWidget):
@@ -26,6 +26,18 @@ class ModelSettings(QWidget):
         self._downloadBtn.clicked.connect(self._on_download)
         self._sourceEdit = self._ui.sourceEdit
 
+        self._selectpriorBtn = self._ui.priorBtn
+        self._selectpriorBtn.clicked.connect(lambda: self._select_file(self._priorEdit, "*prior*.pkl"))
+
+        self._selectposteriorBtn = self._ui.posteriorBtn
+        self._selectposteriorBtn.clicked.connect(lambda: self._select_file(self._posteriorEdit, "*posterior*.pkl"))
+
+        self._selectsummarystatsBtn = self._ui.summarystatsBtn
+        self._selectsummarystatsBtn.clicked.connect(lambda: self._select_file(self._summarystatsEdit, "*summary*.h5"))
+
+        self._selectpriorsamplesBtn = self._ui.priorsamplesBtn
+        self._selectpriorsamplesBtn.clicked.connect(lambda: self._select_file(self._priorSamplesEdit, "*prior*.h5"))
+
         self._progressLabel = self._ui.progressLabel
         self._progressBar = self._ui.progressBar
 
@@ -42,9 +54,30 @@ class ModelSettings(QWidget):
         self._priorSamplesEdit.setText(self._settings.value("model/priorsamples", ""))
         self._summarystatsEdit.setText(self._settings.value("model/summarystats", ""))
 
+    def _select_file(self, lineedit, pattern):
+        file, _ = QFileDialog.getOpenFileName(None, "Select file", filter=pattern)
+        if len(file) > 0:
+            lineedit.setText(file)
+
+    def store_settings(self):
+        logging.info("Modelsettings.store_settings")
+        edits = [self._priorEdit, self._posteriorEdit, self._summarystatsEdit, self._priorSamplesEdit]
+        for edit in edits:
+            p = pathlib.Path(edit.text())
+            if p is None or not p.exists() or not p.is_file():
+                logging.error("At least one of the model files is invalid or unset!")
+                QMessageBox.critical(self, "Model settings incomplete!",
+                                    "At least one of the model files is invalid or unset!")
+                return False
+
+        self._settings.setValue("model/prior", self._priorEdit.text())
+        self._settings.setValue("model/posterior", self._posteriorEdit.text())
+        self._settings.setValue("model/summarystats", self._summarystatsEdit.text())
+        self._settings.setValue("model/priorsamples", self._priorSamplesEdit.text())
+        return True
 
     def _on_destination_select(self):
-        dest = get_outputfolder()
+        dest = get_outputfolder(store_folder=False)
         if len(dest) == 0 or not dest.exists():
             return
         self._outputFolderEdit.setText(str(dest))
@@ -133,9 +166,10 @@ class ModelSettings(QWidget):
                                  f"Invalid url ({url}), error code is {rr.status} {str(rr)}")
             return
         self._perform_download(rr, destination)
+
         try:
             self._check_archive_and_assign(destination)
         except FileNotFoundError as exc:
             logging.error(str(exc))
-            QMessageBox.critical(self, "Download Error", str(exc))
+            QMessageBox.critical(self, "Something's wrong with the downloaded archive...", str(exc))
             return
