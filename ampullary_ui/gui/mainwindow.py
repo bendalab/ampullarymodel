@@ -18,7 +18,7 @@ from ampullary_ui.gui.populationsimulator import PopulationSimulator
 from ampullary_ui.gui.modelgenerator import Modelgenerator
 from ampullary_ui.gui.populaitiongenerator import PopulationGenerator
 from ampullary_ui.utils import get_outputfolder, read_output_folder, Tool
-from ampullary_ui.dialogs import AboutDialog, HelpDialog
+from ampullary_ui.dialogs import AboutDialog, HelpDialog, ModelSettingsDialog
 from ampullary_ui.signals import DataReaderSignals
 
 
@@ -186,6 +186,12 @@ class MainWindow(QMainWindow):
         self._set_outfolder_action.setEnabled(True)
         self._set_outfolder_action.triggered.connect(self._on_setoutputfolder)
 
+        self._manage_model_action = QAction("manage model", parent=self)
+        self._manage_model_action.setStatusTip("Manage the SBI network and other files")
+        self._manage_model_action.setToolTip("Manage model files.")
+        self._manage_model_action.setEnabled(True)
+        self._manage_model_action.triggered.connect(self._on_manage_model)
+
         self._help_action = QAction(QIcon(":/icons/help"), "help", parent=self)
         self._help_action.setStatusTip("Show help dialog")
         self._help_action.setShortcut(QKeySequence("F1"))
@@ -195,6 +201,7 @@ class MainWindow(QMainWindow):
     def _create_menu(self):
         file_menu = self._ui.menubar.addMenu("&File")
         file_menu.addAction(self._set_outfolder_action)
+        file_menu.addAction(self._manage_model_action)
         file_menu.addSeparator()
         file_menu.addAction(self._quit_action)
 
@@ -257,6 +264,10 @@ class MainWindow(QMainWindow):
         self._timer.timeout.connect(self._update_animation)
         self._ui.statusbar.addPermanentWidget(self._status_label)
         self._status_label.hide()
+
+    def _on_manage_model(self):
+        dlg = ModelSettingsDialog(self)
+        dlg.show()
 
     def start_progress_animation(self):
         """ Starts the progress animation """
