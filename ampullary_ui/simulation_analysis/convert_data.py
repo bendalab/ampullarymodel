@@ -12,7 +12,6 @@ import numpy as np
 from brian2.units.allunits import second
 from ampullary_ui.computations.lif_simulation import defaultclock
 
-from IPython import embed
 
 
 # def seperate_data(data, baseline_recording):

@@ -7,7 +7,6 @@ from matplotlib.lines import Line2D
 from ampullary_ui.plotting.plot_helpers_general import plot_params, colorcode
 plt.rcParams.update(plot_params)
 
-from IPython import embed
 
 def plot_samples(values, samples, titles):
 

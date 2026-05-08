@@ -84,7 +84,6 @@ def baseline_plot_data(baseline_data, index=0):
 
 
 def main():
-    from IPython import embed
     from ampullary_ui.analysis.utils import split_data
     data = np.load("./lif_data.npz", allow_pickle=True)
     lif_data = data["lif_data"].item()
@@ -95,7 +94,6 @@ def main():
     baseline, _ = split_data(lif_data, baseline_duration, stim_data["duration"])
     bf = baseline_features(baseline["spikes"], baseline["time"])
     bp = baseline_plot_data(baseline)
-    embed()
 
 
 if __name__ == "__main__":
