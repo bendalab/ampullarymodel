@@ -88,7 +88,7 @@ class Modelgenerator(QWidget):
         self._feature_labels = labels['feature_labels_casual']
         self._posterior = load_posterior(self._qsettings.value("model/posterior", ""))
         if self._posterior is None:
-            QMessageBox.critical("Posterior file is missing!", "Could not locate or load the posterior file! Recheck the model settings.")
+            QMessageBox.critical(self, "Posterior file is missing!", "Could not locate or load the posterior file! Recheck the model settings.")
         self._model_params = None
         self._features = None
         self._simulation_results = None
