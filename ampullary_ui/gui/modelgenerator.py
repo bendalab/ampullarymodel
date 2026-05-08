@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 
-from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtWidgets import QWidget, QSizePolicy, QMessageBox
 from PySide6.QtCore import QLocale, QRunnable, Slot, QThreadPool, Signal, QSettings
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
@@ -86,7 +86,9 @@ class Modelgenerator(QWidget):
         labels = load_labels()
         self._parameter_labels = labels['parameter_labels_casual']
         self._feature_labels = labels['feature_labels_casual']
-
+        self._posterior = load_posterior(self._qsettings.value("model/posterior", ""))
+        if self._posterior is None:
+            QMessageBox.critical("Posterior file is missing!", "Could not locate or load the posterior file! Recheck the model settings.")
         self._model_params = None
         self._features = None
         self._simulation_results = None
@@ -107,8 +109,6 @@ class Modelgenerator(QWidget):
         self._setup_spinboxes()
         self._setup_defaults()
 
-        self._posterior = load_posterior(self._qsettings.value("model/posterior", ""))
-
         self._current_fig = None
         self._example_fig = None
         self._setup_placeholder_plot()
@@ -118,6 +118,10 @@ class Modelgenerator(QWidget):
         self._simulate_btn.clicked.connect(self._on_simulate)
         self._save_params_btn.clicked.connect(self._on_save_params)
         self._save_data_btn.clicked.connect(self._on_save_data)
+
+    def update(self):
+        self._posterior = load_posterior(self._qsettings.value("model/posterior", ""))
+        self._setup_defaults()
 
     def _setup_spinboxes(self):
         self._spinbox_settings = [
@@ -163,6 +167,7 @@ class Modelgenerator(QWidget):
         self._name_edit.setText("model_001")
         self._save_data_checkbox.setChecked(True)
         self._save_features_checkbox.setChecked(False)
+        self._generate_btn.setEnabled(self._posterior is not None) 
 
     def _setup_placeholder_plot(self):
         plot_layout = self._plot_container.layout()

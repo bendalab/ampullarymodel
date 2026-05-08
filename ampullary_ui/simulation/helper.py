@@ -89,7 +89,7 @@ def simulate_from_input_params(params, baseline_duration=30.,
 def load_posterior(filename):
     if isinstance(filename, str):
         filename = Path(filename)
-    if not filename.exists():
+    if not filename.exists() or not filename.is_file() or "pkl" not in filename.suffix:
         return None
 
     with open(filename, 'rb') as handle:

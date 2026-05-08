@@ -155,7 +155,7 @@ class ModelSettings(QWidget):
             lineedit.setText(file)
 
     def store_settings(self):
-        logging.info("Modelsettings.store_settings")
+        logging.info("Modelsettings.store_settings!")
         edits = [self._priorEdit, self._posteriorEdit, self._summarystatsEdit, self._priorSamplesEdit]
         for edit in edits:
             p = pathlib.Path(edit.text())
@@ -163,12 +163,13 @@ class ModelSettings(QWidget):
                 logging.error("At least one of the model files is invalid or unset!")
                 QMessageBox.critical(self, "Model settings incomplete!",
                                     "At least one of the model files is invalid or unset!")
+                logging.info("... failed!")
                 return False
-
         self._settings.setValue("model/prior", self._priorEdit.text())
         self._settings.setValue("model/posterior", self._posteriorEdit.text())
         self._settings.setValue("model/summarystats", self._summarystatsEdit.text())
         self._settings.setValue("model/priorsamples", self._priorSamplesEdit.text())
+        logging.info("... succeeded!")
         return True
 
     def _on_destination_select(self):

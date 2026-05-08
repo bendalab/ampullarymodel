@@ -1,11 +1,12 @@
 import logging
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout, QWidget, QHBoxLayout
-from PySide6.QtCore import Qt, QSettings
+from PySide6.QtCore import Qt, QSettings, Signal
 
 from ampullary_ui.gui.modelsettings import ModelSettings
 
 
 class ModelSettingsDialog(QDialog):
+    settings_changed = Signal()
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent=parent)
@@ -45,7 +46,6 @@ class ModelSettingsDialog(QDialog):
             ok_button.setEnabled(True)
 
     def on_finished(self):
-        print("on_finished!")
         self._settings.setValue("msettings/width", self.width())
         self._settings.setValue("msettings/height", self.height())
         self._settings.setValue("msettings/pos_x", self.x())
@@ -54,6 +54,8 @@ class ModelSettingsDialog(QDialog):
     def _on_accept(self):
         logging.info("modelsettingsdialog.on_accept!")
         if self._modelsettings.store_settings():
+            self.settings_changed.emit()
+            print("settings Changed signal emitted!")
             self.accept()
 
     def _on_reject(self):

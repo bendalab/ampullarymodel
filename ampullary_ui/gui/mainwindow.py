@@ -267,9 +267,16 @@ class MainWindow(QMainWindow):
 
     def _on_manage_model(self):
         dlg = ModelSettingsDialog(self)
+        dlg.settings_changed.connect(self._on_settingschanged)
         dlg.show()
 
+    def _on_settingschanged(self):
+        print("on settings changes!!!")
+        self._start_data_loader()
+        self.generator.update()
+
     def _start_data_loader(self):
+        self.start_progress_animation()
         invalid_reasons = []
         if len(str(self._summarystatsfile)) == 0 or str(self._summarystatsfile) == ".":
             invalid_reasons.append("summary statistics file is not set")
