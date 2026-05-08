@@ -11,10 +11,10 @@ class ModelSettingsDialog(QDialog):
         super().__init__(parent=parent)
         self.setModal(True)
         self.setLayout(QVBoxLayout())
-        bbox = QDialogButtonBox(standardButtons=QDialogButtonBox.StandardButton.Ok |
+        self._bbox = QDialogButtonBox(standardButtons=QDialogButtonBox.StandardButton.Ok |
                                                 QDialogButtonBox.StandardButton.Cancel)
-        bbox.accepted.connect(self._on_accept)
-        bbox.rejected.connect(self._on_reject)
+        self._bbox.accepted.connect(self._on_accept)
+        self._bbox.rejected.connect(self._on_reject)
 
         self._settings = QSettings()
         width = int(self._settings.value("msettings/width", 640))
@@ -24,12 +24,25 @@ class ModelSettingsDialog(QDialog):
 
         self._modelsettings = ModelSettings(self)
         self.layout().addWidget(self._modelsettings)
-        self.layout().addWidget(bbox)
+        self.layout().addWidget(self._bbox)
 
         self.setMinimumSize(640, 480)
         self.resize(width, height)
         self.move(x, y)
         self.finished.connect(self.on_finished)
+
+        self._modelsettings.busy.connect(self._is_busy)
+        self._modelsettings.done.connect(self._is_done)
+
+    def _is_busy(self):
+        ok_button = self._bbox.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_button is not None:
+            ok_button.setEnabled(False)
+
+    def _is_done(self):
+        ok_button = self._bbox.button(QDialogButtonBox.StandardButton.Ok)
+        if ok_button is not None:
+            ok_button.setEnabled(True)
 
     def on_finished(self):
         print("on_finished!")
@@ -45,4 +58,9 @@ class ModelSettingsDialog(QDialog):
 
     def _on_reject(self):
         logging.info("modelsettingsdialog.on_cancel!")
+        self._modelsettings.cancel_download()
         self.reject()
+
+    def closeEvent(self, event):
+        self._modelsettings.cancel_download()
+        super().closeEvent(event)

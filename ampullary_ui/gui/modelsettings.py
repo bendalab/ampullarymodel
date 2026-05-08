@@ -4,7 +4,7 @@ import urllib
 import zipfile
 
 from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog
-from PySide6.QtCore import QSettings, QRunnable, QThreadPool, Slot
+from PySide6.QtCore import QSettings, QRunnable, QThreadPool, Slot, Signal
 
 from ampullary_ui.signals import DownloadSignals
 from ampullary_ui.ui.manage_model_ui import Ui_ManageModel
@@ -17,6 +17,10 @@ class DownloadWorker(QRunnable):
         self._url = url
         self._destination = destination
         self._signals = DownloadSignals()
+        self._cancelled = False
+
+    def cancel(self):
+        self._cancelled = True
 
     @property
     def signals(self):
@@ -45,6 +49,8 @@ class DownloadWorker(QRunnable):
                 downloaded = 0
                 with open(dest_file, "wb") as file_handle:
                     while True:
+                        if self._cancelled:
+                            raise InterruptedError("Download cancelled by user")
                         chunk = httpresponse.read(chunk_size)
                         if not chunk:
                             break
@@ -56,10 +62,14 @@ class DownloadWorker(QRunnable):
                             progress,
                         )
 
-            self._signals.progress.emit(f"Extracting {filename}...", 1.0)
+            if self._cancelled:
+                raise InterruptedError("Download cancelled by user")
+
+            self._signals.progress.emit(f"Extracting {filename}...", 0.5)
+
             with zipfile.ZipFile(dest_file, "r") as zip_handle:
                 zip_handle.extractall(self._destination)
-
+            self._signals.progress.emit(f"Cleaning up {filename}", 0.75)
             dest_file.unlink()
             logging.info("Downloaded and extracted %s to %s", filename, self._destination)
             self._signals.progress.emit("Download and extraction complete.", 1.0)
@@ -68,6 +78,11 @@ class DownloadWorker(QRunnable):
             self._signals.error.emit(
                 f"Invalid url ({self._url}), error code is {exc.code} {str(exc)}"
             )
+        except InterruptedError:
+            if dest_file is not None and dest_file.exists():
+                dest_file.unlink(missing_ok=True)
+            self._signals.progress.emit("Download cancelled.", 0.0)
+            self._signals.finished.emit(None)
         except (urllib.error.URLError, OSError, zipfile.BadZipFile) as exc:
             if dest_file is not None and dest_file.exists():
                 dest_file.unlink(missing_ok=True)
@@ -75,6 +90,9 @@ class DownloadWorker(QRunnable):
 
 
 class ModelSettings(QWidget):
+    busy = Signal()
+    done = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self._settings = QSettings()
@@ -106,6 +124,7 @@ class ModelSettings(QWidget):
         self._progressBar = self._ui.progressBar
         self._threadpool = QThreadPool()
         self._downloadWorker = None
+        self._is_downloading = False
 
         self._priorEdit = self._ui.priorEdit
         self._posteriorEdit = self._ui.posteriorEdit
@@ -177,20 +196,36 @@ class ModelSettings(QWidget):
 
     def _on_download_error(self, message):
         logging.error(message)
+        self._is_downloading = False
+        self._downloadWorker = None
         self._downloadBtn.setEnabled(True)
         QMessageBox.critical(self, "Download Error", message)
+        self.done.emit()
 
     def _on_download_finished(self, destination):
+        self._is_downloading = False
+        self._downloadWorker = None
         self._downloadBtn.setEnabled(True)
+        if destination is None:
+            self.done.emit()
+            return
         try:
             self._check_archive_and_assign(destination)
         except FileNotFoundError as exc:
             logging.error(str(exc))
             QMessageBox.critical(self, "Something's wrong with the downloaded archive...", str(exc))
             return
+        self.done.emit()
 
+    def cancel_download(self):
+        if self._is_downloading and self._downloadWorker is not None:
+            self._downloadWorker.cancel()
 
     def _on_download(self):
+        if self._is_downloading:
+            QMessageBox.information(self, "Download running", "A download is already in progress.")
+            return
+
         destination = pathlib.Path(self._outputFolderEdit.text())
         if not destination.exists():
             QMessageBox.critical(self, "No download folder!",
@@ -205,6 +240,8 @@ class ModelSettings(QWidget):
         self._progressBar.setMaximum(100)
         self._progressBar.setValue(0)
         self._progressLabel.setText("Starting download...")
+        self._is_downloading = True
+        self.busy.emit()
 
         self._downloadWorker = DownloadWorker(url, destination)
         self._downloadWorker.signals.progress.connect(self._on_download_progress)
