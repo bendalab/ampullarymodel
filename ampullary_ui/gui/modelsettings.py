@@ -134,10 +134,20 @@ class ModelSettings(QWidget):
         self._sourceEdit.setText(self._settings.value("model/packagesource",
                                                       "https://gin.g-node.org/jgrewe/ampullary_sbi/raw/master/packages/gymnotiform_ampullary_1.0.zip"))
         # FIXME hardcoded!!
-        self._priorEdit.setText(self._settings.value("model/prior", ""))
-        self._posteriorEdit.setText(self._settings.value("model/posterior", ""))
-        self._priorSamplesEdit.setText(self._settings.value("model/priorsamples", ""))
-        self._summarystatsEdit.setText(self._settings.value("model/summarystats", ""))
+
+        self._priorEdit.setText(self._get_existing_file_setting("model/prior"))
+        self._posteriorEdit.setText(self._get_existing_file_setting("model/posterior"))
+        self._priorSamplesEdit.setText(self._get_existing_file_setting("model/priorsamples"))
+        self._summarystatsEdit.setText(self._get_existing_file_setting("model/summarystats"))
+
+    def _get_existing_file_setting(self, key):
+        value = self._settings.value(key, "")
+        if value is None:
+            return ""
+        path_value = pathlib.Path(str(value))
+        if path_value.exists() and path_value.is_file():
+            return str(path_value)
+        return ""
 
     def _select_file(self, lineedit, pattern):
         file, _ = QFileDialog.getOpenFileName(None, "Select file", filter=pattern)

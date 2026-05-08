@@ -4,7 +4,7 @@ import pandas as pd
 
 from pathlib import Path
 
-from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QTabWidget
+from PySide6.QtWidgets import QMainWindow, QLabel, QWidget, QTabWidget, QMessageBox
 from PySide6.QtGui import QAction, QKeySequence, QIcon
 from PySide6.QtCore import QTimer, Qt, QSize, QRunnable, Slot, QThreadPool, QSettings
 
@@ -82,15 +82,12 @@ class MainWindow(QMainWindow):
 
         self._summarystats = None
         self._priorsamples = None
-        self._priorsamplesfile = self._qsettings.value("model/prior", "")
-        self._summarystatsfile = self._qsettings.value("model/summarystats", "")
-        print(self._priorsamplesfile,  self._summarystatsfile)
-        self._dataloader = DataLoader(self._summarystatsfile,
-                                      self._priorsamplesfile)
-        self._dataloader._signals.finished.connect(self._on_data_loaded)
-        self._dataloader._signals.progress.connect(self._on_dataprogress)
+        priorsamples_value = self._qsettings.value("model/priorsamples", "") or ""
+        summarystats_value = self._qsettings.value("model/summarystats", "") or ""
+        self._priorsamplesfile = Path(str(priorsamples_value))
+        self._summarystatsfile = Path(str(summarystats_value))
         self._threadpool = QThreadPool()
-        self._threadpool.start(self._dataloader)
+        self._start_data_loader()
 
 
     def _setup_simulator(self):
@@ -271,6 +268,48 @@ class MainWindow(QMainWindow):
     def _on_manage_model(self):
         dlg = ModelSettingsDialog(self)
         dlg.show()
+
+    def _start_data_loader(self):
+        invalid_reasons = []
+        if len(str(self._summarystatsfile)) == 0 or str(self._summarystatsfile) == ".":
+            invalid_reasons.append("summary statistics file is not set")
+        elif not self._summarystatsfile.exists():
+            invalid_reasons.append(f"summary statistics file does not exist: {self._summarystatsfile}")
+
+        if len(str(self._priorsamplesfile)) == 0 or str(self._priorsamplesfile) == ".":
+            invalid_reasons.append("prior samples file is not set")
+        elif not self._priorsamplesfile.exists():
+            invalid_reasons.append(f"prior samples file does not exist: {self._priorsamplesfile}")
+
+        if invalid_reasons:
+            self.stop_progress_animation()
+            self._ui.stack.setCurrentIndex(1)
+            details = "\n".join(invalid_reasons)
+            QMessageBox.critical(
+                self,
+                "Model files missing",
+                f"Model data files are missing or invalid:\n{details}\n\nPlease configure them in Manage model.",
+            )
+            self._manage_model_action.trigger()
+            return
+
+        try:
+            self._dataloader = DataLoader(self._summarystatsfile,
+                                          self._priorsamplesfile)
+        except FileNotFoundError as exc:
+            self.stop_progress_animation()
+            self._ui.stack.setCurrentIndex(1)
+            QMessageBox.critical(
+                self,
+                "Model files missing",
+                f"{exc}\n\nPlease configure them in Manage model.",
+            )
+            self._manage_model_action.trigger()
+            return
+
+        self._dataloader._signals.finished.connect(self._on_data_loaded)
+        self._dataloader._signals.progress.connect(self._on_dataprogress)
+        self._threadpool.start(self._dataloader)
 
     def start_progress_animation(self):
         """ Starts the progress animation """
