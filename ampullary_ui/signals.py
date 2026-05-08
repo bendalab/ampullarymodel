@@ -5,6 +5,13 @@ class DataReaderSignals(QObject):
     error = Signal(str)
     progress = Signal(str, float)
 
+
+class DownloadSignals(QObject):
+    finished = Signal(object)
+    error = Signal(str)
+    progress = Signal(str, float)
+
+
 class SimulatorSignals(QObject):
     finished = Signal(bool)
     error = Signal(str)

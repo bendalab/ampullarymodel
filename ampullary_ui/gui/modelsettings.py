@@ -3,11 +3,75 @@ import pathlib
 import urllib
 import zipfile
 
-from PySide6.QtWidgets import QWidget, QMessageBox, QApplication, QFileDialog
-from PySide6.QtCore import QSettings
+from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog
+from PySide6.QtCore import QSettings, QRunnable, QThreadPool, Slot
 
+from ampullary_ui.signals import DownloadSignals
 from ampullary_ui.ui.manage_model_ui import Ui_ManageModel
 from ampullary_ui.utils.saving import get_outputfolder
+
+
+class DownloadWorker(QRunnable):
+    def __init__(self, url: str, destination: pathlib.Path):
+        super().__init__()
+        self._url = url
+        self._destination = destination
+        self._signals = DownloadSignals()
+
+    @property
+    def signals(self):
+        return self._signals
+
+    @Slot()
+    def run(self):
+        dest_file = None
+        try:
+            with urllib.request.urlopen(self._url) as httpresponse:
+                if httpresponse.status != 200:
+                    self._signals.error.emit(
+                        f"Invalid url ({self._url}), error code is {httpresponse.status} {str(httpresponse)}"
+                    )
+                    return
+
+                filename = pathlib.Path(httpresponse.url).name
+                dest_file = self._destination / filename
+
+                content_length = httpresponse.getheader("Content-Length")
+                total_size = int(content_length) if content_length else 0
+
+                self._signals.progress.emit(f"Downloading {filename}...", 0.0)
+
+                chunk_size = 1024 * 1024
+                downloaded = 0
+                with open(dest_file, "wb") as file_handle:
+                    while True:
+                        chunk = httpresponse.read(chunk_size)
+                        if not chunk:
+                            break
+                        file_handle.write(chunk)
+                        downloaded += len(chunk)
+                        progress = downloaded / total_size if total_size > 0 else 0.0
+                        self._signals.progress.emit(
+                            f"Downloading {filename}... {downloaded / (1024 * 1024):.1f} MB",
+                            progress,
+                        )
+
+            self._signals.progress.emit(f"Extracting {filename}...", 1.0)
+            with zipfile.ZipFile(dest_file, "r") as zip_handle:
+                zip_handle.extractall(self._destination)
+
+            dest_file.unlink()
+            logging.info("Downloaded and extracted %s to %s", filename, self._destination)
+            self._signals.progress.emit("Download and extraction complete.", 1.0)
+            self._signals.finished.emit(self._destination)
+        except urllib.error.HTTPError as exc:
+            self._signals.error.emit(
+                f"Invalid url ({self._url}), error code is {exc.code} {str(exc)}"
+            )
+        except (urllib.error.URLError, OSError, zipfile.BadZipFile) as exc:
+            if dest_file is not None and dest_file.exists():
+                dest_file.unlink(missing_ok=True)
+            self._signals.error.emit(str(exc))
 
 
 class ModelSettings(QWidget):
@@ -40,6 +104,8 @@ class ModelSettings(QWidget):
 
         self._progressLabel = self._ui.progressLabel
         self._progressBar = self._ui.progressBar
+        self._threadpool = QThreadPool()
+        self._downloadWorker = None
 
         self._priorEdit = self._ui.priorEdit
         self._posteriorEdit = self._ui.posteriorEdit
@@ -82,53 +148,6 @@ class ModelSettings(QWidget):
             return
         self._outputFolderEdit.setText(str(dest))
 
-    @staticmethod
-    def _open_url(url):
-        try:
-            return urllib.request.urlopen(url)
-        except urllib.error.HTTPError as e:
-            # "e" can be treated as a http.client.HTTPResponse object
-            return e
-
-    def _perform_download(self, httpresponse, destination: pathlib.Path):
-        filename = pathlib.Path(httpresponse.url).name
-        dest_file = destination / filename
-
-        content_length = httpresponse.getheader("Content-Length")
-        total_size = int(content_length) if content_length else 0
-
-        self._progressBar.setMaximum(total_size if total_size > 0 else 0)
-        self._progressBar.setValue(0)
-        self._progressLabel.setText(f"Downloading {filename}...")
-        QApplication.processEvents()
-
-        chunk_size = 1024 * 1024  # 1 MB
-        downloaded = 0
-        with open(dest_file, "wb") as f:
-            while True:
-                chunk = httpresponse.read(chunk_size)
-                if not chunk:
-                    break
-                f.write(chunk)
-                downloaded += len(chunk)
-                if total_size > 0:
-                    self._progressBar.setValue(downloaded)
-                self._progressLabel.setText(
-                    f"Downloading ... {downloaded / (1024 * 1024):.1f} MB"
-                )
-                QApplication.processEvents()
-
-        self._progressLabel.setText(f"Extracting ...")
-        QApplication.processEvents()
-        with zipfile.ZipFile(dest_file, "r") as zf:
-            zf.extractall(destination)
-
-        if total_size > 0:
-            self._progressBar.setValue(total_size)
-        self._progressLabel.setText("Download and extraction complete.")
-        logging.info("Downloaded and extracted %s to %s", filename, destination)
-        dest_file.unlink()
-
     def _check_archive_and_assign(self, destination):
         prior_samples = list(destination.glob("*prior_samples*.h5"))
         prior = list(destination.glob("*prior*.pkl"))
@@ -143,13 +162,32 @@ class ModelSettings(QWidget):
         }
         empty_keys = [name for name, values in file_lists.items() if len(values) == 0]
         if empty_keys:
-            msg = ', '.join(empty_keys)
-            logging.error("Missing expected extracted files: %s", msg)
-            return
+            raise FileNotFoundError(
+                f"Missing expected extracted files: {', '.join(empty_keys)}"
+            )
         self._priorEdit.setText(str(prior[0]))
         self._posteriorEdit.setText(str(posterior[0]))
         self._summarystatsEdit.setText(str(samplestats[0]))
         self._priorSamplesEdit.setText(str(prior_samples[0]))
+
+    def _on_download_progress(self, message, progress):
+        self._progressLabel.setText(message)
+        self._progressBar.setMaximum(100)
+        self._progressBar.setValue(int(progress * 100))
+
+    def _on_download_error(self, message):
+        logging.error(message)
+        self._downloadBtn.setEnabled(True)
+        QMessageBox.critical(self, "Download Error", message)
+
+    def _on_download_finished(self, destination):
+        self._downloadBtn.setEnabled(True)
+        try:
+            self._check_archive_and_assign(destination)
+        except FileNotFoundError as exc:
+            logging.error(str(exc))
+            QMessageBox.critical(self, "Something's wrong with the downloaded archive...", str(exc))
+            return
 
 
     def _on_download(self):
@@ -159,17 +197,17 @@ class ModelSettings(QWidget):
                                  "Select a valid download folder first!")
             return
         url = self._sourceEdit.text().strip()
-        rr = self._open_url(url)
-        if rr.status != 200:
-            logging.error("Invalid url (%s), error code is %i %s", url, rr.status, str(rr))
-            QMessageBox.critical(self, "Download Error",
-                                 f"Invalid url ({url}), error code is {rr.status} {str(rr)}")
+        if len(url) == 0:
+            QMessageBox.critical(self, "Download Error", "Enter a valid download URL first!")
             return
-        self._perform_download(rr, destination)
 
-        try:
-            self._check_archive_and_assign(destination)
-        except FileNotFoundError as exc:
-            logging.error(str(exc))
-            QMessageBox.critical(self, "Something's wrong with the downloaded archive...", str(exc))
-            return
+        self._downloadBtn.setEnabled(False)
+        self._progressBar.setMaximum(100)
+        self._progressBar.setValue(0)
+        self._progressLabel.setText("Starting download...")
+
+        self._downloadWorker = DownloadWorker(url, destination)
+        self._downloadWorker.signals.progress.connect(self._on_download_progress)
+        self._downloadWorker.signals.error.connect(self._on_download_error)
+        self._downloadWorker.signals.finished.connect(self._on_download_finished)
+        self._threadpool.start(self._downloadWorker)
