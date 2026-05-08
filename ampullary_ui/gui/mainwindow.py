@@ -57,6 +57,7 @@ class MainWindow(QMainWindow):
         self._ui.setupUi(self)
         self._setup_animation()
         self.start_progress_animation()
+        self._qsettings = QSettings()
 
         self._tool_registry = {}
         self._stack = self._ui.stack
@@ -81,8 +82,11 @@ class MainWindow(QMainWindow):
 
         self._summarystats = None
         self._priorsamples = None
-        self._dataloader = DataLoader(Path.cwd() / "source" / "summary_statistics.h5",
-                                      Path.cwd() / "source" / "prior_samples.h5")
+        self._priorsamplesfile = self._qsettings.value("model/prior", "")
+        self._summarystatsfile = self._qsettings.value("model/summarystats", "")
+        print(self._priorsamplesfile,  self._summarystatsfile)
+        self._dataloader = DataLoader(self._summarystatsfile,
+                                      self._priorsamplesfile)
         self._dataloader._signals.finished.connect(self._on_data_loaded)
         self._dataloader._signals.progress.connect(self._on_dataprogress)
         self._threadpool = QThreadPool()
