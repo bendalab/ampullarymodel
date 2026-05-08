@@ -86,7 +86,18 @@ def simulate_from_input_params(params, baseline_duration=30.,
     return results
 
 
-def create_cell_from_input_features(features):
+def load_posterior(filename):
+    if isinstance(filename, str):
+        filename = Path(filename)
+    if not filename.exists():
+        return None
+
+    with open(filename, 'rb') as handle:
+        posterior = pickle.load(handle)
+    return posterior
+
+
+def create_cell_from_input_features(features, posterior):
     """
     Get MAP model for a single set of cell features
 
@@ -103,14 +114,6 @@ def create_cell_from_input_features(features):
         model parameter set       
     """
     new_order = load_new_order()
-    # from IPython import embed
-    # embed()
-    # import torch
-    path = Path.cwd() / "source" / "posterior.pkl"
-    with open(path, 'rb') as handle:
-        posterior = pickle.load(handle)
-    handle.close()
-
     wanted_cell = np.array(features)
     back_to_original = np.argsort(new_order)
     rel_stats = wanted_cell[back_to_original]

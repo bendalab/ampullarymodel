@@ -153,7 +153,7 @@ class ModelCatalog(QWidget):
             processing: Signal with status message "Data processing..." and progress value 0.0.
         """
 
-        logging.debug("ToolC.set_data: received data")
+        logging.debug("ModelCatalog.set_data: received data")
         self.processing.emit("Data processing...", 0.0)
         self._summarystats = summarystats
         self._priorsamples = priorsamples

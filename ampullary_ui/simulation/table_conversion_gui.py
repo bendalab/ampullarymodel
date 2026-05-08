@@ -8,7 +8,6 @@ Functions for Table extentions:
 - Convert feature table into usable format and order
 - Worker function for generating a model sample from a posterior distribution in a multiprocessing setup.
 """
-import pickle
 import os
 import json
 import numpy as np
@@ -43,26 +42,6 @@ def package_parameters(parameters, package_size=100):
         chunk = params[start:start + package_size]
         packages.append((start, chunk))
     return packages
-
-
-
-def load_posterior():
-    """
-    Load the posterior
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    posterior : DirectPosterior
-        Posterior p(θ|x) with .sample() and .log_prob() methods from training with LIF Model.
-    """
-    filepath = os.path.join("..", "source", "posterior.pkl")
-    with open(filepath, 'rb') as handle:
-        posterior = pickle.load(handle)
-    return posterior
 
 
 def prepare_feature_inputs(wanted_cells):

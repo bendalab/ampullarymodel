@@ -2,14 +2,14 @@ import logging
 import numpy as np
 
 from PySide6.QtWidgets import QWidget, QSizePolicy
-from PySide6.QtCore import QLocale, QRunnable, Slot, QThreadPool, Signal
+from PySide6.QtCore import QLocale, QRunnable, Slot, QThreadPool, Signal, QSettings
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from ampullary_ui.ui import Ui_ModelGenerator
 from ampullary_ui.utils import get_outputfolder, save_data, save_features, save_params, load_labels
 from ampullary_ui.signals import SimulatorSignals
 from ampullary_ui.plotting.plot_cell import plot_cell
-from ampullary_ui.simulation.helper import SimulationResult, simulate_from_input_params, create_cell_from_input_features
+from ampullary_ui.simulation.helper import SimulationResult, simulate_from_input_params, create_cell_from_input_features, load_posterior
 
 
 class SimulationThread(QRunnable):
@@ -38,16 +38,17 @@ class SimulationThread(QRunnable):
 
 class GenerationThread(QRunnable):
 
-    def __init__(self, features):
+    def __init__(self, features, posterior):
         super().__init__()
         self._features = features
+        self._posterior = posterior
         self._signals = SimulatorSignals()
         self._results = None
 
     @Slot()
     def run(self):
         self._signals.progress.emit("Running simulation ... ", 0.2)
-        self._results = create_cell_from_input_features(self._features)
+        self._results = create_cell_from_input_features(self._features, self._posterior)
         self._signals.progress.emit("...done", 1.0)
         self._signals.finished.emit(True)
 
@@ -74,7 +75,7 @@ class Modelgenerator(QWidget):
         super().__init__(parent)
         self._ui = Ui_ModelGenerator()
         self._ui.setupUi(self)
-
+        self._qsettings = QSettings()
         self._threadpool = QThreadPool()
         self._sim_thread = None
         self._gen_thread = None
@@ -105,6 +106,8 @@ class Modelgenerator(QWidget):
 
         self._setup_spinboxes()
         self._setup_defaults()
+
+        self._posterior = load_posterior(self._qsettings.value("model/posterior", ""))
 
         self._current_fig = None
         self._example_fig = None
@@ -168,8 +171,6 @@ class Modelgenerator(QWidget):
         self._placeholder_canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         plot_layout.addWidget(self._placeholder_canvas)
 
-        # update figure   
-
     def _show_simulation_figure(self):
         plot_layout = self._plot_container.layout()
         if hasattr(self, 'placeholder_canvas') and self._placeholder_canvas:
@@ -205,7 +206,7 @@ class Modelgenerator(QWidget):
         self._current_fig = self._example_fig
         self.show_simulation_figure()
         self.text_output.clear()
-        self.text_output.insertPlainText('Describe the cell you want to model by the offered features. A best-guess model that will generate your feature set will be proposed. You can immediately check how well the model fits be using it to simulate data and compare the simulated features with your input.') 
+        self.text_output.insertPlainText('Describe the cell you want to model by the offered features. A best-guess model that will generate your feature set will be proposed. You can immediately check how well the model fits be using it to simulate data and compare the simulated features with your input.')
 
     def _on_generate(self):
         logging.info("Modelgenerator: model generation running...")
@@ -217,7 +218,7 @@ class Modelgenerator(QWidget):
         self._text_output.clear()
         self._text_output.insertPlainText("Computing MAP model from posterior...\n")
 
-        self._gen_thread = GenerationThread(self._features)
+        self._gen_thread = GenerationThread(self._features, self._posterior)
         self._gen_thread.signals.progress.connect(self._on_generation_progress)
         self._gen_thread.signals.finished.connect(self._on_generation_finished)
         self._threadpool.start(self._gen_thread)
