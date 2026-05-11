@@ -82,10 +82,6 @@ class MainWindow(QMainWindow):
 
         self._summarystats = None
         self._priorsamples = None
-        priorsamples_value = self._qsettings.value("model/priorsamples", "") or ""
-        summarystats_value = self._qsettings.value("model/summarystats", "") or ""
-        self._priorsamplesfile = Path(str(priorsamples_value))
-        self._summarystatsfile = Path(str(summarystats_value))
         self._threadpool = QThreadPool()
         self._start_data_loader()
 
@@ -276,6 +272,11 @@ class MainWindow(QMainWindow):
         self.generator.update()
 
     def _start_data_loader(self):
+        priorsamples_value = self._qsettings.value("model/priorsamples", "") or ""
+        summarystats_value = self._qsettings.value("model/summarystats", "") or ""
+        self._priorsamplesfile = Path(str(priorsamples_value))
+        self._summarystatsfile = Path(str(summarystats_value))
+
         self.start_progress_animation()
         invalid_reasons = []
         if len(str(self._summarystatsfile)) == 0 or str(self._summarystatsfile) == ".":

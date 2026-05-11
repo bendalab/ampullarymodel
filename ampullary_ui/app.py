@@ -44,6 +44,16 @@ def main(args=None):
     app.setStyleSheet(style)
 
     settings = QSettings()
+    
+    #Test code for settings
+    """
+    settings.remove("model/prior")
+    settings.remove("model/posterior")
+    settings.remove("model/priorsamples")
+    settings.remove("model/summarystats")
+    """
+    # Done
+    
     width = int(settings.value("app/width", 1024))
     height = int(settings.value("app/height", 768))
     x = int(settings.value("app/pos_x", 100))
